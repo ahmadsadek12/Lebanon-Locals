@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Lebanon Locals</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/application.css">
+    <link rel="stylesheet" href="css/common.css">
+    
+    <link rel="icon" href="images/logos/favicon.png" type="image/png">
+    
+    <style>
+        body {
+            font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+        
+        .contact-container {
+            max-width: 700px;
+            margin: 80px auto;
+            padding: 20px;
+        }
+        
+        .contact-intro {
+            font-size: 16px;
+            color: #484848;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .contact-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .contact-card-header {
+            background: #f7f7f7;
+            padding: 24px;
+            border-bottom: 1px solid #ebebeb;
+        }
+        
+        .contact-card-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #222;
+            margin: 0;
+        }
+        
+        .contact-card-body {
+            padding: 32px 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 8px;
+        }
+        
+        .form-group label em {
+            color: #ff5a5f;
+            font-style: normal;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #222222;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: #ff5a5f;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            float: right;
+        }
+        
+        .submit-btn:hover {
+            background: #e04e53;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 90, 95, 0.3);
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #222;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: color 0.3s;
+        }
+        
+        .back-link:hover {
+            color: #ff5a5f;
+        }
+        
+        .back-link i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body class="hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<div class="contact-container">
+        <a href="index.html" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to Home
+        </a>
+        
+        <div class="contact-intro">
+            <p>Have questions or need assistance? We're here to help! Contact our team and we'll get back to you as soon as possible.</p>
+            <p>For immediate assistance, call us at: <strong>961 81 434 070</strong></p>
+        </div>
+        
+        <div class="contact-card">
+            <div class="contact-card-header">
+                <h1>Contact Us</h1>
+            </div>
+            <div class="contact-card-body">
+                <form id="contactForm" onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <label>Name <em>*</em></label>
+                        <input type="text" name="name" placeholder="Enter your name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email <em>*</em></label>
+                        <input type="email" name="email" placeholder="Enter your email address" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Message <em>*</em></label>
+                        <textarea name="feedback" placeholder="How can we help you?" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Send Message</button>
+                    <div style="clear: both;"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/jquery-3.5.0.js"></script>
+    <script>
+        function handleSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const name = form.name.value;
+            const email = form.email.value;
+            const message = form.feedback.value;
+            
+            // For now, just show an alert. Later this will send to backend
+            alert(`Thank you ${name}! Your message has been received.\n\nWe'll respond to ${email} as soon as possible.\n\n(Note: Backend integration coming soon - for now, please email us directly at info@lebanonlocals.com or call 961 81 434 070)`);
+            
+            form.reset();
+        }
+        
+        // WhatsApp/Phone link logic
+        const phoneNumber = '+96181434070';
+        const waUrl = 'https://wa.me/' + phoneNumber.replace(/\D/g, '');
+        
+        function isMobile() {
+            const ua = navigator.userAgent || '';
+            const mobileRegex = /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i;
+            const smallScreen = window.matchMedia('(max-width: 767px)').matches;
+            return mobileRegex.test(ua) || smallScreen;
+        }
+    </script>
+</body>
+</html>
+

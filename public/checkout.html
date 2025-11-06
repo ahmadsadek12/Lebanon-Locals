@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ==================== META TAGS ==================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- SEO Meta Tags -->
+    <title>Checkout - Lebanon Locals</title>
+    <meta name="description" content="Complete your booking with Lebanon Locals">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/svgahmadLL.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/svgahmadLL.svg">
+
+    <!-- ==================== FONTS ==================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+    <!-- ==================== STYLESHEETS ==================== -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/checkout.css">
+</head>
+<body class="checkout-page">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+                
+                // Re-initialize auth button after header loads
+                if (window.Auth && window.Auth.setupAuthButton) {
+                    window.Auth.setupAuthButton();
+                }
+            })
+            .catch(error => console.error('Error loading header:', error));
+    </script>
+
+    <header class="checkout-header" id="checkoutHeader" style="display: none;">
+        <div class="header-container">
+            <a href="index.html" class="logo-link">
+                <img src="images/logos/logo.jpg" alt="Lebanon Locals" class="logo-img">
+            </a>
+            <div class="header-nav">
+                <button class="auth-btn" id="auth-button">
+                    <i class="fa fa-user"></i> Sign In
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading State -->
+    <div id="loading-state" class="checkout-loading">
+        <div class="loading-spinner"></div>
+        <p>Loading checkout...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error-state" class="checkout-error" style="display: none;">
+        <div class="error-container">
+            <i class="fa fa-exclamation-triangle"></i>
+            <h2>Oops! Something went wrong</h2>
+            <p id="error-message">Unable to load checkout. Please try again.</p>
+            <a href="javascript:history.back()" class="btn-primary">Go Back</a>
+        </div>
+    </div>
+
+    <!-- Checkout Content -->
+    <main id="checkout-content" class="checkout-main" style="display: none;">
+        <div class="checkout-container">
+            <div class="checkout-grid">
+                <!-- Left Column: Payment Details -->
+                <div class="checkout-left">
+                    <div class="back-section">
+                        <a href="javascript:history.back()" class="back-btn">
+                            <i class="fa fa-arrow-left"></i> Back to listing
+                        </a>
+                    </div>
+
+                    <h1 class="checkout-title">Complete your booking</h1>
+
+                    <!-- Booking Details -->
+                    <div class="booking-details-card">
+                        <h2>Booking Details</h2>
+                        <div id="booking-details"></div>
+                    </div>
+
+                    <!-- Payment Method Selection -->
+                    <div class="payment-method-card">
+                        <h2>Payment Method</h2>
+                        <div class="payment-methods">
+                            <label class="payment-option">
+                                <input type="radio" name="payment-method" value="card" checked>
+                                <div class="payment-option-content">
+                                    <i class="fa fa-credit-card"></i>
+                                    <span>Credit/Debit Card</span>
+                                </div>
+                            </label>
+
+                            <label class="payment-option">
+                                <input type="radio" name="payment-method" value="whish">
+                                <div class="payment-option-content">
+                                    <img src="https://cdn.prod.website-files.com/6762f4acf0dd8a6b998dfa16/676d32a11708f11b333c681b_Whish%20Logo.svg" alt="Whish" class="whish-logo-img">
+                                    <span>Whish</span>
+                                </div>
+                            </label>
+
+                            <label class="payment-option" id="cash-option" style="display: none;">
+                                <input type="radio" name="payment-method" value="cash">
+                                <div class="payment-option-content">
+                                    <i class="fa fa-money"></i>
+                                    <span>Pay with Cash</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Payment Forms -->
+                    <div id="payment-forms">
+                        <!-- Card Payment Form -->
+                        <div id="card-form" class="payment-form active">
+                            <h3>Card Details</h3>
+                            <div class="form-group">
+                                <label>Cardholder Name</label>
+                                <input type="text" id="card-name" class="form-control" placeholder="John Doe" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Card Number</label>
+                                <div id="card-number-element" style="padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+                                    <!-- Stripe CardNumber Element -->
+                                </div>
+                            </div>
+                            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <div class="form-group">
+                                    <label>Expiry Date</label>
+                                    <div id="card-expiry-element" style="padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+                                        <!-- Stripe CardExpiry Element -->
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>CVC</label>
+                                    <div id="card-cvc-element" style="padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+                                        <!-- Stripe CardCvc Element -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="card-errors" style="color: #dc3545; font-size: 14px; margin-top: 8px;"></div>
+                        </div>
+
+                        <!-- Whish Payment Form -->
+                        <div id="whish-form" class="payment-form">
+                            <h3>Whish Mobile Wallet</h3>
+                            <div class="cash-info">
+                                <i class="fa fa-info-circle"></i>
+                                <p>When you click "Complete Booking", you'll be redirected to Whish's secure payment page to complete your payment using your mobile wallet.</p>
+                                <p style="color: #F39C12; margin-top: 12px; font-size: 14px;"><strong>Note:</strong> Whish sandbox may have limited availability. If you encounter issues, please use Stripe or Cash payment.</p>
+                            </div>
+                        </div>
+
+                        <!-- Cash Payment Info -->
+                        <div id="cash-form" class="payment-form">
+                            <h3>Pay with Cash</h3>
+                            <div class="cash-info">
+                                <i class="fa fa-info-circle"></i>
+                                <p>You'll pay the host directly in cash upon arrival. Make sure to bring the exact amount or confirm payment arrangements with your host.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="contact-info-card">
+                        <h2>Contact Information</h2>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="contact-email" class="form-control" placeholder="your.email@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="contact-phone" class="form-control" placeholder="+961 XX XXX XXX" required>
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="terms-section">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="accept-terms" required>
+                            <span>I agree to the <a href="terms.html" target="_blank">Terms & Conditions</a> and <a href="privacy.html" target="_blank">Privacy Policy</a></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Right Column: Order Summary -->
+                <div class="checkout-right">
+                    <div class="order-summary-card sticky">
+                        <div class="listing-preview" id="listing-preview">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+
+                        <div class="price-breakdown">
+                            <h3>Price Details</h3>
+                            <div class="price-row">
+                                <span id="price-label">Price</span>
+                                <span id="price-value">$0.00</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Service Fee</span>
+                                <span id="service-fee">$0.00</span>
+                            </div>
+                            <div class="price-row" id="cleaning-fee-row" style="display: none;">
+                                <span>Cleaning Fee</span>
+                                <span id="cleaning-fee">$0.00</span>
+                            </div>
+                            <div class="price-row total">
+                                <span>Total</span>
+                                <span id="total-price">$0.00</span>
+                            </div>
+                        </div>
+
+                        <button type="button" id="complete-booking-btn" class="btn-complete-booking">
+                            Complete Booking
+                        </button>
+
+                        <div class="secure-notice">
+                            <i class="fa fa-lock"></i>
+                            <span>Your payment information is secure</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    Copyright © 2025 Lebanon Locals. All rights reserved
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="js/jquery-3.5.0.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script>
+        // Stripe Publishable Key
+        const STRIPE_PUBLISHABLE_KEY = 'pk_test_Ah4G3SPQmw26w8hLzeADVWFN00LBtdU3x7';
+    </script>
+
+    <!-- Auth Modals -->
+    <script>
+        fetch('includes/auth-modals.html')
+            .then(response => response.text())
+            .then(html => {
+                document.body.insertAdjacentHTML('beforeend', html);
+            });
+    </script>
+
+    <!-- Scripts -->
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/checkout.js"></script>
+</body>
+</html>

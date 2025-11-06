@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <title>Booking Confirmation - Lebanon Locals</title>
+    <meta name="description" content="Your booking has been confirmed!">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/svgahmadLL.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/svgahmadLL.svg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        body.booking-confirmation-page {
+            background: #ffffff !important;
+            padding-top: 80px !important;
+        }
+
+        body.booking-confirmation-page::before {
+            display: none !important;
+        }
+
+        /* Hide nav words and search on this page */
+        .booking-confirmation-page .header-nav-words,
+        .booking-confirmation-page .header-search-btn {
+            display: none !important;
+        }
+
+        .confirmation-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 24px;
+        }
+
+        .confirmation-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .confirmation-icon {
+            width: 80px;
+            height: 80px;
+            background: #00D26A;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: scaleIn 0.5s ease;
+        }
+
+        .confirmation-icon i {
+            font-size: 40px;
+            color: white;
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .confirmation-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 12px;
+        }
+
+        .confirmation-subtitle {
+            font-size: 16px;
+            color: #717171;
+            margin-bottom: 32px;
+        }
+
+        .confirmation-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .booking-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .detail-item {
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #717171;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            color: #222;
+            font-weight: 600;
+        }
+
+        .listing-preview {
+            display: flex;
+            gap: 20px;
+            padding: 24px;
+            background: #f7f7f7;
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+
+        .listing-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .listing-info {
+            flex: 1;
+        }
+
+        .listing-type {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .listing-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .listing-location {
+            font-size: 14px;
+            color: #717171;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .price-breakdown {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            font-size: 15px;
+            color: #222;
+        }
+
+        .price-row.total {
+            font-size: 18px;
+            font-weight: 700;
+            padding-top: 16px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #e0305b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #222;
+            border: 2px solid #222;
+        }
+
+        .btn-secondary:hover {
+            background: #f7f7f7;
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: #F0F9FF;
+            border: 1px solid #CCE5FF;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .info-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0066CC;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box p {
+            font-size: 14px;
+            color: #222;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 100px 24px;
+        }
+
+        .loading-state img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .booking-details-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .listing-preview {
+                flex-direction: column;
+            }
+
+            .listing-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .confirmation-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body class="booking-confirmation-page">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+                
+                // Re-initialize auth button after header loads
+                if (window.Auth && window.Auth.setupAuthButton) {
+                    window.Auth.setupAuthButton();
+                }
+            })
+            .catch(error => console.error('Error loading header:', error));
+    </script>
+
+    <!-- Loading State -->
+    <div class="loading-state" id="loadingState">
+        <img src="images/status.gif" alt="Loading...">
+        <p>Loading your booking details...</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="confirmation-container" id="confirmationContent" style="display: none;">
+        <div class="confirmation-header">
+            <div class="confirmation-icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <h1 class="confirmation-title">Booking Confirmed!</h1>
+            <p class="confirmation-subtitle">Your booking has been successfully confirmed. We've sent a confirmation email to <span id="guestEmail"></span></p>
+        </div>
+
+        <div class="confirmation-card">
+            <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 24px;">Booking Details</h2>
+            
+            <div class="booking-details-grid">
+                <div class="detail-item">
+                    <div class="detail-label">Booking ID</div>
+                    <div class="detail-value" id="bookingId">#---</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value" id="bookingStatus">Confirmed</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Check In</div>
+                    <div class="detail-value" id="checkInDate">---</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Check Out</div>
+                    <div class="detail-value" id="checkOutDate">---</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Guests</div>
+                    <div class="detail-value" id="guestCount">---</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Payment Method</div>
+                    <div class="detail-value" id="paymentMethod">---</div>
+                </div>
+            </div>
+
+            <!-- Listing Preview -->
+            <div class="listing-preview" id="listingPreview">
+                <img src="" alt="Listing" class="listing-image" id="listingImage">
+                <div class="listing-info">
+                    <span class="listing-type" id="listingType">Experience</span>
+                    <h3 class="listing-title" id="listingTitle">---</h3>
+                    <p class="listing-location">
+                        <i class="fa fa-map-marker"></i>
+                        <span id="listingLocation">---</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="price-breakdown">
+                <div class="price-row">
+                    <span>Base Price</span>
+                    <span id="basePrice">$0</span>
+                </div>
+                <div class="price-row">
+                    <span>Service Fee (10%)</span>
+                    <span id="serviceFee">$0</span>
+                </div>
+                <div class="price-row total">
+                    <span>Total</span>
+                    <span id="totalPrice">$0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <h3>
+                <i class="fa fa-info-circle"></i>
+                What's Next?
+            </h3>
+            <p>
+                We've sent a confirmation email with all the details to your inbox. 
+                Your host will receive your booking request and confirm it shortly. 
+                You can view and manage your bookings from your profile page.
+            </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="index.html" class="btn btn-secondary">
+                <i class="fa fa-home"></i> Back to Home
+            </a>
+            <a href="user-profile.html" class="btn btn-primary">
+                <i class="fa fa-user"></i> View My Bookings
+            </a>
+        </div>
+    </div>
+
+    <!-- Auth Modals -->
+    <div id="auth-modals-placeholder"></div>
+    <script>
+        fetch('includes/auth-modals.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('auth-modals-placeholder').innerHTML = html;
+            });
+    </script>
+
+    <!-- Scripts -->
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/wishlist.js"></script>
+    
+    <script>
+        // Get booking ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookingId = urlParams.get('booking_id');
+
+        if (!bookingId) {
+            alert('No booking ID provided');
+            window.location.href = 'index.html';
+        }
+
+        // Function to format date
+        function formatDate(dateStr) {
+            if (!dateStr) return '---';
+            const date = new Date(dateStr);
+            const options = { month: 'short', day: 'numeric', year: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        // Function to capitalize
+        function capitalize(str) {
+            if (!str) return '';
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        // Load booking details
+        async function loadBookingDetails() {
+            try {
+                const response = await fetch(`/backend/api/get-booking.php?booking_id=${bookingId}`);
+                const data = await response.json();
+
+                if (!data.success || !data.data) {
+                    throw new Error(data.message || 'Booking not found');
+                }
+
+                const booking = data.data;
+
+                // Hide loading, show content
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('confirmationContent').style.display = 'block';
+
+                // Populate booking details
+                document.getElementById('bookingId').textContent = `#${booking.id}`;
+                // Show payment status in a user-friendly way
+                const statusMap = {
+                    'paid': 'Confirmed',
+                    'pending': 'Pending',
+                    'failed': 'Failed',
+                    'refunded': 'Refunded'
+                };
+                const statusText = statusMap[booking.payment_status] || capitalize(booking.status);
+                document.getElementById('bookingStatus').textContent = statusText;
+                document.getElementById('checkInDate').textContent = formatDate(booking.start_date);
+                document.getElementById('checkOutDate').textContent = formatDate(booking.end_date);
+                document.getElementById('guestCount').textContent = booking.guests || booking.number_of_guests || '---';
+                document.getElementById('paymentMethod').textContent = capitalize(booking.payment_method);
+                document.getElementById('guestEmail').textContent = booking.guest_email;
+
+                // Populate listing details
+                document.getElementById('listingType').textContent = capitalize(booking.listing_type);
+                document.getElementById('listingTitle').textContent = booking.listing_title || 'Listing';
+                document.getElementById('listingLocation').textContent = booking.listing_location || 'Lebanon';
+                
+                // Set listing image
+                const listingImageEl = document.getElementById('listingImage');
+                if (booking.listing_image) {
+                    listingImageEl.src = booking.listing_image;
+                } else {
+                    listingImageEl.src = 'images/svgahmadLL.svg';
+                    listingImageEl.style.objectFit = 'contain';
+                    listingImageEl.style.padding = '20px';
+                    listingImageEl.style.background = '#f7f7f7';
+                }
+
+                // Price breakdown
+                const totalPrice = parseFloat(booking.total_price);
+                const serviceFee = totalPrice * 0.10;
+                const basePrice = totalPrice - serviceFee;
+
+                document.getElementById('basePrice').textContent = `$${basePrice.toFixed(2)}`;
+                document.getElementById('serviceFee').textContent = `$${serviceFee.toFixed(2)}`;
+                document.getElementById('totalPrice').textContent = `$${totalPrice.toFixed(2)}`;
+
+            } catch (error) {
+                console.error('Error loading booking:', error);
+                document.getElementById('loadingState').innerHTML = `
+                    <div style="text-align: center;">
+                        <i class="fa fa-exclamation-circle" style="font-size: 60px; color: #FF385C; margin-bottom: 20px;"></i>
+                        <h2 style="color: #222; margin-bottom: 12px;">Booking Not Found</h2>
+                        <p style="color: #717171; margin-bottom: 24px;">${error.message}</p>
+                        <a href="index.html" class="btn btn-primary" style="display: inline-block;">Return to Home</a>
+                    </div>
+                `;
+            }
+        }
+
+        // Load booking details when page loads
+        window.addEventListener('load', function() {
+            setTimeout(loadBookingDetails, 500);
+        });
+    </script>
+</body>
+</html>
+

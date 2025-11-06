@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Host - Lebanon Locals</title>
+    
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="icon" href="images/logos/favicon.png" type="image/png">
+    
+    <style>
+        body {
+            font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: white;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF4757 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 24px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .content {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            text-align: center;
+            margin: 60px 0;
+        }
+        
+        .stat {
+            padding: 32px;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: #FF5A5F;
+            margin-bottom: 12px;
+        }
+        
+        .stat-label {
+            font-size: 18px;
+            color: #717171;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin: 40px 0;
+        }
+        
+        .benefit-card {
+            padding: 32px;
+            background: #f7f7f7;
+            border-radius: 16px;
+        }
+        
+        .benefit-card i {
+            font-size: 40px;
+            color: #FF5A5F;
+            margin-bottom: 16px;
+        }
+        
+        .benefit-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 12px;
+        }
+        
+        .benefit-card p {
+            font-size: 16px;
+            color: #717171;
+            line-height: 1.6;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #222;
+            margin: 60px 0 24px;
+            text-align: center;
+        }
+        
+        p {
+            font-size: 18px;
+            color: #484848;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body class="hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<div class="hero">
+        <a href="index.html" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to Home
+        </a>
+        <h1>Why Host on Lebanon Locals?</h1>
+        <p>Turn your extra space into extra income while sharing Lebanese culture with the world</p>
+    </div>
+    
+    <div class="content">
+        <div class="stats-grid">
+            <div class="stat">
+                <div class="stat-number">$1,200</div>
+                <div class="stat-label">Average monthly earnings</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">10,000+</div>
+                <div class="stat-label">Active hosts</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Host support</div>
+            </div>
+        </div>
+        
+        <h2>Benefits of Hosting</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <i class="fa fa-money"></i>
+                <h3>Earn Extra Income</h3>
+                <p>Set your own prices and earn money from your unused space or skills. Hosts earn an average of $1,200 per month.</p>
+            </div>
+            
+            <div class="benefit-card">
+                <i class="fa fa-calendar"></i>
+                <h3>Full Control</h3>
+                <p>You decide when to host, who to accept, and how to price your listing. Your space, your rules.</p>
+            </div>
+            
+            <div class="benefit-card">
+                <i class="fa fa-shield"></i>
+                <h3>Host Protection</h3>
+                <p>Every booking includes up to $1M in damage protection and liability coverage at no extra cost.</p>
+            </div>
+            
+            <div class="benefit-card">
+                <i class="fa fa-users"></i>
+                <h3>Meet People</h3>
+                <p>Connect with travelers from around the world and share Lebanese culture and hospitality.</p>
+            </div>
+            
+            <div class="benefit-card">
+                <i class="fa fa-star"></i>
+                <h3>Build Reputation</h3>
+                <p>Earn 5-star reviews and become a Superhost with special benefits and recognition.</p>
+            </div>
+            
+            <div class="benefit-card">
+                <i class="fa fa-lock"></i>
+                <h3>Secure Payments</h3>
+                <p>Get paid securely through our platform. Funds are released 24 hours after guest check-in.</p>
+            </div>
+        </div>
+        
+        <h2>How It Works</h2>
+        <div style="max-width: 800px; margin: 40px auto;">
+            <div style="padding: 32px; background: #f7f7f7; border-radius: 16px; margin-bottom: 24px;">
+                <h3 style="font-size: 24px; color: #222; margin-bottom: 12px;"><span style="color: #FF5A5F; font-weight: 700;">1.</span> Create Your Listing</h3>
+                <p style="margin: 0;">Add photos, description, amenities, and set your pricing. It takes just 15 minutes.</p>
+            </div>
+            
+            <div style="padding: 32px; background: #f7f7f7; border-radius: 16px; margin-bottom: 24px;">
+                <h3 style="font-size: 24px; color: #222; margin-bottom: 12px;"><span style="color: #FF5A5F; font-weight: 700;">2.</span> Set Your Availability</h3>
+                <p style="margin: 0;">Choose when you want to host and manage your calendar easily.</p>
+            </div>
+            
+            <div style="padding: 32px; background: #f7f7f7; border-radius: 16px; margin-bottom: 24px;">
+                <h3 style="font-size: 24px; color: #222; margin-bottom: 12px;"><span style="color: #FF5A5F; font-weight: 700;">3.</span> Welcome Guests</h3>
+                <p style="margin: 0;">Accept bookings, communicate with guests, and provide a great experience.</p>
+            </div>
+            
+            <div style="padding: 32px; background: #f7f7f7; border-radius: 16px;">
+                <h3 style="font-size: 24px; color: #222; margin-bottom: 12px;"><span style="color: #FF5A5F; font-weight: 700;">4.</span> Get Paid</h3>
+                <p style="margin: 0;">Receive payment securely 24 hours after guest check-in.</p>
+            </div>
+        </div>
+        
+        <div style="background: #f7f7f7; padding: 60px 40px; border-radius: 16px; text-align: center; margin-top: 80px;">
+            <h2 style="margin-top: 0;">Ready to Become a Host?</h2>
+            <p>Start earning and sharing Lebanese hospitality today</p>
+            <a href="index.html" style="background: #FF5A5F; color: white; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; margin-top: 20px;">List Your Space</a>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancellation Policies - Lebanon Locals</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/application.css">
+    
+    <link rel="icon" href="images/logos/favicon.png" type="image/png">
+    
+    <style>
+        body {
+            font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+        
+        .policy-container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 20px;
+        }
+        
+        .policy-container h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 16px;
+        }
+        
+        .policy-intro {
+            font-size: 16px;
+            color: #717171;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        .tabs-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid #ebebeb;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: #f7f7f7;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #717171;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab-button.active {
+            background: white;
+            color: #222;
+            border-bottom-color: #ff5a5f;
+        }
+        
+        .tab-button:hover {
+            background: white;
+            color: #222;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 32px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab-content h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 24px;
+        }
+        
+        .tab-content ul {
+            list-style: disc;
+            padding-left: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .tab-content li {
+            margin-bottom: 12px;
+            color: #484848;
+            line-height: 1.6;
+        }
+        
+        .refund-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+        
+        .refund-card {
+            padding: 24px;
+            background: #f7f7f7;
+            border-radius: 8px;
+        }
+        
+        .refund-card p {
+            color: #484848;
+            line-height: 1.6;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #222;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+        
+        .back-link:hover {
+            color: #ff5a5f;
+        }
+    </style>
+</head>
+<body class="hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<div class="policy-container">
+        <a href="javascript:history.back()" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back
+        </a>
+        
+        <h1>Cancellation Policies</h1>
+        <p class="policy-intro">
+            Lebanon Locals understands that plans can change. Review our cancellation policies below to understand what happens when you need to cancel a reservation.
+        </p>
+        
+        <div class="tabs-container">
+            <ul class="tabs-header">
+                <li><button class="tab-button active" onclick="showTab('flexible')">Flexible</button></li>
+                <li><button class="tab-button" onclick="showTab('moderate')">Moderate</button></li>
+                <li><button class="tab-button" onclick="showTab('strict')">Strict</button></li>
+            </ul>
+            
+            <div id="flexible" class="tab-content active">
+                <h3>Flexible: Full refund 1 day prior to arrival</h3>
+                <ul>
+                    <li>Cleaning fees are always refunded if the guest did not check in.</li>
+                    <li>The Lebanon Locals service fee is non-refundable.</li>
+                    <li>If there is a complaint from either party, notice must be given to Lebanon Locals within 24 hours of check-in.</li>
+                    <li>Lebanon Locals will mediate when necessary, and has the final say in all disputes.</li>
+                    <li>A reservation is officially canceled when the guest clicks the cancellation button.</li>
+                    <li>Cancellation policies may be superseded by the Guest Refund Policy, safety cancellations, or extenuating circumstances.</li>
+                    <li>Applicable taxes will be retained and remitted.</li>
+                </ul>
+                
+                <div class="refund-info">
+                    <div class="refund-card">
+                        <p><strong>More than 24 hours before check-in:</strong> Full refund of accommodation fees</p>
+                    </div>
+                    <div class="refund-card">
+                        <p><strong>Less than 24 hours before check-in:</strong> First night is non-refundable, remaining nights are refunded</p>
+                    </div>
+                    <div class="refund-card">
+                        <p><strong>After check-in:</strong> If you leave early, nights not spent are 100% refundable after the first 24 hours</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="moderate" class="tab-content">
+                <h3>Moderate: Full refund 5 days prior to arrival</h3>
+                <ul>
+                    <li>Cleaning fees are always refunded if the guest did not check in.</li>
+                    <li>The Lebanon Locals service fee is non-refundable.</li>
+                    <li>If there is a complaint from either party, notice must be given to Lebanon Locals within 24 hours of check-in.</li>
+                    <li>Lebanon Locals will mediate when necessary, and has the final say in all disputes.</li>
+                    <li>A reservation is officially canceled when the guest clicks the cancellation button.</li>
+                    <li>Cancellation policies may be superseded by the Guest Refund Policy, safety cancellations, or extenuating circumstances.</li>
+                    <li>Applicable taxes will be retained and remitted.</li>
+                </ul>
+                
+                <div class="refund-info">
+                    <div class="refund-card">
+                        <p><strong>More than 5 days before check-in:</strong> Full refund of accommodation fees</p>
+                    </div>
+                    <div class="refund-card">
+                        <p><strong>Less than 5 days before check-in:</strong> First night and 50% of remaining nights are non-refundable</p>
+                    </div>
+                    <div class="refund-card">
+                        <p><strong>After check-in:</strong> If you leave early, 50% of nights not spent are refunded</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="strict" class="tab-content">
+                <h3>Strict: 50% refund up until 7 days prior to arrival</h3>
+                <ul>
+                    <li>Cleaning fees are always refunded if the guest did not check in.</li>
+                    <li>The Lebanon Locals service fee is non-refundable.</li>
+                    <li>If there is a complaint from either party, notice must be given to Lebanon Locals within 24 hours of check-in.</li>
+                    <li>Lebanon Locals will mediate when necessary, and has the final say in all disputes.</li>
+                    <li>A reservation is officially canceled when the guest clicks the cancellation button.</li>
+                    <li>Cancellation policies may be superseded by the Guest Refund Policy, safety cancellations, or extenuating circumstances.</li>
+                    <li>Applicable taxes will be retained and remitted.</li>
+                </ul>
+                
+                <div class="refund-info">
+                    <div class="refund-card">
+                        <p><strong>More than 7 days before check-in:</strong> 50% refund of accommodation fees</p>
+                    </div>
+                    <div class="refund-card">
+                        <p><strong>Less than 7 days before check-in:</strong> No refund</p>
+                    </div>
+                    <div class="refund-card">
+                        <p><strong>After check-in:</strong> If you leave early, nights not spent are not refunded</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background: white; padding: 32px; border-radius: 12px; margin-top: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <h3 style="margin-bottom: 16px;">Need more information?</h3>
+            <p style="color: #717171; margin-bottom: 20px;">Contact our support team if you have questions about our cancellation policies.</p>
+            <a href="contact.html" style="background: #ff5a5f; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">Contact Support</a>
+        </div>
+    </div>
+
+    <script src="js/jquery-3.5.0.js"></script>
+    <script>
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
+

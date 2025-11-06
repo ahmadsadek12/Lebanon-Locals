@@ -1,0 +1,136 @@
+<!-- ==================== AUTH MODALS ==================== -->
+
+<!-- Login Modal -->
+<div id="login-modal" class="modal">
+    <div class="modal-content auth-modal-content">
+        <span class="modal-close">&times;</span>
+        <h2>Welcome Back</h2>
+        <p class="modal-subtitle">Sign in to your Lebanon Locals account</p>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" placeholder="your.email@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn-primary btn-block">Sign In</button>
+        </form>
+
+        <p class="auth-switch">
+            Don't have an account? <a href="#" id="show-signup">Sign Up</a>
+        </p>
+    </div>
+</div>
+
+<!-- Signup Modal -->
+<div id="signup-modal" class="modal">
+    <div class="modal-content auth-modal-content">
+        <span class="modal-close">&times;</span>
+        <h2>Join Lebanon Locals</h2>
+        <p class="modal-subtitle">Create your account to start booking</p>
+
+        <form id="signup-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="signup-first-name">First Name</label>
+                    <input type="text" id="signup-first-name" placeholder="John" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="signup-last-name">Last Name</label>
+                    <input type="text" id="signup-last-name" placeholder="Doe" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email" placeholder="your.email@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="signup-phone">Phone Number</label>
+                <input type="tel" id="signup-phone" placeholder="+961 XX XXX XXX">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="signup-dob">Date of Birth</label>
+                    <input type="date" id="signup-dob" required max="2010-01-01">
+                </div>
+
+                <div class="form-group">
+                    <label for="signup-gender">Gender</label>
+                    <select id="signup-gender" required style="width: 100%; padding: 12px; border: 1px solid #d0d0d0; border-radius: 8px; font-size: 16px;">
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                        <option value="prefer_not_to_say">Prefer not to say</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" placeholder="Minimum 8 characters" required minlength="8">
+            </div>
+
+            <div class="form-group">
+                <label for="signup-confirm-password">Confirm Password</label>
+                <input type="password" id="signup-confirm-password" placeholder="Re-enter password" required>
+            </div>
+
+            <button type="submit" class="btn-primary btn-block">Create Account</button>
+        </form>
+
+        <p class="auth-switch">
+            Already have an account? <a href="#" id="show-login">Sign In</a>
+        </p>
+    </div>
+</div>
+
+<!-- User Menu Modal -->
+<div id="user-menu-modal" class="modal">
+    <div class="modal-content user-menu-content">
+        <span class="modal-close">&times;</span>
+
+        <!-- User Menu Tabs -->
+        <div class="user-menu-tabs">
+            <button class="tab-btn active" data-tab="upcoming">
+                Upcoming Bookings <span id="upcoming-count" class="tab-count">0</span>
+            </button>
+            <button class="tab-btn" data-tab="previous">
+                Previous Bookings <span id="previous-count" class="tab-count">0</span>
+            </button>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="tab-content active" id="tab-upcoming">
+            <div id="upcoming-bookings-list" class="bookings-list">
+                <!-- Bookings will be loaded here -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="tab-previous">
+            <div id="previous-bookings-list" class="bookings-list">
+                <!-- Previous bookings will be loaded here -->
+            </div>
+        </div>
+
+        <!-- User Profile Footer -->
+        <div class="user-menu-footer">
+            <div class="user-profile-info" id="user-profile-link" style="cursor: pointer;" title="View my profile">
+                <div class="user-avatar" id="user-menu-avatar"></div>
+                <span id="user-menu-name">User Name</span>
+            </div>
+            <button id="logout-btn" class="btn-logout">
+                <i class="fa fa-sign-out"></i> Logout
+            </button>
+        </div>
+    </div>
+</div>

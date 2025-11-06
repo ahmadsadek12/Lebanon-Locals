@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ==================== META TAGS ==================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- SEO Meta Tags -->
+    <title>My Wishlist - Lebanon Locals</title>
+    <meta name="description" content="View your saved experiences, events, and stays in Lebanon">
+    <meta name="robots" content="index, follow">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.lebanonlocals.com/wishlist.html">
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/svgahmadLL.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/svgahmadLL.svg">
+
+    <!-- ==================== FONTS ==================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+    <!-- ==================== STYLESHEETS ==================== -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/wishlist.css">
+    
+    <!-- Wishlist Page Specific Styles -->
+    <style>
+        /* Show header on wishlist page */
+        .main-header {
+            display: block !important;
+        }
+        
+        /* Ensure wishlist page has proper spacing */
+        .wishlist-main {
+            padding-top: 20px;
+        }
+        
+        /* OVERRIDE wishlist card image styles to show images properly */
+        .wishlist-card-image {
+            position: relative !important;
+            width: 100% !important;
+            height: 280px !important;
+            padding-top: 0 !important; /* Override the padding-top from wishlist.css */
+            overflow: hidden !important;
+            border-radius: 12px !important;
+            background: #f7f7f7 !important;
+        }
+        
+        .wishlist-card-image img {
+            position: relative !important; /* Override absolute positioning */
+            top: auto !important;
+            left: auto !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            display: block !important;
+            transition: transform 0.3s ease !important;
+        }
+        
+        .wishlist-card:hover .wishlist-card-image img {
+            transform: scale(1.05) !important;
+        }
+        
+        .wishlist-card-type {
+            position: absolute !important;
+            bottom: 12px !important;
+            left: 12px !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            padding: 6px 12px !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            text-transform: capitalize !important;
+            color: #222 !important;
+            z-index: 2 !important;
+        }
+        
+        /* Wishlist card heart button */
+        .wishlist-card-heart {
+            position: absolute !important;
+            top: 12px !important;
+            right: 12px !important;
+            z-index: 3 !important;
+        }
+        
+        /* Make sure wishlist cards display properly */
+        .wishlist-card {
+            position: relative !important;
+        }
+        
+        /* Debug: highlight image container */
+        .wishlist-card-image {
+            border: 2px solid #ddd;
+        }
+    </style>
+</head>
+<body class="wishlist-page">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+                // Re-initialize auth button after header loads
+                if (window.Auth && window.Auth.setupAuthButton) {
+                    window.Auth.setupAuthButton();
+                }
+            });
+    </script>
+
+    <!-- Main Content -->
+    <main class="wishlist-main">
+        <div class="wishlist-container">
+            <!-- Page Header -->
+            <div class="wishlist-header">
+                <h1>Wishlist</h1>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="wishlist-filters">
+                <button class="filter-tab active" data-filter="all">
+                    All (<span id="count-all">0</span>)
+                </button>
+                <button class="filter-tab" data-filter="experience">
+                    Experiences (<span id="count-experience">0</span>)
+                </button>
+                <button class="filter-tab" data-filter="event">
+                    Events (<span id="count-event">0</span>)
+                </button>
+                <button class="filter-tab" data-filter="stay">
+                    Stays (<span id="count-stay">0</span>)
+                </button>
+            </div>
+
+            <!-- Empty State -->
+            <div id="wishlist-empty" class="wishlist-empty" style="display: none;">
+                <i class="fa fa-heart-o"></i>
+                <h2>Your wishlist is empty</h2>
+                <p>Start adding your favorite experiences, events, and stays to your wishlist</p>
+                <a href="index.html" class="btn-primary">Explore Lebanon</a>
+            </div>
+
+            <!-- Loading State -->
+            <div id="wishlist-loading" class="wishlist-loading">
+                <div class="loading-spinner"></div>
+                <p>Loading your wishlist...</p>
+            </div>
+
+            <!-- Wishlist Grid -->
+            <div id="wishlist-grid" class="wishlist-grid" style="display: none;">
+                <!-- Items will be populated here -->
+            </div>
+
+            <!-- Load More Button -->
+            <div style="text-align: center; margin: 40px 0;">
+                <button id="wishlist-load-more" class="btn-load-more" style="display: none;">
+                    Load More
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div>
+                    <img src="images/logos/logo.jpg" alt="Lebanon Locals" class="footer-logo">
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="terms.html">Terms & Conditions</a></li>
+                            <li><a href="privacy.html">Your Privacy</a></li>
+                            <li><a href="about.html">Our Story</a></li>
+                            <li><a href="cookies.html">Cookies & Tracking</a></li>
+                            <li><a href="contact.html">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Discover</h4>
+                        <ul>
+                            <li><a href="travel-credit.html">Travel Credit</a></li>
+                            <li><a href="guest-protection.html">Guest Protection</a></li>
+                            <li><a href="guest-safety.html">Guest Safety</a></li>
+                            <li><a href="standards.html">Our Standards</a></li>
+                            <li><a href="cancellation_policies.html">Cancellations & Refunds</a></li>
+                            <li><a href="help.html">FAQS</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Hosting</h4>
+                        <ul>
+                            <li><a href="host-protection.html">Host Protection</a></li>
+                            <li><a href="why-host.html">Why Host</a></li>
+                            <li><a href="help.html">Hosting Support</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="footer-apps">
+                    <a href="https://play.google.com/store/apps" target="_blank" class="app-btn">
+                        <i class="fa fa-play"></i>
+                        <div>
+                            <div class="app-text-small">Download on</div>
+                            <div class="app-text-large">Google Play</div>
+                        </div>
+                    </a>
+                    <a href="https://apps.apple.com/" target="_blank" class="app-btn">
+                        <i class="fa fa-apple"></i>
+                        <div>
+                            <div class="app-text-small">Download on</div>
+                            <div class="app-text-large">App Store</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    Copyright © 2025 Lebanon Locals. All rights reserved
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/lebanonlocals" target="_blank" class="social-icon instagram" title="Instagram">
+                        <i class="fa fa-instagram"></i>
+                    </a>
+                    <a href="https://tiktok.com/@lebanonlocals" target="_blank" class="social-icon tiktok" title="TikTok">
+                        <svg viewBox="0 0 448 512" style="width: 16px; height: 16px; fill: currentColor;">
+                            <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Fixed Chatbot -->
+    <button class="chatbot-fixed" onclick="alert('Live chat coming soon! For now, call us at 961 81 434 070 or visit our help page.')" title="Chat with us">
+        <i class="fa fa-comments"></i>
+        <span class="chatbot-online"></span>
+    </button>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script src="js/jquery-3.5.0.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script src="assets/js/config.js"></script>
+    
+    <!-- Auth Modals -->
+    <script>
+        fetch('includes/auth-modals.html')
+            .then(response => response.text())
+            .then(html => {
+                document.body.insertAdjacentHTML('beforeend', html);
+            });
+    </script>
+
+    <!-- Load auth BEFORE wishlist so auth is ready -->
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/wishlist.js"></script>
+</body>
+</html>

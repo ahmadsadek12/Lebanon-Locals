@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - Lebanon Locals</title>
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-primary, 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+            background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: var(--spacing-md, 16px);
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: var(--spacing-xxl, 80px) var(--spacing-xl, 32px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-xl, 32px);
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .success-icon::before {
+            content: '✓';
+            font-size: 48px;
+            color: white;
+            font-weight: bold;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            font-size: var(--font-size-xxl, 32px);
+            color: var(--color-text-primary, #222);
+            margin-bottom: var(--spacing-md, 16px);
+        }
+
+        p {
+            font-size: var(--font-size-md, 16px);
+            color: var(--color-text-secondary, #717171);
+            margin-bottom: var(--spacing-lg, 24px);
+            line-height: 1.6;
+        }
+
+        .booking-id {
+            background: #f5f7fa;
+            padding: var(--spacing-sm, 12px) var(--spacing-md, 16px);
+            border-radius: 8px;
+            margin-bottom: var(--spacing-xl, 32px);
+            font-family: monospace;
+            font-size: var(--font-size-lg, 18px);
+            color: var(--color-text-primary, #222);
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, var(--color-primary, #FF385C) 0%, #E8344E 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: var(--font-weight-semibold, 600);
+            font-size: var(--font-size-md, 16px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 56, 92, 0.4);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--color-primary, #FF385C);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: var(--spacing-xl, 32px) auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<div class="container">
+        <div id="loading-state">
+            <div class="loading"></div>
+            <p>Confirming your payment...</p>
+        </div>
+
+        <div id="success-state" style="display: none;">
+            <div class="success-icon"></div>
+            <h1>Payment Successful!</h1>
+            <p>Your Whish payment has been processed successfully. Your booking has been confirmed.</p>
+            <div class="booking-id">
+                Booking ID: <strong id="booking-id"></strong>
+            </div>
+            <a href="booking-confirmation.html" id="view-booking-link" class="btn-primary">View Booking Details</a>
+        </div>
+    </div>
+
+    <script>
+        // Get booking ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookingId = urlParams.get('booking_id');
+
+        if (!bookingId) {
+            alert('Invalid payment callback - missing booking ID');
+            window.location.href = '/';
+        }
+
+        let checkAttempts = 0;
+        const MAX_ATTEMPTS = 30; // 30 seconds maximum
+        const CHECK_INTERVAL = 1000; // Check every 1 second
+
+        // Check payment status from Whish
+        async function checkPaymentStatus() {
+            checkAttempts++;
+
+            try {
+                // Call Whish check status API
+                const response = await fetch('/backend/api/whish-check-status.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        external_id: bookingId
+                    })
+                });
+
+                const data = await response.json();
+
+                console.log(`Attempt ${checkAttempts}: Payment status -`, data);
+
+                if (data.success && data.status === 'success') {
+                    // Payment confirmed by Whish!
+                    // Webhook should have already updated database, but let's verify
+                    const bookingResponse = await fetch(`/backend/api/get-booking.php?booking_id=${bookingId}`);
+                    const bookingData = await bookingResponse.json();
+
+                    if (bookingData.success && bookingData.data.payment_status === 'paid') {
+                        // All confirmed, redirect to booking confirmation page
+                        window.location.href = `booking-confirmation.html?booking_id=${bookingId}`;
+                    } else if (checkAttempts < MAX_ATTEMPTS) {
+                        // Webhook might not have processed yet, keep checking
+                        setTimeout(checkPaymentStatus, CHECK_INTERVAL);
+                    } else {
+                        // Timeout - payment is successful but booking not updated yet
+                        // Redirect anyway, the webhook will eventually update it
+                        window.location.href = `booking-confirmation.html?booking_id=${bookingId}`;
+                    }
+
+                } else if (data.status === 'pending') {
+                    // Payment still processing
+                    if (checkAttempts < MAX_ATTEMPTS) {
+                        setTimeout(checkPaymentStatus, CHECK_INTERVAL);
+                    } else {
+                        throw new Error('Payment verification timeout. Please check your bookings page.');
+                    }
+
+                } else if (data.status === 'failed') {
+                    // Payment failed
+                    throw new Error('Payment was not successful. Please try again.');
+
+                } else {
+                    // Unknown status, keep checking
+                    if (checkAttempts < MAX_ATTEMPTS) {
+                        setTimeout(checkPaymentStatus, CHECK_INTERVAL);
+                    } else {
+                        throw new Error('Unable to verify payment status. Please contact support.');
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error checking payment:', error);
+                
+                // Show error and redirect to cancel page after 3 seconds
+                document.getElementById('loading-state').innerHTML = `
+                    <div style="color: #DC2626; margin-bottom: 16px;">
+                        <i class="fa fa-exclamation-circle" style="font-size: 48px;"></i>
+                    </div>
+                    <h2 style="color: #222; margin-bottom: 12px;">Payment Verification Failed</h2>
+                    <p style="color: #717171;">${error.message}</p>
+                    <p style="font-size: 14px; margin-top: 16px;">Redirecting...</p>
+                `;
+                
+                setTimeout(() => {
+                    window.location.href = 'whish-payment-cancel.html?booking_id=' + bookingId;
+                }, 3000);
+            }
+        }
+
+        // Start checking payment status
+        setTimeout(checkPaymentStatus, 500);
+    </script>
+</body>
+</html>

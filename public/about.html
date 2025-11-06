@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Story - Lebanon Locals</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/application.css">
+    <link rel="stylesheet" href="css/about.css">
+    
+    <link rel="icon" href="images/logos/favicon.png" type="image/png">
+    
+    <style>
+        body {
+            font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: white;
+        }
+        
+        .about-hero {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF4757 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+        
+        .about-hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .about-hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.95;
+        }
+        
+        .about-content {
+            max-width: 900px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+        
+        .about-section {
+            margin-bottom: 60px;
+        }
+        
+        .about-section h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 20px;
+        }
+        
+        .about-section p {
+            font-size: 18px;
+            color: #484848;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin-top: 40px;
+        }
+        
+        .value-card {
+            text-align: center;
+            padding: 32px;
+            background: #f7f7f7;
+            border-radius: 12px;
+        }
+        
+        .value-card i {
+            font-size: 48px;
+            color: #ff5a5f;
+            margin-bottom: 16px;
+        }
+        
+        .value-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 12px;
+        }
+        
+        .value-card p {
+            font-size: 16px;
+            color: #717171;
+            line-height: 1.6;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body class="hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<div class="about-hero">
+        <a href="index.html" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to Home
+        </a>
+        <h1>Our Story</h1>
+        <p>Connecting people with authentic Lebanese experiences since 2020</p>
+    </div>
+    
+    <div class="about-content">
+        <div class="about-section">
+            <h2>Who We Are</h2>
+            <p>
+                Lebanon Locals was founded with a simple mission: to help travelers experience the real Lebanon through the eyes of locals. We believe that the best way to discover a country is by connecting with its people, its culture, and its traditions.
+            </p>
+            <p>
+                What started as a small community of passionate locals sharing their homes and experiences has grown into Lebanon's premier platform for authentic travel experiences. We're proud to have facilitated thousands of meaningful connections between travelers and local hosts.
+            </p>
+        </div>
+        
+        <div class="about-section">
+            <h2>Our Mission</h2>
+            <p>
+                We're on a mission to showcase the beauty, diversity, and warmth of Lebanon. Through our platform, we empower local hosts to share their unique spaces, skills, and stories while providing travelers with unforgettable, authentic experiences they can't find anywhere else.
+            </p>
+        </div>
+        
+        <div class="about-section">
+            <h2>Our Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <i class="fa fa-heart"></i>
+                    <h3>Authenticity</h3>
+                    <p>We celebrate genuine connections and real experiences that showcase the true spirit of Lebanon.</p>
+                </div>
+                
+                <div class="value-card">
+                    <i class="fa fa-users"></i>
+                    <h3>Community</h3>
+                    <p>We build trust and foster meaningful relationships between hosts and guests.</p>
+                </div>
+                
+                <div class="value-card">
+                    <i class="fa fa-shield"></i>
+                    <h3>Safety</h3>
+                    <p>We prioritize the safety and security of our entire community at every step.</p>
+                </div>
+                
+                <div class="value-card">
+                    <i class="fa fa-star"></i>
+                    <h3>Excellence</h3>
+                    <p>We maintain high standards and continuously improve our platform and services.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="about-section">
+            <h2>Why Choose Lebanon Locals?</h2>
+            <p>
+                Unlike traditional booking platforms, we focus exclusively on Lebanon, giving us deep local knowledge and strong community connections. Our hosts are carefully vetted, our experiences are curated for authenticity, and our support team truly understands the local context.
+            </p>
+            <p>
+                Whether you're looking for a cozy apartment in Beirut, a traditional house in Byblos, or unique workshops like sushi-making, wine tasting, or olive picking - we connect you with the best Lebanon has to offer.
+            </p>
+        </div>
+        
+        <div class="about-section" style="text-align: center; background: #f7f7f7; padding: 40px; border-radius: 12px;">
+            <h2>Join Our Community</h2>
+            <p>Ready to experience Lebanon like never before?</p>
+            <a href="index.html" style="background: #ff5a5f; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; margin-top: 16px;">Explore Experiences</a>
+        </div>
+    </div>
+
+    <script src="js/jquery-3.5.0.js"></script>
+</body>
+</html>
+

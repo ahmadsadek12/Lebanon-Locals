@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ==================== META TAGS ==================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- SEO Meta Tags -->
+    <title>Details - Lebanon Locals</title>
+    <meta name="description" content="View details for experiences, events, and stays in Lebanon">
+    <meta name="robots" content="index, follow">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.lebanonlocals.com/details.html">
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/svgahmadLL.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/svgahmadLL.svg">
+
+    <!-- ==================== FONTS ==================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+    <!-- ==================== STYLESHEETS ==================== -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/wishlist.css">
+    <link rel="stylesheet" href="assets/css/details.css">
+
+    <!-- Google Maps (will be loaded via JavaScript) -->
+</head>
+<body class="details-page">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+                // Re-initialize auth button after header loads
+                if (window.Auth && window.Auth.setupAuthButton) {
+                    window.Auth.setupAuthButton();
+                }
+            });
+    </script>
+
+    <header class="details-header" id="detailsHeader" style="display: none;">
+        <div class="header-container">
+            <a href="index.html" class="logo-link">
+                <img src="images/logos/logo.jpg" alt="Lebanon Locals" class="logo-img">
+            </a>
+
+            <button class="header-search-btn" id="headerSearchBtn" style="opacity: 0; pointer-events: none;">
+                <i class="fa fa-search"></i>
+                <span>Search</span>
+            </button>
+
+            <div class="header-nav">
+                <button class="host-btn" onclick="alert('Become a host feature coming soon!')">Become a Host</button>
+                <a href="wishlist.html" class="wishlist-btn" title="Wishlist">
+                    <i class="fa fa-heart"></i>
+                    <span class="wishlist-count" id="wishlist-count">0</span>
+                </a>
+                <button class="auth-btn" id="auth-button">
+                    <i class="fa fa-user"></i> Sign In
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="details-search-section" id="detailsSearchSection">
+        <div class="search-bar-container">
+            <div class="search-field-group">
+                <label>Location</label>
+                <input id="detail-search-location" type="text" placeholder="Where are you going?" />
+            </div>
+            <div class="search-divider"></div>
+            <div class="search-field-group date-field-wrapper">
+                <label id="detail-label-date-start">Date from</label>
+                <input id="detail-input-date-start" type="date" class="date-input" />
+                <span class="date-placeholder">Add date</span>
+            </div>
+            <div class="search-divider"></div>
+            <div class="search-field-group date-field-wrapper">
+                <label id="detail-label-date-end">Date to</label>
+                <input id="detail-input-date-end" type="date" class="date-input" />
+                <span class="date-placeholder">Add date</span>
+            </div>
+            <div class="search-divider"></div>
+            <div class="search-field-group">
+                <label>Guests</label>
+                <input id="detail-search-guests" type="number" placeholder="Add guests" min="1" />
+            </div>
+            <button class="search-action-btn" id="detailSearchBtn">
+                <i class="fa fa-search"></i>
+                <span>Search</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Loading State -->
+    <div id="loading-state" class="details-loading">
+        <div class="loading-spinner"></div>
+        <p>Loading details...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error-state" class="details-error" style="display: none;">
+        <div class="error-container">
+            <i class="fa fa-exclamation-triangle"></i>
+            <h2>Oops! Something went wrong</h2>
+            <p id="error-message">Unable to load details. Please try again.</p>
+            <a href="index.html" class="btn-primary">Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Details Content -->
+    <main id="details-content" class="details-main" style="display: none;">
+        <!-- Main Content -->
+        <div class="details-container">
+            <div class="details-content-wrapper">
+                <!-- Left Column - Main Info -->
+                <div class="details-left">
+                    <!-- Title and Rating -->
+                    <div class="detail-title-section">
+                        <div class="detail-title-row">
+                            <h1 id="detail-title" class="detail-title"></h1>
+                            <button class="heart-btn-large" id="detail-heart-btn" aria-label="Add to wishlist">
+                                <i class="fa fa-heart-o"></i>
+                            </button>
+                        </div>
+                        <div class="detail-meta">
+                            <div id="detail-rating" class="detail-rating"></div>
+                            <span class="detail-location" id="detail-location"></span>
+                        </div>
+                    </div>
+
+                    <!-- Image Gallery with Slider -->
+                    <div class="details-gallery-slider">
+                        <div class="gallery-main-image">
+                            <button class="gallery-nav-btn prev" id="galleryPrevBtn" aria-label="Previous image">
+                                <i class="fa fa-chevron-left"></i>
+                            </button>
+                            <img id="galleryMainImage" src="" alt="Main image" />
+                            <button class="gallery-nav-btn next" id="galleryNextBtn" aria-label="Next image">
+                                <i class="fa fa-chevron-right"></i>
+                            </button>
+                            <button class="gallery-fullscreen-btn" id="galleryFullscreenBtn" aria-label="View all photos">
+                                <i class="fa fa-expand"></i>
+                                <span>Show all photos</span>
+                            </button>
+                        </div>
+                        <div class="gallery-thumbnails" id="galleryThumbnails">
+                            <!-- Thumbnails will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Host Info -->
+                    <div class="detail-host" id="detail-host">
+                        <!-- Host info will be populated here -->
+                    </div>
+
+                    <!-- Key Details -->
+                    <div class="detail-highlights" id="detail-highlights">
+                        <!-- Highlights will be populated here -->
+                    </div>
+
+                    <!-- Description -->
+                    <div class="detail-section">
+                        <h2>About this listing</h2>
+                        <p id="detail-description" class="detail-description"></p>
+                    </div>
+
+                    <!-- What's Included (for experiences/events) -->
+                    <div id="whats-included-section" class="detail-section" style="display: none;">
+                        <h2>What's included</h2>
+                        <ul id="whats-included-list" class="detail-list"></ul>
+                    </div>
+
+                    <!-- What's NOT Included -->
+                    <div id="whats-not-included-section" class="detail-section" style="display: none;">
+                        <h2>What's not included</h2>
+                        <ul id="whats-not-included-list" class="detail-list"></ul>
+                    </div>
+
+                    <!-- What to Bring -->
+                    <div id="what-to-bring-section" class="detail-section" style="display: none;">
+                        <h2>What to bring</h2>
+                        <ul id="what-to-bring-list" class="detail-list"></ul>
+                    </div>
+
+                    <!-- Amenities (for stays) -->
+                    <div id="amenities-section" class="detail-section" style="display: none;">
+                        <h2>Amenities</h2>
+                        <div id="amenities-grid" class="amenities-grid"></div>
+                    </div>
+
+                    <!-- House Rules (for stays) -->
+                    <div id="house-rules-section" class="detail-section" style="display: none;">
+                        <h2>House Rules</h2>
+                        <div id="house-rules-content"></div>
+                    </div>
+
+                    <!-- Accessibility -->
+                    <div id="accessibility-section" class="detail-section" style="display: none;">
+                        <h2>Accessibility</h2>
+                        <p id="accessibility-info"></p>
+                    </div>
+
+                    <!-- Timing (for experiences/events) -->
+                    <div id="timing-section" class="detail-section" style="display: none;">
+                        <h2>Schedule</h2>
+                        <div class="timing-details">
+                            <div id="timing-dates" class="timing-item"></div>
+                            <div id="timing-hours" class="timing-item"></div>
+                            <div id="timing-duration" class="timing-item"></div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews -->
+                    <div id="reviews-section" class="detail-section">
+                        <h2>Reviews</h2>
+                        <div id="reviews-summary" class="reviews-summary"></div>
+                        <div id="reviews-list" class="reviews-list"></div>
+                    </div>
+
+                    <!-- Location Map -->
+                    <div id="location-section" class="detail-section">
+                        <h2>Where you'll be</h2>
+                        <div id="location-map" class="location-map"></div>
+                        <p id="location-description" class="location-description"></p>
+                    </div>
+
+                    <!-- Cancellation Policy -->
+                    <div class="detail-section">
+                        <h2>Cancellation Policy</h2>
+                        <p id="cancellation-policy" class="cancellation-policy"></p>
+                        <a href="cancellation_policies.html" class="policy-link">Learn more about cancellation policies</a>
+                    </div>
+
+                </div>
+
+                <!-- Right Column - Booking Card -->
+                <div class="details-right">
+                    <div class="booking-card-wrapper">
+                        <div class="booking-card" id="booking-card">
+                            <!-- Booking card will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Fullscreen Gallery Modal -->
+    <div id="galleryModal" class="gallery-modal" style="display: none;">
+        <div class="gallery-modal-header">
+            <button class="gallery-modal-close" id="galleryModalClose" aria-label="Close gallery">
+                <i class="fa fa-times"></i>
+            </button>
+            <span class="gallery-modal-counter" id="galleryModalCounter">1 / 10</span>
+        </div>
+        <div class="gallery-modal-content">
+            <button class="gallery-modal-nav prev" id="galleryModalPrev" aria-label="Previous image">
+                <i class="fa fa-chevron-left"></i>
+            </button>
+            <img id="galleryModalImage" src="" alt="Gallery image" />
+            <button class="gallery-modal-nav next" id="galleryModalNext" aria-label="Next image">
+                <i class="fa fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="gallery-modal-thumbnails" id="galleryModalThumbnails">
+            <!-- Modal thumbnails will be populated here -->
+        </div>
+    </div>
+
+    <!-- Categorized Gallery Modal -->
+    <div id="categorizedGalleryModal" class="categorized-gallery-modal" style="display: none;">
+        <div class="categorized-modal-header">
+            <button class="categorized-modal-close" id="categorizedModalClose" aria-label="Close gallery">
+                <i class="fa fa-times"></i>
+            </button>
+            <h2 id="categorizedModalTitle">All Photos</h2>
+        </div>
+        <div class="categorized-modal-content" id="categorizedModalContent">
+            <!-- Categorized images will be populated here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div>
+                    <img src="images/logos/logo.jpg" alt="Lebanon Locals" class="footer-logo">
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="terms.html">Terms & Conditions</a></li>
+                            <li><a href="privacy.html">Your Privacy</a></li>
+                            <li><a href="about.html">Our Story</a></li>
+                            <li><a href="cookies.html">Cookies & Tracking</a></li>
+                            <li><a href="contact.html">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Discover</h4>
+                        <ul>
+                            <li><a href="travel-credit.html">Travel Credit</a></li>
+                            <li><a href="guest-protection.html">Guest Protection</a></li>
+                            <li><a href="guest-safety.html">Guest Safety</a></li>
+                            <li><a href="standards.html">Our Standards</a></li>
+                            <li><a href="cancellation_policies.html">Cancellations & Refunds</a></li>
+                            <li><a href="help.html">FAQS</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Hosting</h4>
+                        <ul>
+                            <li><a href="host-protection.html">Host Protection</a></li>
+                            <li><a href="why-host.html">Why Host</a></li>
+                            <li><a href="help.html">Hosting Support</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="footer-apps">
+                    <a href="https://play.google.com/store/apps" target="_blank" class="app-btn">
+                        <i class="fa fa-play"></i>
+                        <div>
+                            <div class="app-text-small">Download on</div>
+                            <div class="app-text-large">Google Play</div>
+                        </div>
+                    </a>
+                    <a href="https://apps.apple.com/" target="_blank" class="app-btn">
+                        <i class="fa fa-apple"></i>
+                        <div>
+                            <div class="app-text-small">Download on</div>
+                            <div class="app-text-large">App Store</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    Copyright © 2025 Lebanon Locals. All rights reserved
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/lebanonlocals" target="_blank" class="social-icon instagram" title="Instagram">
+                        <i class="fa fa-instagram"></i>
+                    </a>
+                    <a href="https://tiktok.com/@lebanonlocals" target="_blank" class="social-icon tiktok" title="TikTok">
+                        <svg viewBox="0 0 448 512" style="width: 16px; height: 16px; fill: currentColor;">
+                            <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Fixed Chatbot -->
+    <button class="chatbot-fixed" onclick="alert('Live chat coming soon! For now, call us at 961 81 434 070 or visit our help page.')" title="Chat with us">
+        <i class="fa fa-comments"></i>
+        <span class="chatbot-online"></span>
+    </button>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script src="js/jquery-3.5.0.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/wishlist.js"></script>
+    <script src="assets/js/details.js"></script>
+
+    <!-- Google Maps will be loaded dynamically by details.js -->
+
+    <!-- Auth Modals -->
+    <script>
+        fetch('includes/auth-modals.html')
+            .then(response => response.text())
+            .then(html => {
+                document.body.insertAdjacentHTML('beforeend', html);
+            });
+    </script>
+
+    <!-- Scripts -->
+    <script src="assets/js/auth.js"></script>
+</body>
+</html>

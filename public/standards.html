@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Standards - Lebanon Locals</title>
+    
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="icon" href="images/logos/favicon.png" type="image/png">
+    
+    <style>
+        body {
+            font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 40px;
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .card-header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .card-body {
+            padding: 40px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #222;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #222;
+            margin: 40px 0 20px;
+        }
+        
+        h2:first-child {
+            margin-top: 0;
+        }
+        
+        p, li {
+            font-size: 16px;
+            color: #484848;
+            line-height: 1.8;
+        }
+        
+        ul {
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+        
+        li {
+            margin-bottom: 12px;
+        }
+        
+        .standard-section {
+            background: #f7f7f7;
+            padding: 32px;
+            border-radius: 12px;
+            margin: 32px 0;
+        }
+    </style>
+</head>
+<body class="hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<div class="container">
+        <a href="index.html" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to Home
+        </a>
+        
+        <div class="card">
+            <div class="card-header">
+                <h1><i class="fa fa-star"></i> Our Standards</h1>
+            </div>
+            
+            <div class="card-body">
+                <p>
+                    At Lebanon Locals, we maintain high standards to ensure quality experiences for both hosts and guests. These standards guide everything we do.
+                </p>
+                
+                <h2>Quality Standards for Hosts</h2>
+                <div class="standard-section">
+                    <h3 style="font-size: 20px; color: #222; margin-bottom: 16px;">Listing Requirements</h3>
+                    <ul>
+                        <li>Accurate descriptions and up-to-date photos</li>
+                        <li>Clear house rules and policies</li>
+                        <li>Honest representation of amenities</li>
+                        <li>Proper disclosure of any limitations or issues</li>
+                    </ul>
+                </div>
+                
+                <div class="standard-section">
+                    <h3 style="font-size: 20px; color: #222; margin-bottom: 16px;">Safety Requirements</h3>
+                    <ul>
+                        <li>Working smoke and carbon monoxide detectors</li>
+                        <li>Clear emergency exit routes</li>
+                        <li>Fire extinguisher on premises</li>
+                        <li>Safe electrical and plumbing systems</li>
+                        <li>Secure locks on all doors and windows</li>
+                    </ul>
+                </div>
+                
+                <div class="standard-section">
+                    <h3 style="font-size: 20px; color: #222; margin-bottom: 16px;">Cleanliness Standards</h3>
+                    <ul>
+                        <li>5-step enhanced cleaning process between guests</li>
+                        <li>Fresh linens and towels for each guest</li>
+                        <li>Sanitized surfaces and high-touch areas</li>
+                        <li>Clean bathrooms and kitchens</li>
+                        <li>Proper waste disposal</li>
+                    </ul>
+                </div>
+                
+                <h2>Guest Expectations</h2>
+                <ul>
+                    <li>Treat hosts' properties with respect</li>
+                    <li>Follow house rules and community guidelines</li>
+                    <li>Communicate clearly and promptly</li>
+                    <li>Leave honest, constructive reviews</li>
+                    <li>Report issues or concerns immediately</li>
+                </ul>
+                
+                <h2>Community Standards</h2>
+                <p>We expect all users to:</p>
+                <ul>
+                    <li>Be respectful and inclusive</li>
+                    <li>Communicate honestly and transparently</li>
+                    <li>Honor commitments and agreements</li>
+                    <li>Resolve conflicts constructively</li>
+                    <li>Follow all local laws and regulations</li>
+                </ul>
+                
+                <h2>Review Standards</h2>
+                <p>Our review system is built on trust and authenticity:</p>
+                <ul>
+                    <li>Only guests who complete a stay can leave reviews</li>
+                    <li>Reviews must be honest and based on actual experiences</li>
+                    <li>Both hosts and guests can leave reviews</li>
+                    <li>Reviews are public and cannot be deleted (only hidden for policy violations)</li>
+                    <li>Fake or manipulated reviews are strictly prohibited</li>
+                </ul>
+                
+                <h2>Superhost Standards</h2>
+                <p>Exceptional hosts can earn Superhost status by maintaining:</p>
+                <ul>
+                    <li>4.8+ average rating</li>
+                    <li>90%+ response rate within 24 hours</li>
+                    <li>Less than 1% cancellation rate</li>
+                    <li>At least 10 completed stays per year</li>
+                </ul>
+                
+                <div style="background: #FFF3E0; border-left: 4px solid #FF9800; padding: 32px; border-radius: 8px; margin: 40px 0;">
+                    <h3 style="font-size: 24px; color: #FF9800; margin: 0 0 16px 0;"><i class="fa fa-exclamation-triangle"></i> Report Violations</h3>
+                    <p style="margin: 0; font-size: 16px;">If you encounter a listing or user that doesn't meet our standards, please <a href="contact.html" style="color: #FF9800; text-decoration: underline;">report it</a> so we can take action.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

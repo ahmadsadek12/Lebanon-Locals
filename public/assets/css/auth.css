@@ -1,0 +1,616 @@
+/**
+ * Authentication Styles
+ * Login, Signup, User Menu Modal and Components
+ */
+
+/* ====================
+   Auth Button in Header
+   ==================== */
+
+.auth-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 600;
+    color: #222;
+}
+
+.auth-btn:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    transform: translateY(-1px);
+}
+
+.auth-btn i {
+    font-size: 16px;
+}
+
+/* User Avatar Styles */
+.user-avatar,
+.user-avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-avatar-placeholder {
+    background: linear-gradient(135deg, var(--color-primary, #FF385C) 0%, #E8344E 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ====================
+   Modal Base Styles
+   ==================== */
+
+#login-modal,
+#signup-modal,
+#user-menu-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#login-modal .modal-content,
+#signup-modal .modal-content,
+#user-menu-modal .modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: var(--spacing-xl, 32px);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+#login-modal .modal-close,
+#signup-modal .modal-close,
+#user-menu-modal .modal-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 28px;
+    font-weight: 300;
+    color: #717171;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+#login-modal .modal-close:hover,
+#signup-modal .modal-close:hover,
+#user-menu-modal .modal-close:hover {
+    background: #f0f0f0;
+    color: #222;
+}
+
+/* ====================
+   Auth Modal (Login/Signup)
+   ==================== */
+
+.auth-modal-content h2 {
+    font-size: var(--font-size-xxl, 28px);
+    color: var(--color-text-primary, #222);
+    margin-bottom: var(--spacing-xs, 8px);
+}
+
+.auth-modal-content .modal-subtitle {
+    color: var(--color-text-secondary, #717171);
+    margin-bottom: var(--spacing-xl, 32px);
+    font-size: var(--font-size-md, 16px);
+}
+
+.auth-modal-content .form-group {
+    margin-bottom: var(--spacing-lg, 24px);
+}
+
+.auth-modal-content label {
+    display: block;
+    margin-bottom: var(--spacing-xs, 8px);
+    font-weight: var(--font-weight-semibold, 600);
+    font-size: var(--font-size-sm, 14px);
+    color: var(--color-text-primary, #222);
+}
+
+.auth-modal-content input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: var(--font-size-md, 16px);
+    transition: all 0.2s ease;
+}
+
+.auth-modal-content input:focus {
+    outline: none;
+    border-color: var(--color-primary, #FF385C);
+    box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.1);
+}
+
+.auth-modal-content .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md, 16px);
+}
+
+.auth-modal-content .btn-block {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--color-primary, #FF385C) 0%, #E8344E 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: var(--font-size-md, 16px);
+    font-weight: var(--font-weight-semibold, 600);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+}
+
+.auth-modal-content .btn-block:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 56, 92, 0.4);
+}
+
+.auth-modal-content .btn-block:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: var(--spacing-lg, 24px);
+    color: var(--color-text-secondary, #717171);
+    font-size: var(--font-size-sm, 14px);
+}
+
+.auth-switch a {
+    color: var(--color-primary, #FF385C);
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold, 600);
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+/* ====================
+   User Menu Modal
+   ==================== */
+
+.user-menu-content {
+    max-width: 700px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.user-menu-tabs {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f9f9f9;
+    padding: 0 var(--spacing-lg, 24px);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: var(--spacing-md, 16px) var(--spacing-sm, 12px);
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: var(--font-size-sm, 14px);
+    font-weight: var(--font-weight-semibold, 600);
+    color: #717171;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tab-btn:hover {
+    color: #222;
+}
+
+.tab-btn.active {
+    color: var(--color-primary, #FF385C);
+    border-bottom-color: var(--color-primary, #FF385C);
+}
+
+.tab-count {
+    display: inline-block;
+    background: #e0e0e0;
+    color: #717171;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-left: 4px;
+}
+
+.tab-btn.active .tab-count {
+    background: rgba(255, 56, 92, 0.1);
+    color: var(--color-primary, #FF385C);
+}
+
+.tab-content {
+    display: none;
+    padding: var(--spacing-lg, 24px);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ====================
+   Bookings List
+   ==================== */
+
+.bookings-list,
+.wishlist-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md, 16px);
+}
+
+.booking-card,
+.wishlist-card {
+    display: flex;
+    gap: var(--spacing-md, 16px);
+    padding: var(--spacing-md, 16px);
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.booking-card:hover,
+.wishlist-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.booking-image,
+.wishlist-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.booking-details,
+.wishlist-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.booking-details h4,
+.wishlist-details h4 {
+    font-size: var(--font-size-md, 16px);
+    color: var(--color-text-primary, #222);
+    margin: 0;
+}
+
+.booking-dates,
+.booking-guests,
+.wishlist-location,
+.wishlist-price {
+    font-size: var(--font-size-sm, 14px);
+    color: var(--color-text-secondary, #717171);
+    margin: 0;
+}
+
+.booking-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-top: 8px;
+    width: fit-content;
+}
+
+.booking-status.status-confirmed {
+    background: #E7F5EC;
+    color: #10873D;
+}
+
+.booking-status.status-pending {
+    background: #FEF5E7;
+    color: #F39C12;
+}
+
+.booking-status.status-cancelled {
+    background: #FADBD8;
+    color: #C0392B;
+}
+
+.booking-status.status-completed {
+    background: #E8EAF6;
+    color: #3F51B5;
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-xxl, 80px) var(--spacing-lg, 24px);
+    color: var(--color-text-secondary, #717171);
+    font-size: var(--font-size-md, 16px);
+}
+
+/* ====================
+   User Menu Footer
+   ==================== */
+
+.user-menu-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg, 24px);
+    border-top: 1px solid #e0e0e0;
+    background: #f9f9f9;
+}
+
+.user-profile-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm, 12px);
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.user-profile-info:hover {
+    opacity: 0.8;
+}
+
+.user-profile-info .user-avatar,
+.user-profile-info .avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.user-profile-info .avatar-placeholder {
+    background: linear-gradient(135deg, var(--color-primary, #FF385C) 0%, #E8344E 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.user-profile-info span {
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--color-text-primary, #222);
+}
+
+.btn-logout {
+    padding: 10px 20px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: var(--font-size-sm, 14px);
+    font-weight: var(--font-weight-semibold, 600);
+    color: #717171;
+    transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+    background: #f0f0f0;
+    color: #222;
+}
+
+.btn-logout i {
+    margin-right: 4px;
+}
+
+/* ====================
+   Notifications
+   ==================== */
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10001;
+    max-width: 400px;
+    font-size: var(--font-size-sm, 14px);
+    font-weight: var(--font-weight-semibold, 600);
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification-success {
+    background: #E7F5EC;
+    color: #10873D;
+    border-left: 4px solid #10873D;
+}
+
+.notification-error {
+    background: #FADBD8;
+    color: #C0392B;
+    border-left: 4px solid #C0392B;
+}
+
+.notification-info {
+    background: #E8EAF6;
+    color: #3F51B5;
+    border-left: 4px solid #3F51B5;
+}
+
+/* ====================
+   Logout Confirmation Modal
+   ==================== */
+
+.confirm-modal-content {
+    max-width: 400px !important;
+    text-align: center;
+}
+
+.confirm-modal-content h3 {
+    font-size: var(--font-size-xl, 24px);
+    color: var(--color-text-primary, #222);
+    margin-bottom: var(--spacing-md, 16px);
+    font-weight: var(--font-weight-bold, 700);
+}
+
+.confirm-modal-content p {
+    font-size: var(--font-size-md, 16px);
+    color: var(--color-text-secondary, #717171);
+    margin-bottom: var(--spacing-xl, 32px);
+}
+
+.confirm-modal-actions {
+    display: flex;
+    gap: var(--spacing-md, 16px);
+    justify-content: center;
+}
+
+.confirm-modal-actions button {
+    flex: 1;
+    max-width: 150px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: var(--font-size-md, 16px);
+    font-weight: var(--font-weight-semibold, 600);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary {
+    background: #f7f7f7;
+    color: #222;
+    border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background: #e8e8e8;
+    border-color: #bbb;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #E53E3E 0%, #C53030 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(229, 62, 62, 0.3);
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(229, 62, 62, 0.4);
+}
+
+/* ====================
+   Responsive Design
+   ==================== */
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        padding: var(--spacing-lg, 24px);
+    }
+
+    .user-menu-content {
+        max-width: 100%;
+    }
+
+    .user-menu-tabs {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .tab-btn {
+        border-bottom: 1px solid #e0e0e0;
+        border-left: 2px solid transparent;
+    }
+
+    .tab-btn.active {
+        border-bottom-color: #e0e0e0;
+        border-left-color: var(--color-primary, #FF385C);
+        background: white;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-card,
+    .wishlist-card {
+        flex-direction: column;
+    }
+
+    .booking-image,
+    .wishlist-image {
+        width: 100%;
+        height: 200px;
+    }
+
+    .notification {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}

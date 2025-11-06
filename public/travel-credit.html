@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Credit - Lebanon Locals</title>
+    
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="icon" href="images/logos/favicon.png" type="image/png">
+    
+    <style>
+        body {
+            font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 40px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45B649 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .card-header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .card-body {
+            padding: 40px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #222;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .back-link:hover {
+            color: #ff5a5f;
+        }
+        
+        h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #222;
+            margin: 40px 0 20px;
+        }
+        
+        h2:first-child {
+            margin-top: 0;
+        }
+        
+        p {
+            font-size: 16px;
+            color: #484848;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        
+        ul {
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+        
+        li {
+            font-size: 16px;
+            color: #484848;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+        
+        .highlight-box {
+            background: #F0F9FF;
+            border-left: 4px solid #0066CC;
+            padding: 24px;
+            border-radius: 8px;
+            margin: 24px 0;
+        }
+    </style>
+</head>
+<body class="hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<div class="container">
+        <a href="index.html" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to Home
+        </a>
+        
+        <div class="card">
+            <div class="card-header">
+                <h1><i class="fa fa-gift"></i> Travel Credit</h1>
+                <p style="margin: 0; font-size: 18px;">Earn credits and save on your next adventure</p>
+            </div>
+            
+            <div class="card-body">
+                <h2>What is Travel Credit?</h2>
+                <p>
+                    Travel Credit is money you can use toward future bookings on Lebanon Locals. Credits are automatically applied to your account and can be used for accommodations or experiences.
+                </p>
+                
+                <h2>How to Earn Travel Credit</h2>
+                <ul>
+                    <li><strong>Referral Program:</strong> Invite friends and earn $25 when they complete their first booking</li>
+                    <li><strong>First Booking Bonus:</strong> New users receive $15 credit on first booking over $75</li>
+                    <li><strong>Host Rewards:</strong> Superhosts earn quarterly bonus credits</li>
+                    <li><strong>Promotional Offers:</strong> Seasonal campaigns and special promotions</li>
+                    <li><strong>Reviews:</strong> Leave quality reviews and earn periodic credit rewards</li>
+                </ul>
+                
+                <div class="highlight-box">
+                    <h3 style="font-size: 20px; color: #0066CC; margin: 0 0 12px 0;"><i class="fa fa-info-circle"></i> Quick Tip</h3>
+                    <p style="margin: 0;">Refer 4 friends and earn $100 in travel credit - enough for a weekend getaway!</p>
+                </div>
+                
+                <h2>How to Use Travel Credit</h2>
+                <p><strong>1.</strong> Travel Credit is automatically applied at checkout</p>
+                <p><strong>2.</strong> Credits are applied before other payment methods</p>
+                <p><strong>3.</strong> Any remaining balance can be paid with your preferred payment method</p>
+                <p><strong>4.</strong> Check your credit balance anytime in your account dashboard</p>
+                
+                <h2>Terms & Conditions</h2>
+                <ul>
+                    <li>Travel Credit cannot be redeemed for cash</li>
+                    <li>Credits expire 1 year from the date they're issued</li>
+                    <li>Credits are non-transferable between accounts</li>
+                    <li>Minimum booking amount may apply for certain credits</li>
+                    <li>Credits cannot be combined with certain promotional offers</li>
+                </ul>
+                
+                <h2>Check Your Balance</h2>
+                <p>
+                    You can view your current Travel Credit balance in your account dashboard. Credits are automatically applied when you book qualifying stays or experiences.
+                </p>
+                
+                <div style="background: #f7f7f7; padding: 40px; border-radius: 12px; text-align: center; margin-top: 40px;">
+                    <h2 style="margin-top: 0;">Start Earning Today</h2>
+                    <p>Refer friends, book experiences, and watch your credits grow</p>
+                    <a href="index.html" style="background: #FF5A5F; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; margin-top: 16px;">Explore Experiences</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

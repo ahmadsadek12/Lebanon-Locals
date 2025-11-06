@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Protection - Lebanon Locals</title>
+    
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="icon" href="images/logos/favicon.png" type="image/png">
+    
+    <style>
+        body {
+            font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: white;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .content {
+            max-width: 1000px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+        
+        .protection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin: 40px 0;
+        }
+        
+        .protection-card {
+            padding: 32px;
+            background: #f7f7f7;
+            border-radius: 16px;
+            text-align: center;
+        }
+        
+        .protection-card i {
+            font-size: 48px;
+            color: #00BCD4;
+            margin-bottom: 16px;
+        }
+        
+        .protection-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 12px;
+        }
+        
+        .protection-card p {
+            font-size: 16px;
+            color: #717171;
+            line-height: 1.6;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #222;
+            margin: 60px 0 24px;
+        }
+        
+        p, li {
+            font-size: 18px;
+            color: #484848;
+            line-height: 1.8;
+        }
+        
+        ul {
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+        
+        li {
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body class="hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<div class="hero">
+        <a href="index.html" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to Home
+        </a>
+        <h1>Guest Protection</h1>
+        <p style="font-size: 20px; max-width: 700px; margin: 0 auto;">Book with confidence. You're protected every step of the way.</p>
+    </div>
+    
+    <div class="content">
+        <div class="protection-grid">
+            <div class="protection-card">
+                <i class="fa fa-check-circle"></i>
+                <h3>Verified Listings</h3>
+                <p>All hosts and properties are verified before they can accept bookings.</p>
+            </div>
+            
+            <div class="protection-card">
+                <i class="fa fa-lock"></i>
+                <h3>Secure Payments</h3>
+                <p>Your payment information is encrypted and never shared with hosts.</p>
+            </div>
+            
+            <div class="protection-card">
+                <i class="fa fa-life-ring"></i>
+                <h3>24/7 Support</h3>
+                <p>Our customer service team is available anytime you need help.</p>
+            </div>
+        </div>
+        
+        <h2>What's Covered</h2>
+        <ul>
+            <li><strong>Booking Guarantee:</strong> If a host cancels your reservation within 30 days of check-in, we'll help you find comparable accommodation or provide a full refund</li>
+            <li><strong>Property Issues:</strong> If your accommodation doesn't match the listing description, we'll work to resolve it or provide alternative housing</li>
+            <li><strong>Payment Protection:</strong> Your money is held securely until 24 hours after check-in</li>
+            <li><strong>Communication Safety:</strong> All booking communications go through our secure platform</li>
+            <li><strong>Review System:</strong> Read authentic reviews from verified guests before booking</li>
+        </ul>
+        
+        <h2>How to Stay Protected</h2>
+        <p><strong>1. Book Through the Platform:</strong> Always complete bookings and payments through Lebanon Locals - never pay outside the platform.</p>
+        <p><strong>2. Read Reviews:</strong> Check host ratings and guest reviews before booking.</p>
+        <p><strong>3. Communicate on Platform:</strong> Keep all communications within our messaging system for your protection.</p>
+        <p><strong>4. Report Issues Promptly:</strong> Contact us within 24 hours of check-in if there are problems.</p>
+        <p><strong>5. Document Everything:</strong> Take photos of any issues and keep records of communications.</p>
+        
+        <h2>Guest Refund Policy</h2>
+        <p>
+            If your host needs to cancel, or your listing isn't as advertised, we'll refund you and may provide a travel credit. In cases of extenuating circumstances (natural disasters, emergencies), special policies apply.
+        </p>
+        
+        <div style="background: #F0F9FF; border-left: 4px solid #0066CC; padding: 32px; border-radius: 8px; margin: 40px 0;">
+            <h3 style="font-size: 24px; color: #0066CC; margin: 0 0 16px 0;"><i class="fa fa-info-circle"></i> Need Help?</h3>
+            <p style="margin: 0;">Contact our support team anytime at <strong>961 81 434 070</strong> or visit our <a href="help.html" style="color: #0066CC; text-decoration: underline;">Help Center</a></p>
+        </div>
+    </div>
+</body>
+</html>
+

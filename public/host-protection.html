@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Protection - Lebanon Locals</title>
+    
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="icon" href="images/logos/favicon.png" type="image/png">
+    
+    <style>
+        body {
+            font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: white;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin: 40px 0;
+        }
+        
+        .feature-card {
+            padding: 32px;
+            background: #f7f7f7;
+            border-radius: 16px;
+            text-align: center;
+        }
+        
+        .feature-card i {
+            font-size: 48px;
+            color: #FF5A5F;
+            margin-bottom: 16px;
+        }
+        
+        .feature-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 12px;
+        }
+        
+        .feature-card p {
+            font-size: 16px;
+            color: #717171;
+            line-height: 1.6;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #222;
+            margin: 60px 0 24px;
+        }
+        
+        p {
+            font-size: 18px;
+            color: #484848;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        
+        ul {
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+        
+        li {
+            font-size: 18px;
+            color: #484848;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body class="hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<div class="hero">
+        <a href="index.html" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to Home
+        </a>
+        <h1>Host Protection</h1>
+        <p>Your peace of mind matters. We've got you covered every step of the way.</p>
+    </div>
+    
+    <div class="content">
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fa fa-shield"></i>
+                <h3>$1M Host Guarantee</h3>
+                <p>Protection against property damage and liability claims for every booking.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fa fa-check-circle"></i>
+                <h3>Verified Guests</h3>
+                <p>All guests must verify their identity before they can book your space.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fa fa-phone"></i>
+                <h3>24/7 Support</h3>
+                <p>Our dedicated host support team is available around the clock to help you.</p>
+            </div>
+        </div>
+        
+        <h2>What's Covered</h2>
+        <p>Our Host Guarantee provides comprehensive protection including:</p>
+        <ul>
+            <li>Damage to your property caused by guests (up to $1,000,000)</li>
+            <li>Liability coverage for third-party injuries</li>
+            <li>Coverage for theft or vandalism</li>
+            <li>Protection for common areas and shared spaces</li>
+        </ul>
+        
+        <h2>How It Works</h2>
+        <p><strong>1. Automatic Coverage:</strong> Every booking is automatically covered. No extra fees or sign-ups required.</p>
+        <p><strong>2. Report Issues:</strong> If damage occurs, report it through your dashboard within 14 days.</p>
+        <p><strong>3. We Handle It:</strong> Our team will review the claim and work with you to resolve it quickly.</p>
+        <p><strong>4. Get Reimbursed:</strong> Approved claims are processed and paid out promptly.</p>
+        
+        <h2>Additional Host Benefits</h2>
+        <ul>
+            <li>Secure payment processing with guaranteed payouts</li>
+            <li>Flexible cancellation policies you control</li>
+            <li>Host damage protection up to $1M per incident</li>
+            <li>Dedicated host support team</li>
+            <li>Insurance guidance and resources</li>
+        </ul>
+        
+        <div style="background: #f7f7f7; padding: 40px; border-radius: 16px; text-align: center; margin-top: 60px;">
+            <h2 style="margin-top: 0;">Ready to Start Hosting?</h2>
+            <p>Join thousands of hosts earning money sharing their spaces</p>
+            <a href="index.html" style="background: #FF5A5F; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; margin-top: 16px;">Get Started</a>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ==================== META TAGS ==================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- SEO Meta Tags -->
+    <title>Reviews - Lebanon Locals</title>
+    <meta name="description" content="Read guest reviews and ratings for experiences, events, and stays in Lebanon">
+    <meta name="robots" content="index, follow">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.lebanonlocals.com/reviews.html">
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/svgahmadLL.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/svgahmadLL.svg">
+
+    <!-- ==================== FONTS ==================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+    <!-- ==================== STYLESHEETS ==================== -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/reviews.css">
+</head>
+<body class="listing-reviews-page hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<!-- Sticky Header -->
+    <header class="reviews-header" id="reviewsHeader">
+        <div class="header-container">
+            <a href="index.html" class="logo-link">
+                <img src="images/logos/logo.jpg" alt="Lebanon Locals" class="logo-img">
+            </a>
+
+            <div class="header-nav">
+                <button class="host-btn" onclick="alert('Become a host feature coming soon!')">Become a Host</button>
+                <div class="menu-btn" onclick="alert('Sign up / Log in coming soon!')">
+                    <i class="fa fa-bars"></i>
+                    <div class="user-icon">
+                        <i class="fa fa-user"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading State -->
+    <div id="loading-state" class="reviews-loading">
+        <div class="loading-spinner"></div>
+        <p>Loading reviews...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error-state" class="reviews-error" style="display: none;">
+        <div class="error-container">
+            <i class="fa fa-exclamation-triangle"></i>
+            <h2>Oops! Something went wrong</h2>
+            <p id="error-message">Unable to load reviews. Please try again.</p>
+            <a href="javascript:history.back()" class="btn-primary">Go Back</a>
+        </div>
+    </div>
+
+    <!-- Reviews Content -->
+    <main id="reviews-content" class="reviews-main" style="display: none;">
+        <div class="reviews-container">
+            <!-- Back Button -->
+            <div class="back-section">
+                <a href="javascript:history.back()" class="back-btn">
+                    <i class="fa fa-arrow-left"></i> Back to listing
+                </a>
+            </div>
+
+            <!-- Header Section -->
+            <div class="reviews-header-section">
+                <h1 id="reviews-title">Reviews</h1>
+                <div class="reviews-summary-bar">
+                    <div class="summary-rating">
+                        <div class="rating-number" id="average-rating">0.0</div>
+                        <div class="rating-stars" id="rating-stars"></div>
+                        <div class="rating-count" id="total-reviews">0 reviews</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rating Breakdown -->
+            <div class="rating-breakdown-section" id="rating-breakdown">
+                <!-- Will be populated by JavaScript -->
+            </div>
+
+            <!-- Filters -->
+            <div class="reviews-filters">
+                <button class="filter-btn active" data-filter="all">
+                    All reviews
+                </button>
+                <button class="filter-btn" data-filter="recent">
+                    Most recent
+                </button>
+                <button class="filter-btn" data-filter="highest">
+                    Highest rated
+                </button>
+                <button class="filter-btn" data-filter="lowest">
+                    Lowest rated
+                </button>
+                <button class="filter-btn" data-filter="with-response">
+                    With host response
+                </button>
+            </div>
+
+            <!-- Reviews List -->
+            <div class="reviews-list" id="reviews-list">
+                <!-- Reviews will be populated here by JavaScript -->
+            </div>
+
+            <!-- Load More -->
+            <div class="load-more-section" id="load-more-section" style="display: none;">
+                <button class="btn-load-more" id="load-more-btn">
+                    Load more reviews
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div>
+                    <img src="images/logos/logo.jpg" alt="Lebanon Locals" class="footer-logo">
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="terms.html">Terms & Conditions</a></li>
+                            <li><a href="privacy.html">Your Privacy</a></li>
+                            <li><a href="about.html">Our Story</a></li>
+                            <li><a href="cookies.html">Cookies & Tracking</a></li>
+                            <li><a href="contact.html">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Discover</h4>
+                        <ul>
+                            <li><a href="travel-credit.html">Travel Credit</a></li>
+                            <li><a href="guest-protection.html">Guest Protection</a></li>
+                            <li><a href="guest-safety.html">Guest Safety</a></li>
+                            <li><a href="standards.html">Our Standards</a></li>
+                            <li><a href="cancellation_policies.html">Cancellations & Refunds</a></li>
+                            <li><a href="help.html">FAQS</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Hosting</h4>
+                        <ul>
+                            <li><a href="host-protection.html">Host Protection</a></li>
+                            <li><a href="why-host.html">Why Host</a></li>
+                            <li><a href="help.html">Hosting Support</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="footer-apps">
+                    <a href="https://play.google.com/store/apps" target="_blank" class="app-btn">
+                        <i class="fa fa-play"></i>
+                        <div>
+                            <div class="app-text-small">Download on</div>
+                            <div class="app-text-large">Google Play</div>
+                        </div>
+                    </a>
+                    <a href="https://apps.apple.com/" target="_blank" class="app-btn">
+                        <i class="fa fa-apple"></i>
+                        <div>
+                            <div class="app-text-small">Download on</div>
+                            <div class="app-text-large">App Store</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    Copyright © 2025 Lebanon Locals. All rights reserved
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/lebanonlocals" target="_blank" class="social-icon instagram" title="Instagram">
+                        <i class="fa fa-instagram"></i>
+                    </a>
+                    <a href="https://tiktok.com/@lebanonlocals" target="_blank" class="social-icon tiktok" title="TikTok">
+                        <svg viewBox="0 0 448 512" style="width: 16px; height: 16px; fill: currentColor;">
+                            <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Fixed Chatbot -->
+    <button class="chatbot-fixed" onclick="alert('Live chat coming soon! For now, call us at 961 81 434 070 or visit our help page.')" title="Chat with us">
+        <i class="fa fa-comments"></i>
+        <span class="chatbot-online"></span>
+    </button>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script src="js/jquery-3.5.0.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/listing-reviews.js"></script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - Lebanon Locals</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/application.css">
+    <link rel="stylesheet" href="css/help.css">
+    
+    <link rel="icon" href="images/logos/favicon.png" type="image/png">
+    
+    <style>
+        body {
+            font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+        
+        .help-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .help-banner h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        
+        .help-search {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .help-search input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .help-search i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #717171;
+        }
+        
+        .help-content {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        
+        .help-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .help-category-card {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+        
+        .help-category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        
+        .help-category-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 16px;
+        }
+        
+        .help-category-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .help-category-card li {
+            margin-bottom: 12px;
+        }
+        
+        .help-category-card a {
+            color: #717171;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        
+        .help-category-card a:hover {
+            color: #ff5a5f;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #222;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+        
+        .back-link:hover {
+            color: #ff5a5f;
+        }
+    </style>
+</head>
+<body class="hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<div class="help-banner">
+        <h1>How can we help you?</h1>
+        <div class="help-search">
+            <input type="text" placeholder="Search for help articles..." id="helpSearch">
+            <i class="fa fa-search"></i>
+        </div>
+    </div>
+    
+    <div class="help-content">
+        <a href="index.html" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to Home
+        </a>
+        
+        <h2 style="margin-bottom: 32px; color: #222;">Frequently Asked Questions</h2>
+        
+        <div class="help-categories">
+            <div class="help-category-card">
+                <h3><i class="fa fa-user" style="color: #ff5a5f; margin-right: 8px;"></i> Account & Profile</h3>
+                <ul>
+                    <li><a href="#">How do I create an account?</a></li>
+                    <li><a href="#">How do I update my profile?</a></li>
+                    <li><a href="#">How do I verify my ID?</a></li>
+                    <li><a href="#">How do I change my password?</a></li>
+                    <li><a href="#">How do I delete my account?</a></li>
+                </ul>
+            </div>
+            
+            <div class="help-category-card">
+                <h3><i class="fa fa-calendar" style="color: #ff5a5f; margin-right: 8px;"></i> Booking & Reservations</h3>
+                <ul>
+                    <li><a href="#">How do I book an experience?</a></li>
+                    <li><a href="#">How do I book accommodation?</a></li>
+                    <li><a href="#">Can I modify my reservation?</a></li>
+                    <li><a href="#">How do I cancel a booking?</a></li>
+                    <li><a href="#">What is the cancellation policy?</a></li>
+                </ul>
+            </div>
+            
+            <div class="help-category-card">
+                <h3><i class="fa fa-credit-card" style="color: #ff5a5f; margin-right: 8px;"></i> Payments & Pricing</h3>
+                <ul>
+                    <li><a href="#">What payment methods are accepted?</a></li>
+                    <li><a href="#">When will I be charged?</a></li>
+                    <li><a href="#">How do refunds work?</a></li>
+                    <li><a href="#">Are there service fees?</a></li>
+                    <li><a href="#">How do I use travel credit?</a></li>
+                </ul>
+            </div>
+            
+            <div class="help-category-card">
+                <h3><i class="fa fa-home" style="color: #ff5a5f; margin-right: 8px;"></i> Hosting</h3>
+                <ul>
+                    <li><a href="#">How do I become a host?</a></li>
+                    <li><a href="#">How do I list my space?</a></li>
+                    <li><a href="#">What is host protection?</a></li>
+                    <li><a href="#">How do I set my pricing?</a></li>
+                    <li><a href="#">How do payouts work?</a></li>
+                </ul>
+            </div>
+            
+            <div class="help-category-card">
+                <h3><i class="fa fa-shield" style="color: #ff5a5f; margin-right: 8px;"></i> Safety & Trust</h3>
+                <ul>
+                    <li><a href="#">Guest safety guidelines</a></li>
+                    <li><a href="#">How to report issues</a></li>
+                    <li><a href="#">COVID-19 safety measures</a></li>
+                    <li><a href="#">ID verification process</a></li>
+                    <li><a href="#">Guest protection policy</a></li>
+                </ul>
+            </div>
+            
+            <div class="help-category-card">
+                <h3><i class="fa fa-question-circle" style="color: #ff5a5f; margin-right: 8px;"></i> General Support</h3>
+                <ul>
+                    <li><a href="#">Contact customer support</a></li>
+                    <li><a href="#">Report a problem</a></li>
+                    <li><a href="#">Submit feedback</a></li>
+                    <li><a href="#">Request a feature</a></li>
+                    <li><a href="#">Call us: 961 81 434 070</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 60px; padding: 40px; background: white; border-radius: 12px;">
+            <h3 style="margin-bottom: 16px;">Still need help?</h3>
+            <p style="color: #717171; margin-bottom: 24px;">Our team is available 24/7 to assist you</p>
+            <a href="contact.html" style="background: #ff5a5f; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">Contact Support</a>
+        </div>
+    </div>
+
+    <script src="js/jquery-3.5.0.js"></script>
+</body>
+</html>
+

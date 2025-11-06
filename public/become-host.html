@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become a Host - Lebanon Locals</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/svgahmadLL.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/svgahmadLL.svg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    
+    <style>
+        body.become-host-page {
+            background: #ffffff !important;
+            padding-top: 80px !important;
+        }
+
+        body.become-host-page::before {
+            display: none !important;
+        }
+
+        .become-host-page .header-nav-words,
+        .become-host-page .header-search-btn {
+            display: none !important;
+        }
+
+        .become-host-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 24px;
+        }
+
+        .become-host-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .become-host-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FF385C 0%, #FF1744 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .become-host-icon i {
+            font-size: 36px;
+            color: white;
+        }
+
+        .become-host-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 12px;
+        }
+
+        .become-host-subtitle {
+            font-size: 18px;
+            color: #717171;
+            line-height: 1.6;
+        }
+
+        .form-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .form-card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 24px;
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #222;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .required-indicator {
+            color: var(--color-primary);
+            margin-left: 4px;
+        }
+
+        .field-hidden {
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 24px;
+        }
+
+        .submit-btn:hover {
+            background: #e0305b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .info-box {
+            background: #F0F9FF;
+            border: 1px solid #CCE5FF;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .info-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0066CC;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box p {
+            font-size: 14px;
+            color: #222;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .checkbox-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: white;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #FF385C;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            margin: 0;
+            font-size: 15px;
+            color: #222;
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .become-host-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body class="become-host-page">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+                
+                if (window.Auth && window.Auth.setupAuthButton) {
+                    window.Auth.setupAuthButton();
+                }
+            });
+    </script>
+
+    <!-- Main Content -->
+    <div class="become-host-container">
+        <div class="become-host-header">
+            <div class="become-host-icon">
+                <i class="fa fa-home"></i>
+            </div>
+            <h1 class="become-host-title">Become a Host</h1>
+            <p class="become-host-subtitle">
+                Share your space and create unforgettable experiences for travelers in Lebanon. 
+                Complete your profile to start hosting.
+            </p>
+        </div>
+
+        <div class="info-box">
+            <h3>
+                <i class="fa fa-info-circle"></i>
+                Complete Your Profile
+            </h3>
+            <p>
+                To become a host, we need some additional information. Please fill in the required fields below. 
+                This helps us ensure quality and safety for all our users.
+            </p>
+        </div>
+
+        <form id="become-host-form">
+            <div class="form-card">
+                <h2>Required Information</h2>
+
+                <!-- Gender -->
+                <div class="form-group" id="gender-group">
+                    <label>Gender <span class="required-indicator">*</span></label>
+                    <select id="gender" required>
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                        <option value="prefer_not_to_say">Prefer not to say</option>
+                    </select>
+                </div>
+
+                <!-- Date of Birth -->
+                <div class="form-group" id="dob-group">
+                    <label>Date of Birth <span class="required-indicator">*</span></label>
+                    <input type="date" id="date-of-birth" required>
+                    <small style="color: #717171; font-size: 13px; margin-top: 4px; display: block;">
+                        Must be 18 years or older to host
+                    </small>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group" id="phone-group">
+                    <label>Phone Number <span class="required-indicator">*</span></label>
+                    <input type="tel" id="phone-number" placeholder="+961 XX XXX XXX" required>
+                </div>
+
+                <!-- Nationality -->
+                <div class="form-group" id="nationality-group">
+                    <label>Nationality <span class="required-indicator">*</span></label>
+                    <input type="text" id="nationality" placeholder="Lebanese" required>
+                </div>
+
+                <!-- Bio -->
+                <div class="form-group" id="bio-group">
+                    <label>About You <span class="required-indicator">*</span></label>
+                    <textarea id="bio" placeholder="Tell potential guests about yourself, your interests, and why you love hosting..." required maxlength="1000"></textarea>
+                    <small id="bio-counter" style="color: #717171; font-size: 13px; margin-top: 4px; display: block;">
+                        100 characters left (minimum)
+                    </small>
+                </div>
+
+                <!-- Languages -->
+                <div class="form-group" id="languages-group">
+                    <label>Languages Spoken <span class="required-indicator">*</span></label>
+                    <div class="checkbox-container" id="languages-checkboxes">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                    <small style="color: #717171; font-size: 13px; margin-top: 4px; display: block;" id="languages-count">
+                        Select at least one language
+                    </small>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div class="form-section" id="emergency-section">
+                    <h3>Emergency Contact</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Contact Name <span class="required-indicator">*</span></label>
+                            <input type="text" id="emergency-name" placeholder="Full Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Phone <span class="required-indicator">*</span></label>
+                            <input type="tel" id="emergency-phone" placeholder="+961 XX XXX XXX" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="form-section" id="address-section">
+                    <h3>Address</h3>
+                    <div class="form-group">
+                        <label>Street <span class="required-indicator">*</span></label>
+                        <input type="text" id="address-street" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>City <span class="required-indicator">*</span></label>
+                            <input type="text" id="address-city" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Postal Code</label>
+                            <input type="text" id="address-postal">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Building</label>
+                            <input type="text" id="address-building">
+                        </div>
+                        <div class="form-group">
+                            <label>Floor</label>
+                            <input type="text" id="address-floor">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Picture -->
+                <div class="form-section" id="profile-picture-section">
+                    <h3>Profile Picture <span class="required-indicator">*</span></h3>
+                    <div class="form-group">
+                        <img id="profile-picture-preview" src="" alt="Profile Preview" style="display: none; width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 16px;">
+                        <input type="file" id="profile-picture-upload" accept="image/*" style="display: block;">
+                        <small style="color: #717171; font-size: 13px; margin-top: 8px; display: block;">
+                            Upload a clear photo of yourself (max 5MB)
+                        </small>
+                    </div>
+                </div>
+
+                <!-- ID/Passport Document -->
+                <div class="form-section" id="id-document-section">
+                    <h3>ID or Passport <span class="required-indicator">*</span></h3>
+                    <div class="form-group">
+                        <input type="file" id="id-document-upload" accept="image/*,.pdf" style="display: block;">
+                        <div id="id-upload-status" style="font-size: 14px; margin-top: 8px; color: #717171;"></div>
+                        <small style="color: #717171; font-size: 13px; margin-top: 8px; display: block;">
+                            Upload a photo of your ID or passport for verification (max 5MB)
+                        </small>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submit-btn">
+                    <i class="fa fa-check"></i> Complete and Become a Host
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Auth Modals -->
+    <div id="auth-modals-placeholder"></div>
+    <script>
+        fetch('includes/auth-modals.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('auth-modals-placeholder').innerHTML = html;
+            });
+    </script>
+
+    <!-- Scripts -->
+    <script src="assets/js/auth.js"></script>
+    
+    <script>
+        const LANGUAGES = [
+            'Arabic', 'English', 'French', 'Spanish', 'German', 'Italian', 
+            'Russian', 'Chinese', 'Japanese', 'Portuguese', 'Dutch', 
+            'Turkish', 'Armenian', 'Greek', 'Hebrew'
+        ];
+
+        let currentUser = null;
+
+        // Check authentication
+        function checkAuth() {
+            setTimeout(function() {
+                if (!window.Auth || !window.Auth.isAuthenticated()) {
+                    alert('Please sign in to become a host');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                currentUser = window.Auth.getCurrentUser();
+                if (!currentUser) {
+                    alert('User data not available');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // Check if already a host
+                if (currentUser.user_type === 'host') {
+                    alert('You are already a host!');
+                    window.location.href = 'host-profile.html?id=' + currentUser.id;
+                    return;
+                }
+
+                // Check if application is pending
+                if (currentUser.user_type === 'pending') {
+                    alert('Your host application is currently pending admin approval. You will be notified once your account has been reviewed.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                loadForm();
+            }, 500);
+        }
+
+        // Load form and populate existing data
+        async function loadForm() {
+            try {
+                // Fetch fresh user data
+                const response = await fetch(`/backend/api/get-user.php?user_id=${currentUser.id}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error('Failed to load user data');
+                }
+
+                const user = data.data;
+
+                // Populate languages checkboxes
+                const languagesContainer = document.getElementById('languages-checkboxes');
+                languagesContainer.innerHTML = LANGUAGES.map(lang => `
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="lang-${lang}" value="${lang}">
+                        <label for="lang-${lang}">${lang}</label>
+                    </div>
+                `).join('');
+
+                // Pre-fill existing data and hide filled fields
+                // Pre-fill existing data (but keep all fields visible)
+                if (user.gender) {
+                    document.getElementById('gender').value = user.gender;
+                }
+
+                if (user.date_of_birth) {
+                    document.getElementById('date-of-birth').value = user.date_of_birth;
+                }
+
+                if (user.phone_number) {
+                    document.getElementById('phone-number').value = user.phone_number;
+                }
+
+                if (user.nationality) {
+                    document.getElementById('nationality').value = user.nationality;
+                }
+
+                if (user.bio) {
+                    const bioField = document.getElementById('bio');
+                    bioField.value = user.bio;
+                    // Trigger the character counter update
+                    bioField.dispatchEvent(new Event('input'));
+                }
+
+                if (user.languages_spoken) {
+                    const userLangs = user.languages_spoken.split(',').map(l => l.trim());
+                    userLangs.forEach(lang => {
+                        const checkbox = document.getElementById(`lang-${lang}`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+
+                if (user.emergency_contact_name) {
+                    document.getElementById('emergency-name').value = user.emergency_contact_name;
+                }
+                
+                if (user.emergency_contact_phone) {
+                    document.getElementById('emergency-phone').value = user.emergency_contact_phone;
+                }
+
+                // Check if has address
+                if (user.address_id) {
+                    const addressResponse = await fetch(`/backend/api/get-address.php?address_id=${user.address_id}`);
+                    const addressData = await addressResponse.json();
+                    if (addressData.success && addressData.data) {
+                        const addr = addressData.data;
+                        document.getElementById('address-street').value = addr.street || '';
+                        document.getElementById('address-city').value = addr.city || '';
+                        document.getElementById('address-postal').value = addr.postal_code || '';
+                        document.getElementById('address-building').value = addr.building || '';
+                        document.getElementById('address-floor').value = addr.floor || '';
+                    }
+                }
+                
+                if (user.profile_picture) {
+                    document.getElementById('profile-picture-preview').src = user.profile_picture;
+                    document.getElementById('profile-picture-preview').style.display = 'block';
+                }
+                
+                if (user.id_passport_picture) {
+                    document.getElementById('id-upload-status').textContent = '✓ ID document uploaded';
+                    document.getElementById('id-upload-status').style.color = '#10B981';
+                }
+
+            } catch (error) {
+                console.error('Error loading form:', error);
+                alert('Error loading your profile data. Please try again.');
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('become-host-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+
+            try {
+                // Collect form data
+                const formData = {
+                    user_id: currentUser.id
+                };
+
+                // Collect all form data
+                formData.gender = document.getElementById('gender').value;
+
+                // Date of Birth and Age calculation
+                {
+                    const dob = document.getElementById('date-of-birth').value;
+                    formData.date_of_birth = dob;
+                    
+                    // Calculate age
+                    const birthDate = new Date(dob);
+                    const today = new Date();
+                    let age = today.getFullYear() - birthDate.getFullYear();
+                    const monthDiff = today.getMonth() - birthDate.getMonth();
+                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                        age--;
+                    }
+                    
+                    if (age < 18) {
+                        alert('You must be at least 18 years old to become a host');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fa fa-check"></i> Complete and Become a Host';
+                        return;
+                    }
+                    
+                    formData.age = age;
+                }
+
+                formData.phone_number = document.getElementById('phone-number').value;
+                formData.nationality = document.getElementById('nationality').value;
+
+                // Bio validation
+                {
+                    const bio = document.getElementById('bio').value;
+                    if (bio.length < 100) {
+                        alert('Bio must be at least 100 characters');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fa fa-check"></i> Complete and Become a Host';
+                        return;
+                    }
+                    formData.bio = bio;
+                }
+
+                // Languages
+                const selectedLanguages = Array.from(document.querySelectorAll('#languages-checkboxes input[type="checkbox"]:checked'))
+                    .map(cb => cb.value);
+                
+                if (selectedLanguages.length === 0) {
+                    alert('Please select at least one language');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa fa-check"></i> Complete and Become a Host';
+                    return;
+                }
+                
+                formData.languages_spoken = selectedLanguages.join(', ');
+
+                // Emergency Contact
+                formData.emergency_contact_name = document.getElementById('emergency-name').value;
+                formData.emergency_contact_phone = document.getElementById('emergency-phone').value;
+
+                // Upload profile picture if provided
+                const profilePicInput = document.getElementById('profile-picture-upload');
+                if (profilePicInput.files && profilePicInput.files[0]) {
+                    const picFormData = new FormData();
+                    picFormData.append('profile_picture', profilePicInput.files[0]);
+                    picFormData.append('user_id', currentUser.id);
+
+                    const picResponse = await fetch('/backend/api/upload-profile-picture.php', {
+                        method: 'POST',
+                        body: picFormData
+                    });
+
+                    const picResult = await picResponse.json();
+                    if (!picResult.success) {
+                        throw new Error('Failed to upload profile picture');
+                    }
+                }
+
+                // Upload ID document if provided
+                const idDocInput = document.getElementById('id-document-upload');
+                if (idDocInput.files && idDocInput.files[0]) {
+                    const idFormData = new FormData();
+                    idFormData.append('verification_document', idDocInput.files[0]);
+                    idFormData.append('user_id', currentUser.id);
+
+                    const idResponse = await fetch('/backend/api/upload-verification.php', {
+                        method: 'POST',
+                        body: idFormData
+                    });
+
+                    const idResult = await idResponse.json();
+                    if (!idResult.success) {
+                        throw new Error('Failed to upload ID document');
+                    }
+                }
+
+                // Handle address
+                {
+                    const addressData = {
+                        user_id: currentUser.id,
+                        address_id: currentUser.address_id || null,
+                        street: document.getElementById('address-street').value,
+                        city: document.getElementById('address-city').value,
+                        postal_code: document.getElementById('address-postal').value || null,
+                        building: document.getElementById('address-building').value || null,
+                        floor: document.getElementById('address-floor').value || null
+                    };
+
+                    const addressResponse = await fetch('/backend/api/update-address.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(addressData)
+                    });
+
+                    const addressResult = await addressResponse.json();
+                    if (!addressResult.success) {
+                        throw new Error('Failed to save address');
+                    }
+                }
+
+                // Update user profile
+                const profileResponse = await fetch('/backend/api/update-profile.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const profileResult = await profileResponse.json();
+                if (!profileResult.success) {
+                    throw new Error(profileResult.message || 'Failed to update profile');
+                }
+
+                // Finally, upgrade user to host
+                const hostResponse = await fetch('/backend/api/become-host.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: currentUser.id })
+                });
+
+                const hostResult = await hostResponse.json();
+                if (!hostResult.success) {
+                    throw new Error(hostResult.message || 'Failed to upgrade to host');
+                }
+
+                // Success!
+                alert('Your host application has been submitted successfully! Your account is now pending admin approval. You will be notified once approved.');
+                window.location.href = 'index.html';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa fa-check"></i> Complete and Become a Host';
+            }
+        });
+
+        // Bio character counter
+        const bioTextarea = document.getElementById('bio');
+        const bioCounter = document.getElementById('bio-counter');
+        
+        bioTextarea.addEventListener('input', function() {
+            const length = this.value.length;
+            const remaining = Math.max(0, 100 - length);
+            
+            if (length < 100) {
+                bioCounter.textContent = `${remaining} characters left (minimum 100)`;
+                bioCounter.style.color = '#717171';
+            } else {
+                bioCounter.textContent = `${length} characters (minimum met ✓)`;
+                bioCounter.style.color = '#00A699';
+            }
+        });
+
+        // Set max date for date picker (18 years ago from today)
+        const dateInput = document.getElementById('date-of-birth');
+        const today = new Date();
+        const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+        const maxDateString = maxDate.toISOString().split('T')[0];
+        dateInput.setAttribute('max', maxDateString);
+
+        // Initialize on page load
+        window.addEventListener('load', checkAuth);
+    </script>
+</body>
+</html>
+

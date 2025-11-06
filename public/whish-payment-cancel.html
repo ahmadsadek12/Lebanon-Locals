@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Cancelled - Lebanon Locals</title>
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-primary, 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+            background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: var(--spacing-md, 16px);
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: var(--spacing-xxl, 80px) var(--spacing-xl, 32px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .cancel-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-xl, 32px);
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .cancel-icon::before {
+            content: '✕';
+            font-size: 48px;
+            color: white;
+            font-weight: bold;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            font-size: var(--font-size-xxl, 32px);
+            color: var(--color-text-primary, #222);
+            margin-bottom: var(--spacing-md, 16px);
+        }
+
+        p {
+            font-size: var(--font-size-md, 16px);
+            color: var(--color-text-secondary, #717171);
+            margin-bottom: var(--spacing-lg, 24px);
+            line-height: 1.6;
+        }
+
+        .booking-id {
+            background: #f5f7fa;
+            padding: var(--spacing-sm, 12px) var(--spacing-md, 16px);
+            border-radius: 8px;
+            margin-bottom: var(--spacing-xl, 32px);
+            font-family: monospace;
+            font-size: var(--font-size-lg, 18px);
+            color: var(--color-text-primary, #222);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: var(--spacing-md, 16px);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, var(--color-primary, #FF385C) 0%, #E8344E 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: var(--font-weight-semibold, 600);
+            font-size: var(--font-size-md, 16px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 56, 92, 0.4);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            padding: 14px 32px;
+            background: white;
+            color: var(--color-text-primary, #222);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: var(--font-weight-semibold, 600);
+            font-size: var(--font-size-md, 16px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            border-color: #d0d0d0;
+        }
+    </style>
+</head>
+<body class="hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<div class="container">
+        <div class="cancel-icon"></div>
+        <h1>Payment Cancelled</h1>
+        <p>Your Whish payment was cancelled. Your booking reservation has been kept as pending. You can try again or choose a different payment method.</p>
+        <div class="booking-id">
+            Booking ID: <strong id="booking-id"></strong>
+        </div>
+        <div class="btn-container">
+            <a href="#" id="retry-link" class="btn-primary">Try Again</a>
+            <a href="/" class="btn-secondary">Go Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Get booking ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookingId = urlParams.get('booking_id');
+
+        if (bookingId) {
+            document.getElementById('booking-id').textContent = bookingId;
+            document.getElementById('retry-link').href = `checkout.html?booking_id=${bookingId}`;
+        } else {
+            document.getElementById('retry-link').href = '/';
+        }
+    </script>
+</body>
+</html>

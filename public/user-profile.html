@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ==================== META TAGS ==================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- SEO Meta Tags -->
+    <title>My Profile - Lebanon Locals</title>
+    <meta name="description" content="View and edit your Lebanon Locals profile">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.lebanonlocals.com/user-profile.html">
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/svgahmadLL.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/svgahmadLL.svg">
+
+    <!-- ==================== FONTS ==================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+    <!-- ==================== STYLESHEETS ==================== -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/wishlist.css">
+    
+    <style>
+        /* Show header but hide unnecessary elements on profile page */
+        .user-profile-page .main-header {
+            display: block !important;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Hide search bar and nav words on profile page */
+        .user-profile-page .header-search-btn,
+        .user-profile-page .header-nav-words,
+        .user-profile-page .search-bar,
+        .user-profile-page .type-icon {
+            display: none !important;
+        }
+        
+        /* Adjust header layout - space between logo and profile */
+        .user-profile-page .main-header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Profile page layout */
+        .profile-page {
+            max-width: 1200px;
+            margin: 100px auto 60px;
+            padding: 0 40px;
+        }
+
+        /* Modal Overlay - Centered and Beautiful */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 5% auto;
+            padding: 32px;
+            border: none;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: #717171;
+            font-size: 32px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+            background: none;
+            border: none;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: #222;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 12px;
+            color: #222;
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        /* Searchable Dropdown Styles */
+        .searchable-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .searchable-select-input {
+            width: 100%;
+            padding: 12px 40px 12px 16px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            background: white;
+            transition: border-color 0.3s;
+        }
+
+        .searchable-select-input:focus {
+            outline: none;
+            border-color: #FF385C;
+        }
+
+        .searchable-select-arrow {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #717171;
+        }
+
+        .searchable-select-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 4px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .searchable-select-dropdown.show {
+            display: block;
+        }
+
+        .searchable-select-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .searchable-select-option:hover {
+            background-color: #f7f7f7;
+        }
+
+        .searchable-select-option.selected {
+            background-color: #FFE8ED;
+            color: #FF385C;
+            font-weight: 600;
+        }
+
+        .searchable-select-no-results {
+            padding: 16px;
+            text-align: center;
+            color: #717171;
+        }
+
+        /* Checkbox Group Styles */
+        .checkbox-group {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            padding: 12px;
+            background: #fafafa;
+        }
+
+        .checkbox-search {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 15px;
+            margin-bottom: 12px;
+            background: white;
+        }
+
+        .checkbox-search:focus {
+            outline: none;
+            border-color: #FF385C;
+        }
+
+        .checkbox-item {
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #FF385C;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            margin: 0;
+            font-size: 15px;
+            color: #222;
+            flex: 1;
+        }
+
+        .selected-count {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #717171;
+        }
+
+        .selected-count.has-selection {
+            color: #FF385C;
+            font-weight: 600;
+        }
+        
+        .profile-header-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 40px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF385C 0%, #FF1744 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.2);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* No picture state */
+        .profile-avatar.no-picture::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        
+        .profile-avatar.no-picture .upload-icon {
+            position: absolute;
+            z-index: 2;
+            font-size: 32px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .profile-avatar.no-picture:hover::after {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-info h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: #222;
+        }
+        
+        .profile-info .user-type {
+            color: #717171;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #222;
+            font-size: 14px;
+        }
+        
+        .stat-item i {
+            color: #FF385C;
+        }
+        
+        /* Tabs */
+        .profile-tabs {
+            display: flex;
+            gap: 32px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 32px;
+        }
+        
+        .profile-tab {
+            background: none;
+            border: none;
+            padding: 16px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #717171;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .profile-tab.active {
+            color: #222;
+            border-bottom-color: #222;
+        }
+        
+        .profile-tab:hover {
+            color: #222;
+        }
+        
+        /* Tab Content */
+        .tab-panel {
+            display: none;
+        }
+        
+        .tab-panel.active {
+            display: block;
+        }
+        
+        /* Profile Details Form */
+        .profile-form {
+            max-width: 600px;
+        }
+        
+        .form-section {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        
+        .form-section h3 {
+            font-size: 22px;
+            margin-bottom: 24px;
+            color: #222;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 8px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #222;
+        }
+        
+        .form-group input:disabled {
+            background: #f7f7f7;
+            cursor: not-allowed;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF385C 0%, #FF1744 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(255, 56, 92, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #FF1744 0%, #D50000 100%);
+            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary:disabled {
+            background: #d0d0d0;
+            cursor: not-allowed;
+            opacity: 0.7;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #222;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #f7f7f7;
+            border-color: #222;
+        }
+        
+        /* Reviews List */
+        .review-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .review-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .review-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #666;
+        }
+        
+        .review-author-info h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: #222;
+        }
+        
+        .review-author-info .review-date {
+            font-size: 14px;
+            color: #717171;
+        }
+        
+        .review-rating {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .review-rating i {
+            color: #FFB800;
+            font-size: 14px;
+        }
+        
+        .review-text {
+            color: #222;
+            line-height: 1.6;
+        }
+        
+        .no-reviews {
+            text-align: center;
+            padding: 60px 20px;
+            color: #717171;
+        }
+        
+        .no-reviews i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #e0e0e0;
+        }
+        
+        /* Success message */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: none;
+            font-weight: 600;
+            font-size: 16px;
+            border: 2px solid #c3e6cb;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 100;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .success-message.show {
+            display: block !important;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="user-profile-page">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+                
+                // Re-initialize auth button after header loads
+                if (window.Auth && window.Auth.setupAuthButton) {
+                    window.Auth.setupAuthButton();
+                }
+            })
+            .catch(error => console.error('Error loading header:', error));
+    </script>
+
+    <!-- Main Content -->
+    <main class="profile-page">
+        <!-- Profile Header -->
+        <div class="profile-header-section">
+            <div class="profile-avatar no-picture" id="profile-avatar" style="cursor: pointer;" title="Click to upload profile picture">
+                        <i class="fa fa-user"></i>
+                <i class="fa fa-camera upload-icon"></i>
+                <input type="file" id="profile-picture-upload" accept="image/*" style="display: none;">
+                    </div>
+            <div class="profile-info">
+                <h1 id="profile-name">My Profile</h1>
+                <div class="user-type" id="user-type">Guest</div>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <i class="fa fa-calendar"></i>
+                        <span>Joined <span id="join-date">2025</span></span>
+                </div>
+                    <div class="stat-item">
+                        <i class="fa fa-star"></i>
+                        <span id="user-ranking">0.0</span> rating
+            </div>
+                    <div class="stat-item">
+                        <i class="fa fa-comment"></i>
+                        <span id="review-count">0 reviews</span>
+        </div>
+                    <div class="stat-item">
+                        <i class="fa fa-credit-card"></i>
+                        <span id="user-credits">$0</span> credits
+                    </div>
+                    <div class="stat-item" id="verified-status">
+                        <!-- Will be populated with verified tick or Get Verified button -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="profile-tabs">
+            <button class="profile-tab active" data-tab="profile">Personal Info</button>
+            <button class="profile-tab" data-tab="reviews">Reviews About Me</button>
+    </div>
+
+        <!-- Personal Info Tab -->
+        <div class="tab-panel active" id="panel-profile">
+            <div class="profile-form">
+                <!-- Success Message -->
+                <div class="success-message" id="success-message">
+                    Profile updated successfully!
+        </div>
+
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h3>Basic Information</h3>
+                    <form id="basic-info-form">
+                        <div class="form-group">
+                            <label for="first-name">First Name</label>
+                            <input type="text" id="first-name" required>
+    </div>
+
+                        <div class="form-group">
+                            <label for="last-name">Last Name</label>
+                            <input type="text" id="last-name" required>
+            </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone">
+                    </div>
+
+                        <div class="form-group">
+                            <label for="nationality">Nationality</label>
+                            <div class="searchable-select" id="nationality-select">
+                                <input type="text" class="searchable-select-input" id="nationality" placeholder="Type to search..." autocomplete="off">
+                                <i class="fa fa-chevron-down searchable-select-arrow"></i>
+                                <div class="searchable-select-dropdown" id="nationality-dropdown"></div>
+                            </div>
+                    </div>
+
+                        <div class="form-group">
+                            <label for="bio">About Me</label>
+                            <textarea id="bio" rows="4" style="width: 100%; padding: 12px; border: 1px solid #d0d0d0; border-radius: 8px; font-size: 16px; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="languages">Languages I Speak</label>
+                            <div class="checkbox-group" id="languages-container">
+                                <input type="text" class="checkbox-search" id="languages-search" placeholder="Type to search languages...">
+                                <div id="languages-checkboxes"></div>
+                            </div>
+                            <div class="selected-count" id="languages-count">0 languages selected</div>
+                            </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="loadUserData()">Reset Changes</button>
+                            <button type="submit" class="btn btn-primary" id="save-basic-info" disabled>Save Changes</button>
+                            </div>
+                    </form>
+                        </div>
+
+                <!-- Address -->
+                <div class="form-section">
+                    <h3>Address</h3>
+                    <form id="address-form">
+                        <div class="form-group">
+                            <label for="address-country">Country</label>
+                            <input type="text" id="address-country">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address-city">City</label>
+                            <input type="text" id="address-city">
+                    </div>
+
+                        <div class="form-group">
+                            <label for="address-street">Street</label>
+                            <input type="text" id="address-street">
+                </div>
+
+                        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group">
+                                <label for="address-building">Building</label>
+                                <input type="text" id="address-building">
+                    </div>
+
+                            <div class="form-group">
+                                <label for="address-floor">Floor</label>
+                                <input type="text" id="address-floor">
+                        </div>
+                    </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="loadUserData()">Reset Changes</button>
+                            <button type="submit" class="btn btn-primary" id="save-address" disabled>Save Address</button>
+                </div>
+                    </form>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div class="form-section">
+                    <h3>Emergency Contact</h3>
+                    <form id="emergency-contact-form">
+                        <div class="form-group">
+                            <label for="emergency-name">Contact Name</label>
+                            <input type="text" id="emergency-name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emergency-phone">Contact Phone</label>
+                            <input type="tel" id="emergency-phone">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="loadUserData()">Reset Changes</button>
+                            <button type="submit" class="btn btn-primary" id="save-emergency" disabled>Save Emergency Contact</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Change Password -->
+                <div class="form-section">
+                    <h3>Change Password</h3>
+                    <form id="password-form">
+                        <div class="form-group">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" required minlength="8">
+                    </div>
+
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm New Password</label>
+                            <input type="password" id="confirm-password" required>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('password-form').reset()">Reset Changes</button>
+                            <button type="submit" class="btn btn-primary" id="save-password" disabled>Update Password</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Tab -->
+        <div class="tab-panel" id="panel-reviews">
+            <div id="reviews-container">
+                <div id="reviews-loading" style="text-align: center; padding: 40px; color: #717171;">
+                    <img src="images/status.gif" alt="Loading..." style="width: 60px; height: 60px; margin-bottom: 12px;">
+                    <p>Loading reviews...</p>
+                </div>
+                <div id="reviews-list"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div>
+                    <img src="images/logos/logo.jpg" alt="Lebanon Locals" class="footer-logo">
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="terms.html">Terms & Conditions</a></li>
+                            <li><a href="privacy.html">Your Privacy</a></li>
+                            <li><a href="about.html">Our Story</a></li>
+                            <li><a href="cookies.html">Cookies & Tracking</a></li>
+                            <li><a href="contact.html">Contact Us</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Discover</h4>
+                        <ul>
+                            <li><a href="travel-credit.html">Travel Credit</a></li>
+                            <li><a href="guest-protection.html">Guest Protection</a></li>
+                            <li><a href="guest-safety.html">Guest Safety</a></li>
+                            <li><a href="standards.html">Our Standards</a></li>
+                            <li><a href="cancellation_policies.html">Cancellations & Refunds</a></li>
+                            <li><a href="help.html">FAQS</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Hosting</h4>
+                        <ul>
+                            <li><a href="host-protection.html">Host Protection</a></li>
+                            <li><a href="why-host.html">Why Host</a></li>
+                            <li><a href="help.html">Hosting Support</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="footer-apps">
+                    <a href="https://play.google.com/store/apps" target="_blank" class="app-btn">
+                        <i class="fa fa-play"></i>
+                        <div>
+                            <div class="app-text-small">Download on</div>
+                            <div class="app-text-large">Google Play</div>
+                        </div>
+                    </a>
+                    <a href="https://apps.apple.com/" target="_blank" class="app-btn">
+                        <i class="fa fa-apple"></i>
+                        <div>
+                            <div class="app-text-small">Download on</div>
+                            <div class="app-text-large">App Store</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    Copyright © 2025 Lebanon Locals. All rights reserved
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/lebanonlocals" target="_blank" class="social-icon instagram" title="Instagram">
+                        <i class="fa fa-instagram"></i>
+                    </a>
+                    <a href="https://tiktok.com/@lebanonlocals" target="_blank" class="social-icon tiktok" title="TikTok">
+                        <svg viewBox="0 0 448 512" style="width: 16px; height: 16px; fill: currentColor;">
+                            <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Verification Modal -->
+    <div id="verification-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="modal-close" onclick="document.getElementById('verification-modal').style.display='none'">&times;</span>
+            <h2>Get Verified</h2>
+            <p style="color: #717171; margin-bottom: 24px;">Upload a photo of your ID or passport to get verified</p>
+            
+            <form id="verification-form">
+                <div class="form-group">
+                    <label>Upload ID or Passport Photo</label>
+                    <input type="file" id="verification-document" accept="image/*,.pdf" required style="width: 100%; padding: 12px; border: 1px solid #d0d0d0; border-radius: 8px;">
+                    <small style="color: #717171; display: block; margin-top: 4px;">Accepted: JPG, PNG, PDF (Max 10MB)</small>
+                </div>
+                
+                <p style="color: #717171; font-size: 14px; margin: 16px 0;">
+                    <i class="fa fa-lock"></i> Your document will be securely stored and reviewed by our admin team.
+                </p>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('verification-modal').style.display='none'">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit for Verification</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Fixed Chatbot -->
+    <button class="chatbot-fixed" onclick="alert('Live chat coming soon! For now, call us at 961 81 434 070 or visit our help page.')" title="Chat with us">
+        <i class="fa fa-comments"></i>
+        <span class="chatbot-online"></span>
+    </button>
+
+    <!-- Auth Modals -->
+    <script>
+        fetch('includes/auth-modals.html')
+            .then(response => response.text())
+            .then(html => {
+                document.body.insertAdjacentHTML('beforeend', html);
+            });
+    </script>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script src="js/jquery-3.5.0.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/wishlist.js"></script>
+    <script src="assets/js/auth.js"></script>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // No development mode - always use real authenticated user
+
+            // Check authentication
+            function checkAuth() {
+
+                
+                // Wait longer for Auth module to fully initialize
+                setTimeout(() => {
+
+
+                    
+                    // Always check if Auth exists and user is logged in
+                    if (!window.Auth || !window.Auth.isAuthenticated()) {
+
+                        window.location.href = 'index.html';
+                    } else {
+                        // User is actually logged in - use their real data
+                        const user = window.Auth.getCurrentUser();
+
+                        loadUserData();
+                        loadReviews();
+                    }
+                }, 500); // Increased from 200ms to 500ms to wait for Auth
+            }
+
+            // Load user data into form
+            async function loadUserData() {
+                // ALWAYS get user from Auth system (no DEV_USER fallback)
+                if (!window.Auth) {
+                    console.error('[PROFILE] Auth module not loaded');
+                    return;
+                }
+                
+                let user = window.Auth.getCurrentUser();
+                
+                if (!user || !user.id) {
+                    console.error('[PROFILE] No authenticated user, redirecting...');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+
+                
+                // Fetch fresh data from database to ensure we have latest
+                try {
+                    const response = await fetch(`/backend/api/get-user.php?user_id=${user.id}`);
+                    const data = await response.json();
+                    
+                    if (data.success && data.data) {
+                        user = data.data;
+                        
+                        // Update Auth module with fresh data (especially address_id)
+                        const currentUser = window.Auth.getCurrentUser();
+                        if (currentUser) {
+                            Object.assign(currentUser, user);
+                        }
+                    }
+                } catch (error) {
+                    console.error('[PROFILE] Error fetching user data:', error);
+                    // Continue with cached user data
+                }
+
+                // Update header
+                document.getElementById('profile-name').textContent = `${user.first_name} ${user.last_name}`;
+                const typeLabel = user.user_type === 'host' ? 'Host & Guest' : 
+                                 user.user_type === 'admin' ? 'Administrator' : 'Guest';
+                document.getElementById('user-type').textContent = typeLabel;
+                
+                // Update avatar
+                const avatarEl = document.getElementById('profile-avatar');
+                const fileInput = '<input type="file" id="profile-picture-upload" accept="image/*" style="display: none;">';
+                
+                if (user.profile_picture) {
+                    avatarEl.innerHTML = `<img src="${user.profile_picture}" alt="${user.first_name}">${fileInput}`;
+                    avatarEl.classList.remove('no-picture');
+                    avatarEl.title = 'Click to change profile picture';
+                } else {
+                    const initials = (user.first_name.charAt(0) + user.last_name.charAt(0)).toUpperCase();
+                    avatarEl.innerHTML = `${initials}<i class="fa fa-camera upload-icon"></i>${fileInput}`;
+                    avatarEl.classList.add('no-picture');
+                    avatarEl.title = 'Click to upload profile picture';
+                }
+                
+                // Re-attach upload listener after updating avatar
+                attachProfilePictureListeners();
+
+                // Update join date
+                if (user.created_at) {
+                    const joinYear = new Date(user.created_at).getFullYear();
+                    document.getElementById('join-date').textContent = joinYear;
+                }
+
+                // Fill form fields - Basic Info
+                document.getElementById('first-name').value = user.first_name || '';
+                document.getElementById('last-name').value = user.last_name || '';
+                document.getElementById('email').value = user.email || '';
+                document.getElementById('phone').value = user.phone_number || '';
+                document.getElementById('nationality').value = user.nationality || '';
+                document.getElementById('bio').value = user.bio || '';
+                
+                // Languages spoken - checkboxes
+                const userLanguages = user.languages_spoken ? user.languages_spoken.split(',').map(l => l.trim()) : [];
+                const checkboxes = document.querySelectorAll('#languages-checkboxes input[type="checkbox"]');
+                
+                // First uncheck all
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                // Then check the ones in userLanguages
+                checkboxes.forEach(checkbox => {
+                    if (userLanguages.includes(checkbox.value)) {
+                        checkbox.checked = true;
+                    }
+                });
+                
+                // Update count
+                const countDisplay = document.getElementById('languages-count');
+                if (countDisplay) {
+                    countDisplay.textContent = `${userLanguages.length} language${userLanguages.length !== 1 ? 's' : ''} selected`;
+                    countDisplay.classList.toggle('has-selection', userLanguages.length > 0);
+                }
+                
+                // Emergency contact
+                document.getElementById('emergency-name').value = user.emergency_contact_name || '';
+                document.getElementById('emergency-phone').value = user.emergency_contact_phone || '';
+                
+                // Load address if user has one
+                if (user.address_id) {
+                    loadAddress(user.address_id);
+                }
+                
+                // Update stats in header
+                document.getElementById('user-ranking').textContent = user.user_ranking || '0.0';
+                document.getElementById('user-credits').textContent = '$' + (parseFloat(user.credits || 0).toFixed(2));
+                document.getElementById('review-count').textContent = (user.total_reviews || 0) + ' review' + (user.total_reviews == 1 ? '' : 's');
+                
+                // Verified status
+                const verifiedStatus = document.getElementById('verified-status');
+                if (user.is_verified == 1) {
+                    verifiedStatus.innerHTML = '<i class="fa fa-check-circle" style="color: #00A699;"></i> <span style="color: #00A699; font-weight: 600;">Verified</span>';
+                } else {
+                    verifiedStatus.innerHTML = '<button onclick="showVerificationModal()" style="background: #FF385C; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;">Get Verified</button>';
+                }
+            }
+
+            // Load address data
+            async function loadAddress(addressId) {
+                try {
+                    const response = await fetch(`/backend/api/get-address.php?address_id=${addressId}`);
+                    const data = await response.json();
+
+                    if (data.success && data.data) {
+                        const addr = data.data;
+                        document.getElementById('address-country').value = addr.country || '';
+                        document.getElementById('address-city').value = addr.city || '';
+                        document.getElementById('address-street').value = addr.street || '';
+                        document.getElementById('address-building').value = addr.building || '';
+                        document.getElementById('address-floor').value = addr.floor || '';
+                    }
+                } catch (error) {
+                    console.error('[PROFILE] Error loading address:', error);
+                }
+            }
+
+            // Load reviews about this user
+            async function loadReviews() {
+                if (!window.Auth) return;
+                
+                const user = window.Auth.getCurrentUser();
+                if (!user || !user.id) return;
+                
+
+
+                const reviewsList = document.getElementById('reviews-list');
+                const reviewsLoading = document.getElementById('reviews-loading');
+
+                try {
+                    const response = await fetch(`/backend/api/user-reviews.php?user_id=${user.id}`);
+                    const data = await response.json();
+
+                    reviewsLoading.style.display = 'none';
+
+                    if (data.success && data.data && data.data.length > 0) {
+                        const reviewCount = data.data.length;
+                        document.getElementById('review-count').textContent = `${reviewCount} review${reviewCount > 1 ? 's' : ''}`;
+                        
+                        reviewsList.innerHTML = data.data.map(review => createReviewCard(review)).join('');
+                    } else {
+                        reviewsList.innerHTML = `
+                            <div class="no-reviews">
+                                <i class="fa fa-star-o"></i>
+                                <h3>No reviews yet</h3>
+                                <p>Reviews from hosts will appear here after you complete bookings</p>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('[PROFILE] Error loading reviews:', error);
+                    reviewsLoading.style.display = 'none';
+                    reviewsList.innerHTML = `
+                        <div class="no-reviews">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            <h3>Unable to load reviews</h3>
+                            <p>Please try again later</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // Create review card HTML
+            function createReviewCard(review) {
+                const stars = [];
+                for (let i = 0; i < 5; i++) {
+                    stars.push(i < review.stars ? '<i class="fa fa-star"></i>' : '<i class="fa fa-star-o"></i>');
+                }
+
+                const reviewDate = new Date(review.created_at).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+
+                const reviewerInitials = review.reviewer_name 
+                    ? review.reviewer_name.split(' ').map(n => n[0]).join('').toUpperCase()
+                    : 'H';
+
+                return `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-author">
+                                <div class="review-avatar">${reviewerInitials}</div>
+                                <div class="review-author-info">
+                                    <h4>${review.reviewer_name || 'Host'}</h4>
+                                    <div class="review-date">${reviewDate}</div>
+                                </div>
+                            </div>
+                            <div class="review-rating">
+                                ${stars.join('')}
+                            </div>
+                        </div>
+                        <p class="review-text">${review.comments || 'No comment provided'}</p>
+                    </div>
+                `;
+            }
+
+            // Track changes for basic info form
+            const basicInfoFields = ['first-name', 'last-name', 'email', 'phone', 'nationality', 'bio'];
+            const basicInfoBtn = document.getElementById('save-basic-info');
+            
+            basicInfoFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', () => {
+                        basicInfoBtn.disabled = false;
+                    });
+                }
+            });
+            
+            // Languages checkboxes
+            document.addEventListener('change', (e) => {
+                if (e.target.matches('#languages-checkboxes input[type="checkbox"]')) {
+                    basicInfoBtn.disabled = false;
+                }
+            });
+
+            // Handle basic info form submission
+            document.getElementById('basic-info-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Get current user ID from Auth
+                if (!window.Auth) {
+                    alert('Authentication system not loaded. Please refresh the page.');
+                    return;
+                }
+                
+                const user = window.Auth.getCurrentUser();
+                if (!user || !user.id) {
+                    alert('User session expired. Please log in again.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+                // Get selected languages from checkboxes
+                const selectedLanguages = Array.from(document.querySelectorAll('#languages-checkboxes input[type="checkbox"]:checked'))
+                    .map(checkbox => checkbox.value);
+                
+                const formData = {
+                    user_id: user.id,
+                    first_name: document.getElementById('first-name').value,
+                    last_name: document.getElementById('last-name').value,
+                    email: document.getElementById('email').value,
+                    phone_number: document.getElementById('phone').value,
+                    nationality: document.getElementById('nationality').value,
+                    bio: document.getElementById('bio').value,
+                    languages_spoken: selectedLanguages.join(', ')
+                };
+
+
+
+                try {
+                    const response = await fetch('/backend/api/update-profile.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const data = await response.json();
+
+                if (data.success) {
+                    // Show "Saved" on button
+                    const saveBtn = document.getElementById('save-basic-info');
+                    const originalText = saveBtn.textContent;
+                    saveBtn.textContent = 'Saved ✓';
+                    saveBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        saveBtn.textContent = originalText;
+                    }, 2000);
+
+                    // Always reload from database to show updated data
+                    setTimeout(() => loadUserData(), 500);
+                } else {
+                    alert('Error updating profile: ' + (data.message || 'Unknown error'));
+                }
+                } catch (error) {
+                    console.error('[PROFILE] Error updating profile:', error);
+                    alert('Error updating profile. Please try again.');
+                }
+            });
+
+            // Track changes for address form
+            const addressFields = ['address-country', 'address-city', 'address-street', 'address-building', 'address-floor'];
+            const addressBtn = document.getElementById('save-address');
+            
+            addressFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', () => {
+                        addressBtn.disabled = false;
+                    });
+                }
+            });
+
+            // Handle address form
+            document.getElementById('address-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                if (!window.Auth) {
+                    alert('Authentication system not loaded. Please refresh the page.');
+                    return;
+                }
+                
+                // Get fresh user data to ensure we have latest address_id
+                const user = window.Auth.getCurrentUser();
+                if (!user || !user.id) {
+                    alert('User session expired. Please log in again.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // If user has address_id, we UPDATE. If not, we CREATE.
+                const addressData = {
+                    user_id: user.id,
+                    address_id: user.address_id || null,  // This determines UPDATE vs CREATE
+                    country: document.getElementById('address-country').value,
+                    city: document.getElementById('address-city').value,
+                    street: document.getElementById('address-street').value,
+                    building: document.getElementById('address-building').value,
+                    floor: document.getElementById('address-floor').value
+                };
+
+                try {
+                    const response = await fetch('/backend/api/update-address.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(addressData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Update user's address_id in Auth module immediately for next save
+                        if (data.address_id && window.Auth) {
+                            const currentUser = window.Auth.getCurrentUser();
+                            if (currentUser) {
+                                currentUser.address_id = data.address_id;
+                            }
+                        }
+                        
+                        // Show "Saved" on button
+                        const saveBtn = document.getElementById('save-address');
+                        const originalText = saveBtn.textContent;
+                        saveBtn.textContent = 'Saved ✓';
+                        saveBtn.disabled = true;
+                        
+                        setTimeout(() => {
+                            saveBtn.textContent = originalText;
+                        }, 2000);
+                        
+                        // Reload user data to reflect changes
+                        setTimeout(() => loadUserData(), 500);
+                    } else {
+                        alert('Error updating address: ' + (data.message || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('[PROFILE] Error updating address:', error);
+                    alert('Error updating address. Please try again.');
+                }
+            });
+
+            // Track changes for emergency contact form
+            const emergencyFields = ['emergency-name', 'emergency-phone'];
+            const emergencyBtn = document.getElementById('save-emergency');
+            
+            emergencyFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', () => {
+                        emergencyBtn.disabled = false;
+                    });
+                }
+            });
+
+            // Handle emergency contact form
+            document.getElementById('emergency-contact-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                if (!window.Auth) {
+                    alert('Authentication system not loaded. Please refresh the page.');
+                    return;
+                }
+                
+                const user = window.Auth.getCurrentUser();
+                if (!user || !user.id) {
+                    alert('User session expired. Please log in again.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                const formData = {
+                    user_id: user.id,
+                    emergency_contact_name: document.getElementById('emergency-name').value,
+                    emergency_contact_phone: document.getElementById('emergency-phone').value
+                };
+
+                try {
+                    const response = await fetch('/backend/api/update-profile.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Show "Saved" on button
+                        const saveBtn = document.getElementById('save-emergency');
+                        const originalText = saveBtn.textContent;
+                        saveBtn.textContent = 'Saved ✓';
+                        saveBtn.disabled = true;
+                        
+                        setTimeout(() => {
+                            saveBtn.textContent = originalText;
+                        }, 2000);
+                        
+                        setTimeout(() => loadUserData(), 500);
+                    } else {
+                        alert('Error updating emergency contact: ' + (data.message || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('[PROFILE] Error updating emergency contact:', error);
+                    alert('Error updating emergency contact. Please try again.');
+                }
+            });
+
+            // Track changes for password form
+            const passwordFields = ['current-password', 'new-password', 'confirm-password'];
+            const passwordBtn = document.getElementById('save-password');
+            
+            passwordFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', () => {
+                        passwordBtn.disabled = false;
+                    });
+                }
+            });
+
+            // Handle password change form
+            document.getElementById('password-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Get current user ID from Auth
+                if (!window.Auth) {
+                    alert('Authentication system not loaded. Please refresh the page.');
+                    return;
+                }
+                
+                const user = window.Auth.getCurrentUser();
+                if (!user || !user.id) {
+                    alert('User session expired. Please log in again.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+
+
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+
+                // Validate password requirements
+                if (newPassword.length < 8) {
+                    alert('New password must be at least 8 characters long');
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    alert('Passwords do not match!');
+                    return;
+                }
+
+                const formData = {
+                    user_id: user.id,  // Include user_id in request
+                    current_password: document.getElementById('current-password').value,
+                    new_password: newPassword
+                };
+
+
+
+                try {
+                    const response = await fetch('/backend/api/change-password.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Show "Saved" on button
+                        const saveBtn = document.getElementById('save-password');
+                        const originalText = saveBtn.textContent;
+                        saveBtn.textContent = 'Saved ✓';
+                        saveBtn.disabled = true;
+                        
+                        setTimeout(() => {
+                            saveBtn.textContent = originalText;
+                            saveBtn.disabled = true; // Keep disabled after password change
+                        }, 2000);
+
+                        // Reset form
+                        document.getElementById('password-form').reset();
+                    } else {
+                        alert('Error changing password: ' + (data.message || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('[PROFILE] Error changing password:', error);
+                    alert('Error changing password. Please try again.');
+                }
+            });
+
+            // Profile picture upload - wrapped in function to reattach after avatar updates
+            function attachProfilePictureListeners() {
+                const avatarEl = document.getElementById('profile-avatar');
+                
+                if (avatarEl) {
+                    // Clone to remove old listeners
+                    const newAvatar = avatarEl.cloneNode(true);
+                    avatarEl.parentNode.replaceChild(newAvatar, avatarEl);
+                    
+                    // Re-attach click listener
+                    const avatar = document.getElementById('profile-avatar');
+                    if (avatar) {
+                        avatar.addEventListener('click', function() {
+                            const fileInput = document.getElementById('profile-picture-upload');
+                            if (fileInput) fileInput.click();
+                        });
+                    }
+                }
+            }
+            
+            // Initial attachment
+            attachProfilePictureListeners();
+
+            // File input change handler (delegated to work after DOM updates)
+            document.addEventListener('change', async function(e) {
+                if (e.target.id !== 'profile-picture-upload') return;
+                
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file');
+                    return;
+                }
+
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Image size must be less than 5MB');
+                    return;
+                }
+
+                const user = window.Auth ? window.Auth.getCurrentUser() : null;
+                if (!user || !user.id) return;
+
+                const formData = new FormData();
+                formData.append('profile_picture', file);
+                formData.append('user_id', user.id);
+
+                try {
+                    const response = await fetch('/backend/api/upload-profile-picture.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Update avatar immediately
+                        const avatarEl = document.getElementById('profile-avatar');
+                        const fileInput = '<input type="file" id="profile-picture-upload" accept="image/*" style="display: none;">';
+                        avatarEl.innerHTML = `<img src="${data.file_path}?${Date.now()}" alt="Profile">${fileInput}`;
+                        avatarEl.classList.remove('no-picture');
+                        avatarEl.title = 'Click to change profile picture';
+                        
+                        // Re-attach listeners
+                        attachProfilePictureListeners();
+                        
+                        showSuccessMessage('Profile picture updated successfully!');
+                        setTimeout(() => loadUserData(), 500);
+                    } else {
+                        alert('Error uploading picture: ' + (data.message || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('[PROFILE] Error uploading picture:', error);
+                    alert('Error uploading picture. Please try again.');
+                }
+            });
+
+            // Show verification modal
+            window.showVerificationModal = function() {
+                const modal = document.getElementById('verification-modal');
+                if (modal) {
+                    modal.style.display = 'block';
+                }
+            };
+
+            // Handle verification form submission
+            document.getElementById('verification-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const file = document.getElementById('verification-document').files[0];
+                if (!file) {
+                    alert('Please select a file');
+                    return;
+                }
+
+                const user = window.Auth ? window.Auth.getCurrentUser() : null;
+                if (!user || !user.id) return;
+
+                const formData = new FormData();
+                formData.append('verification_document', file);
+                formData.append('user_id', user.id);
+
+                try {
+                    const response = await fetch('/backend/api/upload-verification.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        document.getElementById('verification-modal').style.display = 'none';
+                        showSuccessMessage('Verification document submitted successfully! Our team will review it shortly.');
+                        document.getElementById('verification-form').reset();
+                    } else {
+                        alert('Error uploading document: ' + (data.message || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('[PROFILE] Error uploading verification:', error);
+                    alert('Error uploading verification document. Please try again.');
+                }
+            });
+
+            // Helper to show success message
+            function showSuccessMessage(message = 'Profile updated successfully!') {
+                const successMsg = document.getElementById('success-message');
+                if (successMsg) {
+                    successMsg.textContent = message;
+                    successMsg.classList.add('show');
+                    successMsg.style.display = 'block';
+                    console.log('✅ Success message shown:', message);
+                    setTimeout(() => {
+                        successMsg.classList.remove('show');
+                        successMsg.style.display = 'none';
+                        successMsg.textContent = 'Profile updated successfully!';
+                    }, 3000);
+                } else {
+                    console.error('❌ Success message element not found');
+                    alert(message);
+                }
+            }
+
+            // Tab switching
+            document.querySelectorAll('.profile-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.dataset.tab;
+
+                    // Update tabs
+                    document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Update panels
+                    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                    document.getElementById('panel-' + tabName).classList.add('active');
+                });
+            });
+
+            // Make loadUserData available globally
+            window.loadUserData = loadUserData;
+
+            //====================LANGUAGES & NATIONALITY SELECTORS ====================
+
+            // Comprehensive list of languages
+            const LANGUAGES = [
+                'Afrikaans', 'Albanian', 'Amharic', 'Arabic', 'Armenian', 'Azerbaijani',
+                'Basque', 'Belarusian', 'Bengali', 'Bosnian', 'Bulgarian', 'Burmese',
+                'Catalan', 'Cebuano', 'Chinese (Mandarin)', 'Chinese (Cantonese)', 'Croatian', 'Czech',
+                'Danish', 'Dutch',
+                'English', 'Esperanto', 'Estonian',
+                'Finnish', 'French',
+                'Galician', 'Georgian', 'German', 'Greek', 'Gujarati',
+                'Haitian Creole', 'Hausa', 'Hebrew', 'Hindi', 'Hungarian',
+                'Icelandic', 'Igbo', 'Indonesian', 'Irish', 'Italian',
+                'Japanese', 'Javanese',
+                'Kannada', 'Kazakh', 'Khmer', 'Korean', 'Kurdish',
+                'Lao', 'Latin', 'Latvian', 'Lithuanian', 'Luxembourgish',
+                'Macedonian', 'Malagasy', 'Malay', 'Malayalam', 'Maltese', 'Maori', 'Marathi', 'Mongolian',
+                'Nepali', 'Norwegian',
+                'Pashto', 'Persian (Farsi)', 'Polish', 'Portuguese', 'Punjabi',
+                'Romanian', 'Russian',
+                'Samoan', 'Scottish Gaelic', 'Serbian', 'Shona', 'Sindhi', 'Sinhala', 'Slovak', 'Slovenian',
+                'Somali', 'Spanish', 'Sundanese', 'Swahili', 'Swedish',
+                'Tagalog', 'Tajik', 'Tamil', 'Telugu', 'Thai', 'Turkish', 'Turkmen',
+                'Ukrainian', 'Urdu', 'Uzbek',
+                'Vietnamese',
+                'Welsh',
+                'Xhosa',
+                'Yiddish', 'Yoruba',
+                'Zulu'
+            ].sort();
+
+            // Comprehensive list of nationalities
+            const NATIONALITIES = [
+                'Afghan', 'Albanian', 'Algerian', 'American', 'Andorran', 'Angolan', 'Antiguans', 'Argentinean',
+                'Armenian', 'Australian', 'Austrian', 'Azerbaijani',
+                'Bahamian', 'Bahraini', 'Bangladeshi', 'Barbadian', 'Barbudans', 'Batswana', 'Belarusian', 'Belgian',
+                'Belizean', 'Beninese', 'Bhutanese', 'Bolivian', 'Bosnian', 'Brazilian', 'British', 'Bruneian',
+                'Bulgarian', 'Burkinabe', 'Burmese', 'Burundian',
+                'Cambodian', 'Cameroonian', 'Canadian', 'Cape Verdean', 'Central African', 'Chadian', 'Chilean',
+                'Chinese', 'Colombian', 'Comoran', 'Congolese', 'Costa Rican', 'Croatian', 'Cuban', 'Cypriot', 'Czech',
+                'Danish', 'Djibouti', 'Dominican', 'Dutch',
+                'East Timorese', 'Ecuadorean', 'Egyptian', 'Emirian', 'Equatorial Guinean', 'Eritrean', 'Estonian', 'Ethiopian',
+                'Fijian', 'Filipino', 'Finnish', 'French',
+                'Gabonese', 'Gambian', 'Georgian', 'German', 'Ghanaian', 'Greek', 'Grenadian', 'Guatemalan',
+                'Guinea-Bissauan', 'Guinean', 'Guyanese',
+                'Haitian', 'Herzegovinian', 'Honduran', 'Hungarian',
+                'Icelander', 'Indian', 'Indonesian', 'Iranian', 'Iraqi', 'Irish', 'Israeli', 'Italian', 'Ivorian',
+                'Jamaican', 'Japanese', 'Jordanian',
+                'Kazakhstani', 'Kenyan', 'Kittian and Nevisian', 'Kuwaiti', 'Kyrgyz',
+                'Laotian', 'Latvian', 'Lebanese', 'Liberian', 'Libyan', 'Liechtensteiner', 'Lithuanian', 'Luxembourger',
+                'Macedonian', 'Malagasy', 'Malawian', 'Malaysian', 'Maldivan', 'Malian', 'Maltese', 'Marshallese',
+                'Mauritanian', 'Mauritian', 'Mexican', 'Micronesian', 'Moldovan', 'Monacan', 'Mongolian', 'Moroccan',
+                'Mosotho', 'Motswana', 'Mozambican',
+                'Namibian', 'Nauruan', 'Nepalese', 'New Zealander', 'Ni-Vanuatu', 'Nicaraguan', 'Nigerian', 'Nigerien',
+                'North Korean', 'Northern Irish', 'Norwegian',
+                'Omani',
+                'Pakistani', 'Palauan', 'Panamanian', 'Papua New Guinean', 'Paraguayan', 'Peruvian', 'Polish', 'Portuguese',
+                'Qatari',
+                'Romanian', 'Russian', 'Rwandan',
+                'Saint Lucian', 'Salvadoran', 'Samoan', 'San Marinese', 'Sao Tomean', 'Saudi', 'Scottish', 'Senegalese',
+                'Serbian', 'Seychellois', 'Sierra Leonean', 'Singaporean', 'Slovakian', 'Slovenian', 'Solomon Islander',
+                'Somali', 'South African', 'South Korean', 'Spanish', 'Sri Lankan', 'Sudanese', 'Surinamer', 'Swazi',
+                'Swedish', 'Swiss', 'Syrian',
+                'Taiwanese', 'Tajik', 'Tanzanian', 'Thai', 'Togolese', 'Tongan', 'Trinidadian or Tobagonian', 'Tunisian',
+                'Turkish', 'Tuvaluan',
+                'Ugandan', 'Ukrainian', 'Uruguayan', 'Uzbekistani',
+                'Venezuelan', 'Vietnamese',
+                'Welsh',
+                'Yemenite',
+                'Zambian', 'Zimbabwean'
+            ].sort();
+
+            // Initialize languages checkboxes
+            function initLanguagesCheckboxes() {
+                const container = document.getElementById('languages-checkboxes');
+                const searchInput = document.getElementById('languages-search');
+                const countDisplay = document.getElementById('languages-count');
+
+                function renderLanguages(filter = '') {
+                    const filtered = LANGUAGES.filter(lang =>
+                        lang.toLowerCase().includes(filter.toLowerCase())
+                    );
+
+                    container.innerHTML = filtered.map(lang => `
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lang-${lang.replace(/[^a-zA-Z0-9]/g, '')}" value="${lang}">
+                            <label for="lang-${lang.replace(/[^a-zA-Z0-9]/g, '')}">${lang}</label>
+                        </div>
+                    `).join('');
+
+                    // Update count display
+                    updateLanguagesCount();
+
+                    // Add change listeners
+                    container.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                        checkbox.addEventListener('change', updateLanguagesCount);
+                    });
+                }
+
+                function updateLanguagesCount() {
+                    const checked = container.querySelectorAll('input[type="checkbox"]:checked').length;
+                    countDisplay.textContent = `${checked} language${checked !== 1 ? 's' : ''} selected`;
+                    countDisplay.classList.toggle('has-selection', checked > 0);
+                }
+
+                searchInput.addEventListener('input', (e) => {
+                    renderLanguages(e.target.value);
+                });
+
+                renderLanguages();
+            }
+
+            // Initialize nationality searchable dropdown
+            function initNationalitySelect() {
+                const input = document.getElementById('nationality');
+                const dropdown = document.getElementById('nationality-dropdown');
+                let selectedValue = '';
+
+                function renderOptions(filter = '') {
+                    const filtered = NATIONALITIES.filter(nat =>
+                        nat.toLowerCase().includes(filter.toLowerCase())
+                    );
+
+                    if (filtered.length === 0) {
+                        dropdown.innerHTML = '<div class="searchable-select-no-results">No results found</div>';
+                        return;
+                    }
+
+                    dropdown.innerHTML = filtered.map(nat => `
+                        <div class="searchable-select-option ${nat === selectedValue ? 'selected' : ''}" data-value="${nat}">
+                            ${nat}
+                        </div>
+                    `).join('');
+
+                    // Add click listeners
+                    dropdown.querySelectorAll('.searchable-select-option').forEach(option => {
+                        option.addEventListener('click', () => {
+                            selectedValue = option.dataset.value;
+                            input.value = selectedValue;
+                            dropdown.classList.remove('show');
+                        });
+                    });
+                }
+
+                input.addEventListener('focus', () => {
+                    dropdown.classList.add('show');
+                    renderOptions(input.value);
+                });
+
+                input.addEventListener('input', (e) => {
+                    renderOptions(e.target.value);
+                    dropdown.classList.add('show');
+                });
+
+                input.addEventListener('blur', (e) => {
+                    setTimeout(() => dropdown.classList.remove('show'), 200);
+                });
+
+                // Click outside to close
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('#nationality-select')) {
+                        dropdown.classList.remove('show');
+                    }
+                });
+
+                // Store initial value
+                if (input.value) {
+                    selectedValue = input.value;
+                }
+            }
+
+            // Update loadUserData to handle new fields
+            const originalLoadUserData = loadUserData;
+            loadUserData = async function() {
+                await originalLoadUserData();
+
+                // Set nationality value
+                const nationalityInput = document.getElementById('nationality');
+                if (nationalityInput && nationalityInput.value) {
+                    // Already set by originalLoadUserData
+                }
+
+                // Set languages checkboxes
+                const user = window.Auth ? window.Auth.getCurrentUser() : null;
+                if (user && user.languages_spoken) {
+                    const userLanguages = user.languages_spoken.split(',').map(l => l.trim());
+                    const checkboxes = document.querySelectorAll('#languages-checkboxes input[type="checkbox"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = userLanguages.includes(checkbox.value);
+                    });
+                    document.getElementById('languages-count').textContent =
+                        `${userLanguages.length} language${userLanguages.length !== 1 ? 's' : ''} selected`;
+                    document.getElementById('languages-count').classList.toggle('has-selection', userLanguages.length > 0);
+                }
+            };
+
+            // Update form submission to get selected languages
+            const originalFormHandler = document.getElementById('basic-info-form').onsubmit;
+            document.getElementById('basic-info-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                if (!window.Auth) {
+                    alert('Authentication system not loaded. Please refresh the page.');
+                    return;
+                }
+
+                const user = window.Auth.getCurrentUser();
+                if (!user || !user.id) {
+                    alert('User session expired. Please log in again.');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // Get selected languages from checkboxes
+                const selectedLanguages = Array.from(document.querySelectorAll('#languages-checkboxes input[type="checkbox"]:checked'))
+                    .map(checkbox => checkbox.value);
+
+                const formData = {
+                    user_id: user.id,
+                    first_name: document.getElementById('first-name').value,
+                    last_name: document.getElementById('last-name').value,
+                    email: document.getElementById('email').value,
+                    phone_number: document.getElementById('phone').value,
+                    nationality: document.getElementById('nationality').value,
+                    bio: document.getElementById('bio').value,
+                    languages_spoken: selectedLanguages.join(', ')
+                };
+
+
+
+                try {
+                    const response = await fetch('/backend/api/update-profile.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        const successMsg = document.getElementById('success-message');
+                        successMsg.classList.add('show');
+                        setTimeout(() => successMsg.classList.remove('show'), 3000);
+                        setTimeout(() => loadUserData(), 500);
+                    } else {
+                        alert('Error updating profile: ' + (data.message || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('[PROFILE] Error updating profile:', error);
+                    alert('Error updating profile. Please try again.');
+                }
+            }, true); // Use capture to override existing handler
+
+            // Initialize selectors
+            initLanguagesCheckboxes();
+            initNationalitySelect();
+
+            // Initialize
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', checkAuth);
+            } else {
+                checkAuth();
+            }
+        })();
+    </script>
+</body>
+</html>

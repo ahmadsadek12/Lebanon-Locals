@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stay Details - Lebanon Locals</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="icon" href="images/logos/favicon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/wishlist.css">
+    <style>
+        body {
+            background: white;
+        }
+        body::before,
+        body::after {
+            display: none;
+        }
+        .detail-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px 40px;
+        }
+        .back-link {
+            color: #222222;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 24px;
+            display: inline-block;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .detail-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #222222;
+            margin-bottom: 16px;
+        }
+        .detail-info {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 24px;
+            color: #717171;
+        }
+    </style>
+</head>
+<body class="details-page">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+    <div class="detail-container">
+        <a href="index.html#stays" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to Stays
+        </a>
+        
+        <div class="detail-header">
+            <h1>Stay Details</h1>
+            <div class="detail-info">
+                <span><i class="fa fa-star" style="color: #FF5A5F;"></i> 4.9 (127 reviews)</span>
+                <span>·</span>
+                <span>2 Beds · Central Location</span>
+                <span>·</span>
+                <span>Beirut, Lebanon</span>
+            </div>
+        </div>
+
+        <div style="background: #F7F7F7; padding: 60px; border-radius: 16px; text-align: center;">
+            <h2 style="color: #222222; margin-bottom: 16px;">Stay Details Page</h2>
+            <p style="color: #717171; font-size: 16px; margin-bottom: 24px;">
+                This is a placeholder for the accommodation detail page.<br>
+                Full functionality will be available when the backend is integrated.
+            </p>
+            <p style="color: #717171; font-size: 14px;">
+                This page will display: photo gallery, room information, amenities,<br>
+                host profile, location map, booking calendar, and guest reviews.
+            </p>
+        </div>
+    </div>
+
+    <!-- Chatbot -->
+    <button class="chatbot-fixed" onclick="alert('Chat feature coming soon!')">
+        <i class="fa fa-comments"></i>
+        <div class="chatbot-online"></div>
+    </button>
+
+    <!-- Auth Modals -->
+    <script>
+        fetch('includes/auth-modals.html')
+            .then(response => response.text())
+            .then(html => {
+                document.body.insertAdjacentHTML('beforeend', html);
+            });
+    </script>
+
+    <!-- Scripts -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/wishlist.js"></script>
+    <script src="assets/js/auth.js"></script>
+</body>
+</html>
+

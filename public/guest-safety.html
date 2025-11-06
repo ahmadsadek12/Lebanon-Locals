@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Safety - Lebanon Locals</title>
+    
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="icon" href="images/logos/favicon.png" type="image/png">
+    
+    <style>
+        body {
+            font-family: 'Circular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: white;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .content {
+            max-width: 1000px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+        
+        .safety-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin: 40px 0;
+        }
+        
+        .safety-card {
+            padding: 32px;
+            background: #f7f7f7;
+            border-radius: 16px;
+        }
+        
+        .safety-card i {
+            font-size: 40px;
+            color: #9C27B0;
+            margin-bottom: 16px;
+        }
+        
+        .safety-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 12px;
+        }
+        
+        .safety-card p {
+            font-size: 16px;
+            color: #717171;
+            line-height: 1.6;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #222;
+            margin: 60px 0 24px;
+        }
+        
+        p, li {
+            font-size: 18px;
+            color: #484848;
+            line-height: 1.8;
+        }
+        
+        ul {
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+        
+        li {
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body class="hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+            });
+    </script>
+
+<div class="hero">
+        <a href="index.html" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to Home
+        </a>
+        <h1>Your Safety Matters</h1>
+        <p style="font-size: 20px; max-width: 700px; margin: 0 auto;">We're committed to keeping our guests safe and secure</p>
+    </div>
+    
+    <div class="content">
+        <div class="safety-grid">
+            <div class="safety-card">
+                <i class="fa fa-user-shield"></i>
+                <h3>Verified Hosts</h3>
+                <p>All hosts must verify their identity and provide accurate information about their listings.</p>
+            </div>
+            
+            <div class="safety-card">
+                <i class="fa fa-home"></i>
+                <h3>Property Standards</h3>
+                <p>Listings must meet our safety and quality standards including working smoke detectors and emergency exits.</p>
+            </div>
+            
+            <div class="safety-card">
+                <i class="fa fa-headset"></i>
+                <h3>24/7 Emergency Line</h3>
+                <p>Round-the-clock support available for urgent safety concerns: 961 81 434 070</p>
+            </div>
+        </div>
+        
+        <h2>Before You Book</h2>
+        <ul>
+            <li>Read the listing description carefully and check all amenities</li>
+            <li>Review the host's profile, ratings, and guest reviews</li>
+            <li>Check the cancellation policy before confirming</li>
+            <li>Ask questions through our messaging system</li>
+            <li>Verify the exact address and location</li>
+        </ul>
+        
+        <h2>During Your Stay</h2>
+        <ul>
+            <li>Familiarize yourself with emergency exits and safety equipment</li>
+            <li>Keep your valuables secure</li>
+            <li>Report any safety hazards to the host and Lebanon Locals immediately</li>
+            <li>Follow house rules and local regulations</li>
+            <li>Keep important documents and emergency contacts handy</li>
+        </ul>
+        
+        <h2>COVID-19 Safety</h2>
+        <p>
+            We require all hosts to follow enhanced cleaning protocols and safety guidelines. Hosts must commit to our 5-step enhanced cleaning process between guests.
+        </p>
+        <ul>
+            <li>Hosts must wait 24 hours between guest stays when possible</li>
+            <li>Use approved cleaning products and disinfectants</li>
+            <li>Follow local health authority guidelines</li>
+            <li>Provide hand sanitizer and cleaning supplies</li>
+            <li>Properly ventilate spaces between stays</li>
+        </ul>
+        
+        <h2>Report a Safety Concern</h2>
+        <p>
+            If you experience a safety issue during your stay, contact us immediately:
+        </p>
+        <ul>
+            <li><strong>Emergency:</strong> Call 961 81 434 070 (24/7)</li>
+            <li><strong>Non-Emergency:</strong> Message us through your booking dashboard</li>
+            <li><strong>After Your Stay:</strong> Report issues within 24 hours via your trip page</li>
+        </ul>
+        
+        <div style="background: #f7f7f7; padding: 40px; border-radius: 16px; text-align: center; margin-top: 60px;">
+            <h2 style="margin-top: 0;">Questions About Safety?</h2>
+            <p>Visit our Help Center or contact our support team</p>
+            <a href="help.html" style="background: #9C27B0; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; margin-top: 16px;">Visit Help Center</a>
+        </div>
+    </div>
+</body>
+</html>
+

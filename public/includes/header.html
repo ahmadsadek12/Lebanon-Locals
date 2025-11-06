@@ -1,0 +1,36 @@
+<!-- Unified Header Component -->
+<header class="main-header">
+    <div class="header-container">
+        <!-- Logo -->
+        <a href="index.html" class="logo-link">
+            <img src="images/logos/logo.jpg" alt="Lebanon Locals" class="logo-img">
+        </a>
+
+        <!-- Navigation Words (Events, Experiences, Stays) -->
+        <nav class="header-nav-words">
+            <a href="collections.html?type=event" class="nav-word" data-type="event">EVENTS</a>
+            <a href="collections.html?type=experience" class="nav-word" data-type="experience">EXPERIENCES</a>
+            <a href="collections.html?type=stay" class="nav-word" data-type="stay">STAYS</a>
+        </nav>
+        
+        <script src="assets/js/header.js"></script>
+
+        <!-- Search Button (scrolls to top) -->
+        <button class="header-search-btn" id="headerSearchBtn" type="button" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">
+            <i class="fa fa-search"></i>
+            <span>Search</span>
+        </button>
+
+        <!-- Right Navigation -->
+        <div class="header-nav">
+            <button class="host-btn" onclick="window.location.href='become-host.html'">Become a Host</button>
+            <a href="wishlist.html" class="wishlist-btn" title="Wishlist">
+                <i class="fa fa-heart"></i>
+                <span class="wishlist-count" id="wishlist-count">0</span>
+            </a>
+            <button class="auth-btn" id="auth-button">
+                <i class="fa fa-user"></i> Sign In
+            </button>
+        </div>
+    </div>
+</header>

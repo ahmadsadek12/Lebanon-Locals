@@ -1,0 +1,172 @@
+# ==========================================
+# Lebanon Locals - Git Ignore File
+# ==========================================
+
+# ==========================================
+# Environment & Configuration
+# ==========================================
+.env
+.env.local
+.env.*.local
+config.local.php
+public/backend/config/env.local.php
+
+# ==========================================
+# Dependencies
+# ==========================================
+node_modules/
+vendor/
+bower_components/
+
+# ==========================================
+# Build & Dist
+# ==========================================
+/dist
+/build
+*.map
+*.min.js.map
+*.min.css.map
+
+# ==========================================
+# Logs
+# ==========================================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log.*
+
+# ==========================================
+# Database
+# ==========================================
+*.sql
+*.sqlite
+*.db
+!database_schema.sql
+!database_schema_extended.sql
+
+# ==========================================
+# OS Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ==========================================
+# IDE & Editors
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+.classpath
+*.sublime-project
+*.sublime-workspace
+
+# ==========================================
+# PHP
+# ==========================================
+composer.phar
+composer.lock
+vendor/
+.phpunit.result.cache
+
+# ==========================================
+# Laravel Specific
+# ==========================================
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env.backup
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+.phpunit.result.cache
+auth.json
+
+# ==========================================
+# Temporary Files
+# ==========================================
+/tmp
+/temp
+/cache
+/public/storage/temp/
+*.tmp
+*.temp
+*.bak
+*.swp
+*.cache
+
+# ==========================================
+# Uploads (Don't commit user uploads)
+# ==========================================
+/public/uploads/*
+!/public/uploads/.gitkeep
+/public/images/user_uploads/
+/storage/app/public/
+
+# ==========================================
+# Security
+# ==========================================
+*.pem
+*.key
+*.crt
+*.p12
+/public/key.txt
+.htpasswd
+
+# ==========================================
+# Testing
+# ==========================================
+/coverage
+/.nyc_output
+phpunit.xml
+.phpunit.result.cache
+
+# ==========================================
+# Package Managers
+# ==========================================
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ==========================================
+# Static Assets (Large Files)
+# ==========================================
+/public/videos/*.mp4
+/public/videos/*.webm
+/public/videos/*.mov
+*.zip
+*.tar.gz
+*.rar
+/public/phpMyAdmin-*.zip
+/public/pma/
+
+# ==========================================
+# Documentation (Generated)
+# ==========================================
+/docs/api/
+/docs/build/
+
+# ==========================================
+# Misc
+# ==========================================
+.sass-cache/
+*.pid
+*.seed
+*.pid.lock
+.grunt
+lib-cov
+pids
+

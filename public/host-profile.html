@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Profile - Lebanon Locals</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="images/svgahmadLL.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/svgahmadLL.svg">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/wishlist.css">
+    
+    <style>
+        body {
+            background: #ffffff;
+            padding-top: 80px;
+        }
+
+        .host-profile-page {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            padding: 40px 24px;
+        }
+
+        /* Host Header Section */
+        .host-header {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            margin-bottom: 48px;
+            padding-bottom: 48px;
+            border-bottom: 1px solid #EBEBEB;
+        }
+
+        .host-avatar-section {
+            flex-shrink: 0;
+        }
+
+        .host-avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #f7f7f7;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .host-info-section {
+            flex: 1;
+        }
+
+        .host-name {
+            font-size: 36px;
+            font-weight: 700;
+            color: #222;
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .verified-badge i {
+            color: #2e7d32;
+        }
+
+        .host-type {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #fff3e0;
+            color: #e65100;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .host-stats {
+            display: flex;
+            gap: 32px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .host-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .host-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #222;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .host-stat-label {
+            font-size: 13px;
+            color: #717171;
+            margin-top: 4px;
+        }
+
+        .host-bio {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #484848;
+            margin: 24px 0;
+        }
+
+        .host-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .host-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f7f7f7;
+            border-radius: 8px;
+        }
+
+        .host-detail-item i {
+            color: #FF385C;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .host-detail-content {
+            flex: 1;
+        }
+
+        .host-detail-label {
+            font-size: 12px;
+            color: #717171;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .host-detail-value {
+            font-size: 15px;
+            color: #222;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 48px 0 24px 0;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #EBEBEB;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #222;
+            margin: 0;
+            text-shadow: none;
+        }
+
+        .section-count {
+            font-size: 16px;
+            color: #717171;
+            font-weight: 400;
+        }
+        
+        /* Hide search button in header */
+        .header-search-btn {
+            display: none !important;
+        }
+
+        /* Horizontal Scroll for Listings */
+        .horizontal-scroll {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 16px 0 24px 0;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .horizontal-scroll .listing-card {
+            flex: 0 0 320px;
+            margin-bottom: 0;
+        }
+        
+        /* View More Button */
+        .btn-load-more {
+            padding: 14px 40px;
+            background: white;
+            border: none;
+            color: #222;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-load-more:hover {
+            background: #222;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Reviews Section */
+        .reviews-summary {
+            display: flex;
+            gap: 48px;
+            margin-bottom: 32px;
+            padding: 24px;
+            background: #f7f7f7;
+            border-radius: 12px;
+        }
+
+        .reviews-overall {
+            text-align: center;
+            padding-right: 48px;
+            border-right: 1px solid #EBEBEB;
+        }
+
+        .reviews-overall-rating {
+            font-size: 56px;
+            font-weight: 700;
+            color: #222;
+            margin: 0;
+        }
+
+        .reviews-overall-stars {
+            color: #FFD166;
+            font-size: 20px;
+            margin: 8px 0;
+        }
+
+        .reviews-overall-count {
+            font-size: 14px;
+            color: #717171;
+        }
+
+        .reviews-breakdown {
+            flex: 1;
+        }
+
+        .review-category {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .review-category-label {
+            min-width: 140px;
+            font-size: 14px;
+            color: #484848;
+        }
+
+        .review-category-bar {
+            flex: 1;
+            height: 8px;
+            background: #EBEBEB;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .review-category-fill {
+            height: 100%;
+            background: #FF385C;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .review-category-value {
+            min-width: 35px;
+            text-align: right;
+            font-weight: 600;
+            color: #222;
+            font-size: 14px;
+        }
+
+        .reviews-list {
+            display: grid;
+            gap: 24px;
+        }
+
+        .review-card {
+            padding: 24px;
+            background: white;
+            border: 1px solid #EBEBEB;
+            border-radius: 12px;
+        }
+
+        .review-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .reviewer-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .reviewer-info {
+            flex: 1;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: #222;
+            font-size: 15px;
+        }
+
+        .review-date {
+            font-size: 13px;
+            color: #717171;
+            margin-top: 2px;
+        }
+
+        .review-stars {
+            color: #FFD166;
+            font-size: 14px;
+        }
+
+        .review-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #484848;
+            margin-bottom: 12px;
+        }
+
+        .review-ratings {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: #717171;
+        }
+
+        .review-rating-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #717171;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #EBEBEB;
+            margin-bottom: 16px;
+        }
+
+        /* Loading */
+        .loading-spinner {
+            text-align: center;
+            padding: 60px;
+            color: #717171;
+        }
+
+        /* Message Host Button */
+        .message-host-btn {
+            padding: 14px 32px;
+            background: #FF385C;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .message-host-btn:hover {
+            background: #E00B41;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+        }
+
+        .star-icon {
+            color: #FFD166;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .host-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .host-stats {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .host-profile-page {
+                padding: 24px 16px;
+            }
+            
+            .host-avatar {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .host-name {
+                font-size: 28px;
+            }
+            
+            .host-stats {
+                gap: 20px;
+            }
+            
+            .host-stat-value {
+                font-size: 20px;
+            }
+            
+            .host-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .reviews-summary {
+                flex-direction: column;
+                gap: 24px;
+            }
+            
+            .reviews-overall {
+                border-right: none;
+                border-bottom: 1px solid #EBEBEB;
+                padding-right: 0;
+                padding-bottom: 24px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .host-avatar {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .host-name {
+                font-size: 24px;
+            }
+            
+            .host-stats {
+                flex-direction: column;
+                gap: 16px;
+                align-items: center;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body class="host-profile-page">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script>
+        fetch('includes/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
+                // Re-initialize auth button after header loads
+                if (window.Auth && window.Auth.setupAuthButton) {
+                    window.Auth.setupAuthButton();
+                }
+            });
+    </script>
+
+    <!-- Main Content -->
+    <main class="host-profile-page">
+        <!-- Loading State -->
+        <div id="loading-state" class="loading-spinner">
+            <i class="fa fa-spinner fa-spin fa-3x"></i>
+            <p>Loading host profile...</p>
+        </div>
+
+        <!-- Host Profile Content (hidden until loaded) -->
+        <div id="host-content" style="display: none;">
+            <!-- Host Header -->
+            <div class="host-header">
+                <div class="host-avatar-section">
+                    <img id="host-avatar" src="" alt="Host" class="host-avatar">
+                </div>
+                <div class="host-info-section">
+                    <div>
+                        <span id="host-type-badge" class="host-type">HOST</span>
+                        <div id="verified-badge-container"></div>
+                    </div>
+                    <h1 id="host-name" class="host-name"></h1>
+                    
+                    <div class="host-stats">
+                        <div class="host-stat">
+                            <div class="host-stat-value">
+                                <i class="fa fa-star star-icon"></i>
+                                <span id="host-rating">-</span>
+                            </div>
+                            <div class="host-stat-label">Average Rating</div>
+                        </div>
+                        <div class="host-stat">
+                            <div class="host-stat-value">
+                                <span id="host-reviews-count">-</span>
+                            </div>
+                            <div class="host-stat-label">Reviews</div>
+                        </div>
+                        <div class="host-stat">
+                            <div class="host-stat-value">
+                                <span id="host-years">-</span>
+                            </div>
+                            <div class="host-stat-label">Years Hosting</div>
+                        </div>
+                        <div class="host-stat">
+                            <div class="host-stat-value">
+                                <span id="host-listings-count">-</span>
+                            </div>
+                            <div class="host-stat-label">Listings</div>
+                        </div>
+                    </div>
+
+                    <p id="host-bio" class="host-bio"></p>
+
+                    <div class="host-details" id="host-details">
+                        <!-- Details will be populated here -->
+                    </div>
+
+                    <div style="margin-top: 24px;">
+                        <button class="message-host-btn" onclick="alert('Messaging feature coming soon!')">
+                            <i class="fa fa-envelope"></i> Message Host
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Host's Listings -->
+            
+            <!-- Events -->
+            <div id="events-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span id="host-first-name-events"></span>'s Events
+                    </h2>
+                    <span id="events-count-display" class="section-count"></span>
+                </div>
+                <div class="horizontal-scroll" id="host-events">
+                    <!-- Events will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Experiences -->
+            <div id="experiences-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span id="host-first-name-experiences"></span>'s Experiences
+                    </h2>
+                    <span id="experiences-count-display" class="section-count"></span>
+                </div>
+                <div class="horizontal-scroll" id="host-experiences">
+                    <!-- Experiences will be populated here -->
+                </div>
+            </div>
+
+            <!-- Stays -->
+            <div id="stays-section" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span id="host-first-name-stays"></span>'s Stays
+                    </h2>
+                    <span id="stays-count-display" class="section-count"></span>
+                </div>
+                <div class="horizontal-scroll" id="host-stays">
+                    <!-- Stays will be populated here -->
+                </div>
+            </div>
+
+            <!-- Reviews About Host -->
+            <div class="section-header">
+                <h2 class="section-title">Reviews</h2>
+                <span id="reviews-count-display" class="section-count"></span>
+            </div>
+
+            <div id="reviews-summary" class="reviews-summary" style="display: none;">
+                <!-- Will be populated with rating breakdown -->
+            </div>
+
+            <div id="reviews-list" class="reviews-list">
+                <!-- Reviews will be populated here -->
+            </div>
+
+            <!-- View More Reviews Button -->
+            <div style="text-align: center; margin-top: 32px;">
+                <button id="view-more-reviews" class="btn-load-more" style="display: none;">
+                    View More Reviews
+                </button>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-state" style="display: none;" class="empty-state">
+            <i class="fa fa-exclamation-circle"></i>
+            <h2>Host Not Found</h2>
+            <p>The host profile you're looking for doesn't exist.</p>
+            <a href="index.html" class="btn-primary">Back to Home</a>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <!-- Auth Modals -->
+    <script>
+        fetch('includes/auth-modals.html')
+            .then(response => response.text())
+            .then(html => {
+                document.body.insertAdjacentHTML('beforeend', html);
+            });
+    </script>
+
+    <script src="js/jquery-3.5.0.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/wishlist.js"></script>
+    <script src="assets/js/auth.js"></script>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const hostId = urlParams.get('id');
+
+            if (!hostId) {
+                showError();
+                return;
+            }
+
+            loadHostProfile(hostId);
+
+            async function loadHostProfile(id) {
+                try {
+                    // Load host data
+                    const userResponse = await fetch(`/backend/api/get-user.php?user_id=${id}`);
+                    const userData = await userResponse.json();
+
+                    if (!userData.success || !userData.data) {
+                        showError();
+                        return;
+                    }
+
+                    const host = userData.data;
+
+                    // Load host's listings
+                    const [experiences, events, stays] = await Promise.all([
+                        fetch(`/backend/api/experiences.php?host_id=${id}&limit=100`).then(r => r.json()),
+                        fetch(`/backend/api/events.php?host_id=${id}&limit=100`).then(r => r.json()),
+                        fetch(`/backend/api/stays.php?host_id=${id}&limit=100`).then(r => r.json())
+                    ]);
+
+                    const allListings = [
+                        ...(experiences.success ? experiences.data : []),
+                        ...(events.success ? events.data : []),
+                        ...(stays.success ? stays.data : [])
+                    ];
+
+                    // Load reviews
+                    const reviewsResponse = await fetch(`/backend/api/reviews.php?reviewee_type=user&reviewee_id=${id}&limit=20`);
+                    const reviewsData = await reviewsResponse.json();
+
+                    // Render everything
+                    renderHostHeader(host, allListings.length);
+                    renderListings(allListings, host.first_name);
+                    renderReviews(reviewsData.data || {});
+
+                    // Show content, hide loading
+                    document.getElementById('loading-state').style.display = 'none';
+                    document.getElementById('host-content').style.display = 'block';
+
+                } catch (error) {
+                    console.error('Error loading host profile:', error);
+                    showError();
+                }
+            }
+
+            function renderHostHeader(host, listingsCount) {
+                // Avatar
+                document.getElementById('host-avatar').src = host.profile_picture || 'images/users/user_pic-225x225.png';
+                
+                // Name
+                const name = `${host.first_name} ${host.last_name}`;
+                document.getElementById('host-name').innerHTML = name;
+                
+                // Verified badge
+                if (host.is_verified) {
+                    document.getElementById('verified-badge-container').innerHTML = `
+                        <span class="verified-badge">
+                            <i class="fa fa-check-circle"></i> Verified Host
+                        </span>
+                    `;
+                }
+
+                // Stats
+                document.getElementById('host-rating').textContent = host.user_ranking ? parseFloat(host.user_ranking).toFixed(2) : 'New';
+                document.getElementById('host-reviews-count').textContent = host.total_reviews || 0;
+                document.getElementById('host-years').textContent = host.years_hosting || 0;
+                document.getElementById('host-listings-count').textContent = listingsCount;
+
+                // Bio
+                document.getElementById('host-bio').textContent = host.bio || 'No bio available.';
+
+                // Details
+                const detailsHTML = [];
+                
+                if (host.languages_spoken) {
+                    detailsHTML.push(`
+                        <div class="host-detail-item">
+                            <i class="fa fa-language"></i>
+                            <div class="host-detail-content">
+                                <div class="host-detail-label">Languages</div>
+                                <div class="host-detail-value">${host.languages_spoken}</div>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                if (host.nationality) {
+                    detailsHTML.push(`
+                        <div class="host-detail-item">
+                            <i class="fa fa-globe"></i>
+                            <div class="host-detail-content">
+                                <div class="host-detail-label">Nationality</div>
+                                <div class="host-detail-value">${host.nationality}</div>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                const memberSince = new Date(host.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                detailsHTML.push(`
+                    <div class="host-detail-item">
+                        <i class="fa fa-calendar"></i>
+                        <div class="host-detail-content">
+                            <div class="host-detail-label">Member Since</div>
+                            <div class="host-detail-value">${memberSince}</div>
+                        </div>
+                    </div>
+                `);
+
+                document.getElementById('host-details').innerHTML = detailsHTML.join('');
+                
+                // Set host first name for each listing section
+                document.getElementById('host-first-name-experiences').textContent = host.first_name;
+                document.getElementById('host-first-name-events').textContent = host.first_name;
+                document.getElementById('host-first-name-stays').textContent = host.first_name;
+            }
+
+            function renderListings(listings, hostName) {
+                // Separate by type
+                const experiences = listings.filter(item => !item.price_per_night && !item.date_start);
+                const events = listings.filter(item => item.date_start);
+                const stays = listings.filter(item => item.price_per_night);
+
+                // Render Experiences
+                if (experiences.length > 0) {
+                    document.getElementById('experiences-section').style.display = 'block';
+                    document.getElementById('host-first-name-experiences').textContent = hostName;
+                    document.getElementById('experiences-count-display').textContent = `${experiences.length} experience${experiences.length !== 1 ? 's' : ''}`;
+                    
+                    const expHTML = experiences.map(exp => API.renderExperienceCard(exp)).join('');
+                    document.getElementById('host-experiences').innerHTML = expHTML;
+                }
+
+                // Render Events
+                if (events.length > 0) {
+                    document.getElementById('events-section').style.display = 'block';
+                    document.getElementById('host-first-name-events').textContent = hostName;
+                    document.getElementById('events-count-display').textContent = `${events.length} event${events.length !== 1 ? 's' : ''}`;
+                    
+                    const eventsHTML = events.map(evt => API.renderEventCard(evt)).join('');
+                    document.getElementById('host-events').innerHTML = eventsHTML;
+                }
+
+                // Render Stays
+                if (stays.length > 0) {
+                    document.getElementById('stays-section').style.display = 'block';
+                    document.getElementById('host-first-name-stays').textContent = hostName;
+                    document.getElementById('stays-count-display').textContent = `${stays.length} stay${stays.length !== 1 ? 's' : ''}`;
+                    
+                    const staysHTML = stays.map(stay => API.renderStayCard(stay)).join('');
+                    document.getElementById('host-stays').innerHTML = staysHTML;
+                }
+
+                // Initialize wishlist buttons
+                if (window.WishlistManager) {
+                    setTimeout(() => {
+                        window.WishlistManager.initAllHeartButtons();
+                    }, 100);
+                }
+            }
+
+            let allReviews = [];
+            let displayedReviewsCount = 0;
+            const REVIEWS_PER_PAGE = 5;
+
+            function renderReviews(reviewsData) {
+                if (!reviewsData || !reviewsData.stats) {
+                    document.getElementById('reviews-list').innerHTML = `
+                        <div class="empty-state">
+                            <i class="fa fa-star-o"></i>
+                            <p>No reviews yet</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const stats = reviewsData.stats;
+                allReviews = reviewsData.reviews || [];
+                displayedReviewsCount = Math.min(REVIEWS_PER_PAGE, allReviews.length);
+
+                document.getElementById('reviews-count-display').textContent = `${stats.total_reviews} review${stats.total_reviews !== 1 ? 's' : ''}`;
+
+                // Summary
+                const summaryHTML = `
+                    <div class="reviews-overall">
+                        <div class="reviews-overall-rating">${stats.average_rating.toFixed(1)}</div>
+                        <div class="reviews-overall-stars">★★★★★</div>
+                        <div class="reviews-overall-count">${stats.total_reviews} review${stats.total_reviews !== 1 ? 's' : ''}</div>
+                    </div>
+                    <div class="reviews-breakdown">
+                        ${Object.entries(stats.rating_breakdown).map(([category, rating]) => `
+                            <div class="review-category">
+                                <div class="review-category-label">${category.charAt(0).toUpperCase() + category.slice(1)}</div>
+                                <div class="review-category-bar">
+                                    <div class="review-category-fill" style="width: ${(rating/5)*100}%"></div>
+                                </div>
+                                <div class="review-category-value">${rating.toFixed(1)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                document.getElementById('reviews-summary').innerHTML = summaryHTML;
+                document.getElementById('reviews-summary').style.display = 'flex';
+
+                // Render initial reviews
+                renderReviewsList();
+
+                // Show/hide "View More" button
+                updateViewMoreButton();
+
+                // Setup "View More" button
+                document.getElementById('view-more-reviews').addEventListener('click', loadMoreReviews);
+            }
+
+            function renderReviewsList() {
+                const reviewsToShow = allReviews.slice(0, displayedReviewsCount);
+                
+                const reviewsHTML = reviewsToShow.map(review => {
+                    const stars = '★'.repeat(review.stars) + '☆'.repeat(5 - review.stars);
+                    const date = new Date(review.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                    
+                    return `
+                        <div class="review-card">
+                            <div class="review-header">
+                                <img src="${review.reviewer.picture || 'images/users/user_pic-68x68.png'}" 
+                                     alt="${review.reviewer.first_name}" 
+                                     class="reviewer-avatar">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-name">${review.reviewer.first_name} ${review.reviewer.last_name}</div>
+                                    <div class="review-date">${date}</div>
+                                </div>
+                                <div class="review-stars">${stars}</div>
+                            </div>
+                            <p class="review-text">${review.review_text}</p>
+                            <div class="review-ratings">
+                                ${Object.entries(review.ratings).map(([cat, val]) => `
+                                    <span class="review-rating-item">
+                                        <i class="fa fa-circle" style="font-size: 4px;"></i>
+                                        ${cat}: ${val}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('reviews-list').innerHTML = reviewsHTML;
+            }
+
+            function loadMoreReviews() {
+                displayedReviewsCount = Math.min(displayedReviewsCount + REVIEWS_PER_PAGE, allReviews.length);
+                renderReviewsList();
+                updateViewMoreButton();
+            }
+
+            function updateViewMoreButton() {
+                const btn = document.getElementById('view-more-reviews');
+                if (displayedReviewsCount < allReviews.length) {
+                    const remaining = allReviews.length - displayedReviewsCount;
+                    btn.textContent = `View More Reviews (${remaining} remaining)`;
+                    btn.style.display = 'block';
+                } else {
+                    btn.style.display = 'none';
+                }
+            }
+
+            function showError() {
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('error-state').style.display = 'block';
+            }
+
+        })();
+    </script>
+</body>
+</html>
+
