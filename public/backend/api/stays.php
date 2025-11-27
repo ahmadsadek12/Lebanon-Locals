@@ -239,14 +239,14 @@ try {
                 s.number_of_beds,
                 s.number_double_beds,
                 s.number_single_beds,
-                s.number_bunk_beds,
+                COALESCE(s.number_bunk_beds, 0) AS number_sofa_beds,
                 s.number_of_bathrooms,
                 s.property_type,
                 s.min_nights,
                 s.max_nights,
                 s.cancellation_policy,
                 s.house_rules,
-                (s.max_guests - COALESCE(s.total_bookings, 0)) AS available_capacity,
+                s.max_guests AS available_capacity,
                 u.first_name AS host_first_name,
                 u.last_name AS host_last_name
               FROM stays s
@@ -260,7 +260,7 @@ try {
                     GROUP BY reviewee_id
               ) r ON r.reviewee_id = s.id
               WHERE $whereClause
-              ORDER BY COALESCE(r.avg_rating, 0) DESC, COALESCE(r.review_count, 0) DESC
+              ORDER BY RAND()
               LIMIT :limit OFFSET :offset";
 
     $stmt = $db->prepare($query);
@@ -386,9 +386,22 @@ try {
 
 } catch(PDOException $e) {
     http_response_code(500);
+    error_log('[STAYS API] Database error: ' . $e->getMessage());
+    error_log('[STAYS API] Query: ' . $query);
     echo json_encode([
         'success' => false,
-        'message' => 'Query failed: ' . $e->getMessage()
+        'message' => 'Query failed: ' . $e->getMessage(),
+        'error' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
+    ]);
+} catch(Exception $e) {
+    http_response_code(500);
+    error_log('[STAYS API] General error: ' . $e->getMessage());
+    echo json_encode([
+        'success' => false,
+        'message' => 'Error: ' . $e->getMessage(),
+        'error' => $e->getMessage()
     ]);
 }
 

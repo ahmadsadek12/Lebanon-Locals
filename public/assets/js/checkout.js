@@ -235,8 +235,11 @@
         // Guests with +/- controls for per-person pricing
         const isPricePerPerson = listingData.price_per_person === true || listingData.price_per_person === 1;
         const maxGuests = parseInt(listingData.max_guests) || 10;
-        const totalBookings = parseInt(listingData.total_bookings) || 0;
-        const spotsLeft = maxGuests - totalBookings;
+        // Use available_capacity if available, otherwise calculate from total_bookings
+        const availableCapacity = listingData.available_capacity !== undefined 
+            ? parseInt(listingData.available_capacity) 
+            : (maxGuests - (parseInt(listingData.total_bookings) || 0));
+        const spotsLeft = availableCapacity;
         
         if (isPricePerPerson) {
             detailsHTML += `
@@ -245,7 +248,7 @@
                     <div class="guest-counter">
                         <button type="button" id="decrease-guests" class="guest-btn" ${bookingData.guests <= 1 ? 'disabled' : ''}>−</button>
                         <span id="guest-count" class="guest-count">${bookingData.guests}</span>
-                        <button type="button" id="increase-guests" class="guest-btn" ${bookingData.guests >= spotsLeft ? 'disabled' : ''}>+</button>
+                        <button type="button" id="increase-guests" class="guest-btn" ${bookingData.guests >= spotsLeft || spotsLeft <= 0 ? 'disabled' : ''}>+</button>
                     </div>
                 </div>
             `;
@@ -609,6 +612,19 @@
                     return;
                 }
 
+                // Validate capacity for events and experiences before creating booking
+                if ((bookingData.type === 'experience' || bookingData.type === 'event') && listingData) {
+                    const availableCapacity = parseInt(listingData.available_capacity) || 0;
+                    const requestedGuests = parseInt(bookingData.guests) || 1;
+                    
+                    if (availableCapacity < requestedGuests) {
+                        alert(`Sorry, there are only ${availableCapacity} spot${availableCapacity !== 1 ? 's' : ''} available. Maximum guests limit reached for this listing.`);
+                        btn.disabled = false;
+                        btn.textContent = 'Complete Booking';
+                        return;
+                    }
+                }
+
                 // First create a pending booking to get a booking ID
                 const tempBookingPayload = {
                     user_id: userId,
@@ -668,6 +684,19 @@
                 return;
             }
 
+            // Validate capacity for events and experiences before creating booking
+            if ((bookingData.type === 'experience' || bookingData.type === 'event') && listingData) {
+                const availableCapacity = parseInt(listingData.available_capacity) || 0;
+                const requestedGuests = parseInt(bookingData.guests) || 1;
+                
+                if (availableCapacity < requestedGuests) {
+                    alert(`Sorry, there are only ${availableCapacity} spot${availableCapacity !== 1 ? 's' : ''} available. Maximum guests limit reached for this listing.`);
+                    btn.disabled = false;
+                    btn.textContent = 'Complete Booking';
+                    return;
+                }
+            }
+
             // Create booking (for non-Whish payments)
             const bookingPayload = {
                 user_id: userId,
@@ -690,9 +719,14 @@
             });
 
             const data = await response.json();
+            console.log('[CHECKOUT] create-booking response:', data);
+
+            if (data.notifications_error) {
+                console.warn('[CHECKOUT] notifications_error:', data.notifications_error);
+            }
 
             if (data.success) {
-                // Redirect to confirmation page
+                console.log('[CHECKOUT] ✅ Booking successful! Response:', data);
                 window.location.href = `booking-confirmation.html?booking_id=${data.booking_id}`;
             } else {
                 throw new Error(data.message || 'Failed to create booking');

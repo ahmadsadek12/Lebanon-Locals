@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource Hints -->
+    <link rel="preload" href="assets/css/variables.css" as="style">
+    <link rel="preload" href="assets/css/skeletons.css" as="style">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="assets/js/load-header-standard.js" as="script">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Lebanon Locals Collections</title>
     
@@ -20,24 +26,16 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="assets/css/auth.css">
     <link rel="stylesheet" href="assets/css/wishlist.css">
+    <link rel="stylesheet" href="assets/css/skeletons.css">
 </head>
 <body class="collections-page">
 
     <!-- Unified Header -->
     <div id="header-placeholder"></div>
-    <script>
-        fetch('includes/header.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('header-placeholder').innerHTML = html;
-                // Re-initialize auth button after header loads
-                if (window.Auth && window.Auth.setupAuthButton) {
-                    window.Auth.setupAuthButton();
-                }
-            });
-    </script>
-
-    <main class="collections-main">
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/load-modals.js"></script>
+    <script src="assets/js/load-header-standard.js"></script>
+<main class="collections-main">
         <section class="collections-search">
             <div class="content-search-bar">
                 <div class="search-bar-container">
@@ -268,216 +266,17 @@
         </div>
     </main>
 
-    <footer class="main-footer">
-        <div class="footer-container">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <img src="images/logos/logo.jpg" alt="Lebanon Locals" class="footer-logo">
-                    <p class="footer-tagline">Discover authentic stays, experiences, and events curated by locals.</p>
-                </div>
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4>Company</h4>
-                        <a href="company.html">Terms &amp; Conditions</a>
-                        <a href="privacy.html">Your Privacy</a>
-                        <a href="story.html">Our Story</a>
-                        <a href="cookies.html">Cookies &amp; Tracking</a>
-                        <a href="contact.html">Contact Us</a>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Discover</h4>
-                        <a href="travel-credit.html">Travel Credit</a>
-                        <a href="guest-protection.html">Guest Protection</a>
-                        <a href="guest-safety.html">Guest Safety</a>
-                        <a href="our-standards.html">Our Standards</a>
-                        <a href="refunds.html">Cancellations &amp; Refunds</a>
-                        <a href="faqs.html">FAQs</a>
-                        <a href="blog.html">Blog</a>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Hosting</h4>
-                        <a href="host-protection.html">Host Protection</a>
-                        <a href="why-host.html">Why Host</a>
-                        <a href="hosting-support.html">Hosting Support</a>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Download</h4>
-                        <a href="#"><i class="fa fa-google-play"></i> Google Play</a>
-                        <a href="#"><i class="fa fa-apple"></i> App Store</a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2025 Lebanon Locals. All rights reserved.</p>
-                <div class="footer-social">
-                    <a href="https://instagram.com/lebanonlocals" target="_blank" class="social-icon instagram" title="Instagram">
-                        <i class="fa fa-instagram"></i>
-                    </a>
-                    <a href="https://tiktok.com/@lebanonlocals" target="_blank" class="social-icon tiktok" title="TikTok">
-                        <svg viewBox="0 0 448 512">
-                            <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+    <script src="assets/js/load-footer.js"></script>
 
-    <button class="chatbot-fixed" onclick="alert('Live chat coming soon! For now, call us at 961 81 434 070 or visit our help page.')" title="Chat with us">
-        <i class="fa fa-comments"></i>
-        <span class="chatbot-online"></span>
-    </button>
-
-    <!-- Login Modal -->
-    <div id="login-modal" class="modal">
-        <div class="modal-content auth-modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>Welcome Back</h2>
-            <p class="modal-subtitle">Sign in to your Lebanon Locals account</p>
-
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" placeholder="your.email@example.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" placeholder="Enter your password" required>
-                </div>
-
-                <button type="submit" class="btn-primary btn-block">Sign In</button>
-            </form>
-
-            <p class="auth-switch">
-                Don't have an account? <a href="#" id="show-signup">Sign Up</a>
-            </p>
-        </div>
-    </div>
-
-    <!-- Signup Modal -->
-    <div id="signup-modal" class="modal">
-        <div class="modal-content auth-modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>Join Lebanon Locals</h2>
-            <p class="modal-subtitle">Create your account to start booking</p>
-
-            <form id="signup-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="signup-first-name">First Name</label>
-                        <input type="text" id="signup-first-name" placeholder="John" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="signup-last-name">Last Name</label>
-                        <input type="text" id="signup-last-name" placeholder="Doe" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="signup-email">Email</label>
-                    <input type="email" id="signup-email" placeholder="your.email@example.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="signup-phone">Phone Number</label>
-                    <input type="tel" id="signup-phone" placeholder="+961 XX XXX XXX">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="signup-dob">Date of Birth</label>
-                        <input type="date" id="signup-dob" required max="2010-01-01">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="signup-gender">Gender</label>
-                        <select id="signup-gender" required style="width: 100%; padding: 12px; border: 1px solid #d0d0d0; border-radius: 8px; font-size: 16px;">
-                            <option value="">Select gender</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                            <option value="prefer_not_to_say">Prefer not to say</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" placeholder="Minimum 8 characters" required minlength="8">
-                </div>
-
-                <div class="form-group">
-                    <label for="signup-confirm-password">Confirm Password</label>
-                    <input type="password" id="signup-confirm-password" placeholder="Re-enter password" required>
-                </div>
-
-                <button type="submit" class="btn-primary btn-block">Create Account</button>
-            </form>
-
-            <p class="auth-switch">
-                Already have an account? <a href="#" id="show-login">Sign In</a>
-            </p>
-        </div>
-    </div>
-
-    <!-- User Menu Modal -->
-    <div id="user-menu-modal" class="modal">
-        <div class="modal-content user-menu-content">
-            <span class="modal-close">&times;</span>
-
-            <!-- User Menu Tabs -->
-            <div class="user-menu-tabs">
-                <button class="tab-btn active" data-tab="upcoming">
-                    Upcoming Bookings <span id="upcoming-count" class="tab-count">0</span>
-                </button>
-                <button class="tab-btn" data-tab="previous">
-                    Previous Bookings <span id="previous-count" class="tab-count">0</span>
-                </button>
-            </div>
-
-            <!-- Tab Contents -->
-            <div class="tab-content active" id="tab-upcoming">
-                <div id="upcoming-bookings-list" class="bookings-list">
-                    <!-- Bookings will be loaded here -->
-                </div>
-            </div>
-
-            <div class="tab-content" id="tab-previous">
-                <div id="previous-bookings-list" class="bookings-list">
-                    <!-- Previous bookings will be loaded here -->
-                </div>
-            </div>
-
-            <!-- User Profile Footer -->
-            <div class="user-menu-footer">
-                <div class="user-profile-info" id="user-profile-link" style="cursor: pointer;" title="View my profile">
-                    <div class="user-avatar" id="user-menu-avatar"></div>
-                    <span id="user-menu-name">User Name</span>
-                </div>
-                <button id="logout-btn" class="btn-logout">
-                    <i class="fa fa-sign-out"></i> Logout
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Logout Confirmation Modal -->
-    <div id="logout-confirm-modal" class="modal">
-        <div class="modal-content confirm-modal-content">
-            <h3>Confirm Logout</h3>
-            <p>Are you sure you want to log out?</p>
-            <div class="confirm-modal-actions">
-                <button id="cancel-logout-btn" class="btn-secondary">Cancel</button>
-                <button id="confirm-logout-btn" class="btn-danger">Log Out</button>
-            </div>
-        </div>
-    </div>
+    <!-- Auth modals are loaded via includes/auth-modals.html in the header script below -->
+    <!-- No duplicate modals needed here -->
 
     <script src="assets/js/api.js"></script>
     <script src="assets/js/wishlist.js"></script>
     <script src="assets/js/auth.js"></script>
+    <script src="assets/js/header.js"></script>
     <script src="assets/js/collections.js"></script>
 </body>
 </html>

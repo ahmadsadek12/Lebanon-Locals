@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource Hints -->
+    <link rel="preload" href="assets/css/variables.css" as="style">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="assets/js/load-header-standard.js" as="script">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
     <title>Booking Confirmation - Lebanon Locals</title>
@@ -206,6 +211,7 @@
             display: flex;
             gap: 16px;
             margin-top: 32px;
+            margin-bottom: 60px;
         }
 
         .btn {
@@ -308,21 +314,11 @@
 <body class="booking-confirmation-page">
     <!-- Unified Header -->
     <div id="header-placeholder"></div>
-    <script>
-        fetch('includes/header.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('header-placeholder').innerHTML = html;
-                
-                // Re-initialize auth button after header loads
-                if (window.Auth && window.Auth.setupAuthButton) {
-                    window.Auth.setupAuthButton();
-                }
-            })
-            .catch(error => console.error('Error loading header:', error));
-    </script>
-
-    <!-- Loading State -->
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/load-modals.js"></script>
+    <script src="assets/js/header.js"></script>
+    <script src="assets/js/load-header-standard.js"></script>
+<!-- Loading State -->
     <div class="loading-state" id="loadingState">
         <img src="images/status.gif" alt="Loading...">
         <p>Loading your booking details...</p>
@@ -413,11 +409,8 @@
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <a href="index.html" class="btn btn-secondary">
+            <a href="index.html" class="btn btn-primary">
                 <i class="fa fa-home"></i> Back to Home
-            </a>
-            <a href="user-profile.html" class="btn btn-primary">
-                <i class="fa fa-user"></i> View My Bookings
             </a>
         </div>
     </div>

@@ -1,0 +1,187 @@
+/**
+ * Lebanon Locals - Inline Form Error Styles
+ * Provides inline error messages for form fields
+ */
+
+/* Error Container */
+.field-error {
+    display: none;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #dc2626;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.field-error.show {
+    display: block;
+}
+
+.field-error::before {
+    content: "⚠ ";
+    margin-right: 4px;
+}
+
+/* Error State for Input Fields */
+.form-group.has-error input,
+.form-group.has-error textarea,
+.form-group.has-error select {
+    border-color: #dc2626 !important;
+    background-color: #fef2f2;
+}
+
+.form-group.has-error input:focus,
+.form-group.has-error textarea:focus,
+.form-group.has-error select:focus {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+/* Success State for Input Fields */
+.form-group.has-success input,
+.form-group.has-success textarea,
+.form-group.has-success select {
+    border-color: #10b981 !important;
+    background-color: #f0fdf4;
+}
+
+.form-group.has-success input:focus,
+.form-group.has-success textarea:focus,
+.form-group.has-success select:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Error Icon */
+.field-error-icon {
+    display: inline-block;
+    margin-right: 6px;
+    color: #dc2626;
+    font-size: 14px;
+}
+
+/* Success Message */
+.field-success {
+    display: none;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #10b981;
+    font-weight: 500;
+}
+
+.field-success.show {
+    display: block;
+}
+
+.field-success::before {
+    content: "✓ ";
+    margin-right: 4px;
+}
+
+/* Character Counter with Error State */
+.char-counter.error {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.char-counter.success {
+    color: #10b981;
+}
+
+/* Required Field Indicator */
+.form-group label .required {
+    color: #dc2626;
+    margin-left: 4px;
+}
+
+/* Error Summary Box */
+.error-summary {
+    display: none;
+    padding: 16px;
+    margin-bottom: 24px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    border-left: 4px solid #dc2626;
+}
+
+.error-summary.show {
+    display: block;
+}
+
+.error-summary-title {
+    font-weight: 600;
+    color: #dc2626;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.error-summary-list {
+    margin: 0;
+    padding-left: 20px;
+    color: #991b1b;
+}
+
+.error-summary-list li {
+    margin-bottom: 4px;
+}
+
+/* Inline Help Text */
+.field-help {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #717171;
+    line-height: 1.4;
+}
+
+.field-help.error {
+    color: #dc2626;
+}
+
+/* Validation States */
+.form-group.validating input,
+.form-group.validating textarea,
+.form-group.validating select {
+    border-color: #f59e0b;
+    background-color: #fffbeb;
+}
+
+/* Real-time Validation Indicator */
+.field-validating {
+    position: relative;
+}
+
+.field-validating::after {
+    content: "";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f59e0b;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translateY(-50%) rotate(360deg);
+    }
+}
+
+/* Accessibility */
+.field-error[role="alert"] {
+    display: block;
+}
+
+/* Focus Management */
+.form-group.has-error input:focus,
+.form-group.has-error textarea:focus,
+.form-group.has-error select:focus {
+    outline: 2px solid #dc2626;
+    outline-offset: 2px;
+}
+

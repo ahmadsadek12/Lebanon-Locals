@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource Hints -->
+    <link rel="preload" href="assets/css/variables.css" as="style">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="assets/js/config.js" as="script">
+    <link rel="preload" href="assets/js/load-header-standard.js" as="script">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <title>Sign Up - Lebanon Locals</title>
+    <meta name="description" content="Create your Lebanon Locals account">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="images/svgahmadLL.svg" type="image/svg+xml">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/form-errors.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* Remove red overlay from body */
+        body::before,
+        body::after {
+            display: none !important;
+        }
+        
+        /* Remove hero overlays */
+        #hero,
+        #hero::before,
+        #hero::after,
+        .hero-overlay {
+            display: none !important;
+        }
+        
+        html, body {
+            background: #f7f7f7 !important;
+            position: relative;
+        }
+        
+        .auth-page-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #f7f7f7;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .auth-page-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .auth-page-card {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 3;
+        }
+        
+        .auth-page-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #222;
+        }
+        
+        .auth-page-subtitle {
+            color: #717171;
+            margin-bottom: 32px;
+            font-size: 16px;
+        }
+        
+        .auth-error-container {
+            margin-bottom: 24px;
+        }
+        
+        .auth-error-container:empty {
+            display: none;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            .auth-page-card {
+                padding: 32px 24px;
+            }
+            
+            .auth-page-title {
+                font-size: 28px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-page-container">
+        <!-- Header -->
+        <div id="header-placeholder"></div>
+        <script src="assets/js/auth.js"></script>
+        <script src="assets/js/form-validation.js"></script>
+        <script src="assets/js/load-modals.js"></script>
+        <script src="assets/js/header.js"></script>
+        <script src="assets/js/load-header-standard.js"></script>
+        
+        <!-- Main Content -->
+        <div class="auth-page-content">
+            <div class="auth-page-card">
+                <h1 class="auth-page-title">Join Lebanon Locals</h1>
+                <p class="auth-page-subtitle">Create your account to start booking</p>
+                
+                <!-- Error Display Container -->
+                <div id="auth-error-container" class="auth-error-container"></div>
+                
+                <!-- Signup Form -->
+                <form id="signup-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="signup-first-name">First Name</label>
+                            <input type="text" id="signup-first-name" placeholder="John" required autocomplete="given-name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-last-name">Last Name</label>
+                            <input type="text" id="signup-last-name" placeholder="Doe" required autocomplete="family-name">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" placeholder="your.email@example.com" required autocomplete="email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-phone">Phone Number</label>
+                        <input type="tel" id="signup-phone" placeholder="+961 XX XXX XXX" autocomplete="tel">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="signup-dob">Date of Birth</label>
+                            <input type="date" id="signup-dob" required max="2010-01-01" autocomplete="bday">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-gender">Gender</label>
+                            <select id="signup-gender" required style="width: 100%; padding: 12px; border: 1px solid #d0d0d0; border-radius: 8px; font-size: 16px;">
+                                <option value="">Select gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                                <option value="prefer_not_to_say">Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <div style="position: relative;">
+                            <input type="password" id="signup-password" placeholder="Minimum 8 characters" required minlength="8" autocomplete="new-password" style="padding-right: 45px;">
+                            <button type="button" class="toggle-password-btn" data-target="signup-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #717171; cursor: pointer; font-size: 16px; padding: 0; width: 24px; height: 24px;">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-confirm-password">Confirm Password</label>
+                        <div style="position: relative;">
+                            <input type="password" id="signup-confirm-password" placeholder="Re-enter password" required autocomplete="new-password" style="padding-right: 45px;">
+                            <button type="button" class="toggle-password-btn" data-target="signup-confirm-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #717171; cursor: pointer; font-size: 16px; padding: 0; width: 24px; height: 24px;">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary btn-block">Create Account</button>
+                </form>
+                
+                <p class="auth-switch" style="margin-top: 24px; text-align: center; color: #717171;">
+                    Already have an account? <a href="login.html" style="color: var(--color-primary, #FF385C); font-weight: 600;">Sign In</a>
+                </p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div id="footer-placeholder"></div>
+        <script src="assets/js/load-footer.js"></script>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="assets/js/config.js"></script>
+    
+    <script>
+        // Setup form listener explicitly for this page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if already logged in and redirect
+            if (localStorage.getItem('auth_token')) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Ensure form listener is attached
+            const signupForm = document.getElementById('signup-form');
+            if (signupForm && !signupForm.dataset.listenerAttached) {
+                // Form listener should be attached by auth.js init, but ensure it's there
+                console.log('[SIGNUP PAGE] Form ready');
+            }
+        });
+    </script>
+</body>
+</html>
+

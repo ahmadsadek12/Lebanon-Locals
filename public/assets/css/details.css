@@ -129,7 +129,7 @@
 
 /* ==================== SEARCH SECTION ==================== */
 .details-search-section {
-    margin-top: 80px;
+    margin-top: 0;
     padding: 24px 72px;
     background: #ffffff;
     border-bottom: 1px solid #EBEBEB;
@@ -902,6 +902,12 @@
     color: var(--color-neutral-600);
 }
 
+.amenity-item img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
 .amenity-item span {
     font-size: var(--font-size-md);
     color: var(--color-text-secondary);
@@ -1308,10 +1314,11 @@
 }
 
 .booking-btn:disabled {
-    background-color: var(--color-neutral-200);
-    color: var(--color-neutral-500);
-    border: 2px solid var(--color-neutral-300);
-    cursor: not-allowed;
+    background-color: #E0E0E0 !important;
+    color: #9E9E9E !important;
+    border: 2px solid #BDBDBD !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
 }
 
 .booking-dates {
@@ -1331,12 +1338,14 @@
     padding: 12px;
     cursor: pointer;
     transition: all var(--transition-normal);
-    background: white;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .booking-date-field:hover {
     border-color: var(--color-text-primary);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
 }
 
 .booking-date-field label {

@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://lebanon-locals-media.s3.me-south-1.amazonaws.com">
+
+    <link rel="preload" href="assets/css/variables.css" as="style">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="assets/js/config.js" as="script">
+    <link rel="preload" href="assets/js/load-header-standard.js" as="script">
+    <title>Create a Posting - Lebanon Locals</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/posting.css">
+    <link rel="stylesheet" href="assets/css/form-errors.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="posting-page hide-nav-words">
+    <div id="header-placeholder"></div>
+
+    <div class="posting-container">
+        <div class="posting-header">
+            <h1>Create a Posting</h1>
+            <p>Share your unique experience, event, or stay with travelers</p>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <form id="posting-form">
+            <!-- Listing Type Selector -->
+            <div class="listing-type-selector">
+                <label class="type-option active" data-type="experience">
+                    <input type="radio" name="listing_type" value="experience" checked>
+                    <i class="fa fa-compass"></i>
+                    <span>Experience</span>
+                </label>
+                <label class="type-option" data-type="event">
+                    <input type="radio" name="listing_type" value="event">
+                    <i class="fa fa-calendar"></i>
+                    <span>Event</span>
+                </label>
+                <label class="type-option" data-type="stay">
+                    <input type="radio" name="listing_type" value="stay">
+                    <i class="fa fa-home"></i>
+                    <span>Stay</span>
+                </label>
+            </div>
+
+            <!-- Experience Form -->
+            <div class="experience-form active">
+                <div class="form-section">
+                    <h2>Basic Information</h2>
+                    
+                    <div class="form-group">
+                        <label>Title <span class="required">*</span></label>
+                        <input type="text" name="exp_title" id="exp_title" maxlength="100" required>
+                        <span class="char-counter" id="title-counter">0 / 100 characters</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description <span class="required">*</span></label>
+                        <textarea name="exp_description" id="exp_description" required></textarea>
+                        <span class="char-counter" id="description-counter">0 characters (minimum 50)</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Length in Hours <span class="required">*</span></label>
+                        <input type="number" name="exp_length_hours" id="exp_length_hours" min="1" step="0.5" required>
+                        <span class="help-text">Duration of the experience</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Country <span class="optional">(optional)</span></label>
+                            <input type="text" name="exp_country" id="exp_country">
+                        </div>
+
+                        <div class="form-group">
+                            <label>City <span class="optional">(optional)</span></label>
+                            <input type="text" name="exp_city" id="exp_city">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Street <span class="optional">(optional)</span></label>
+                        <input type="text" name="exp_street" id="exp_street">
+                        <span class="help-text">Street name and number</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Building <span class="optional">(optional)</span></label>
+                            <input type="text" name="exp_building" id="exp_building">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Floor <span class="optional">(optional)</span></label>
+                            <input type="text" name="exp_floor" id="exp_floor">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location Display <span class="required">*</span></label>
+                        <input type="text" name="exp_location" id="exp_location" required>
+                        <span class="help-text">City or area to show publicly</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Operating Hours</h2>
+                    
+                    <div class="form-group">
+                        <label>Opening Time <span class="required">*</span></label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                            <select id="exp_open_hour" required>
+                                <option value="">Hour</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                            <select id="exp_open_minute" required>
+                                <option value="">Minute</option>
+                                <option value="00">00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <select id="exp_open_ampm" required>
+                                <option value="">AM/PM</option>
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                        <input type="hidden" name="exp_hour_start" id="exp_hour_start">
+                        <span class="help-text">When bookings can start</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Closing Time <span class="required">*</span></label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                            <select id="exp_close_hour" required>
+                                <option value="">Hour</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                            <select id="exp_close_minute" required>
+                                <option value="">Minute</option>
+                                <option value="00">00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <select id="exp_close_ampm" required>
+                                <option value="">AM/PM</option>
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                        <input type="hidden" name="exp_hour_end" id="exp_hour_end">
+                        <span class="help-text">Last booking time</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Guests & Pricing</h2>
+                    
+                    <div class="form-group">
+                        <label>Pricing Type <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="exp_price_per_person" id="exp_per_person" value="1" checked>
+                                <label for="exp_per_person">Per Person</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="exp_price_per_person" id="exp_per_group" value="0">
+                                <label for="exp_per_group">Per Group</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price (USD) <span class="required">*</span></label>
+                            <input type="number" name="exp_price" id="exp_price" min="0.50" step="0.01" required>
+                            <span class="help-text">Minimum $0.50</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Max Guests <span class="required">*</span></label>
+                            <input type="number" name="exp_max_guests" id="exp_max_guests" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="conditional-field" id="group-size-field">
+                        <div class="form-group">
+                            <label>Group Size <span class="required">*</span></label>
+                            <input type="number" name="exp_max_guests_per_price" id="exp_max_guests_per_price" min="1">
+                            <span class="help-text">How many people per group booking</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Min Age <span class="optional">(optional)</span></label>
+                            <input type="number" name="exp_min_age" id="exp_min_age" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Max Age <span class="optional">(optional)</span></label>
+                            <input type="number" name="exp_max_age" id="exp_max_age" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Details</h2>
+                    
+                    <div class="form-group">
+                        <label>Difficulty Level <span class="optional">(optional)</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="exp_difficulty" id="exp_easy" value="easy">
+                                <label for="exp_easy">Easy</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="exp_difficulty" id="exp_moderate" value="moderate">
+                                <label for="exp_moderate">Moderate</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="exp_difficulty" id="exp_challenging" value="challenging">
+                                <label for="exp_challenging">Challenging</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cancellation Policy <span class="required">*</span></label>
+                        <select name="exp_cancellation_policy" id="exp_cancellation_policy" required>
+                            <option value="">Select a policy</option>
+                            <option value="flexible">Flexible - Full refund up to 24 hours before</option>
+                            <option value="moderate">Moderate - Full refund up to 5 days before</option>
+                            <option value="strict">Strict - No refund</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>What to Bring <span class="optional">(optional)</span></label>
+                        <textarea name="exp_what_to_bring" id="exp_what_to_bring"></textarea>
+                        <span class="help-text">Items guests should bring</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>What's Included <span class="optional">(optional)</span></label>
+                        <textarea name="exp_whats_included" id="exp_whats_included"></textarea>
+                        <span class="help-text">What you'll provide</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Additional Information <span class="optional">(optional)</span></label>
+                        <textarea name="exp_additional_info" id="exp_additional_info"></textarea>
+                        <span class="help-text">Any other important details</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Main Image</h2>
+                    
+                    <div class="form-group">
+                        <label class="image-upload" for="exp_main_image">
+                            <input type="file" name="exp_main_image" id="exp_main_image" accept="image/*" required>
+                            <i class="fa fa-cloud-upload"></i>
+                            <p><strong>Click to upload</strong> or drag and drop</p>
+                            <p style="font-size: 14px; margin-top: 8px;">PNG, JPG, JPEG up to 10MB</p>
+                        </label>
+                        <div class="image-preview" id="exp_image_preview">
+                            <img id="exp_preview_img" src="" alt="Preview">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Additional Images <span class="optional">(optional)</span></h2>
+                    
+                    <div class="form-group">
+                        <label class="image-upload" for="exp_additional_images">
+                            <input type="file" name="exp_additional_images[]" id="exp_additional_images" accept="image/*" multiple>
+                            <i class="fa fa-cloud-upload"></i>
+                            <p><strong>Click to upload multiple images</strong></p>
+                            <p style="font-size: 14px; margin-top: 8px;">Select multiple images to showcase your experience (up to 20 images)</p>
+                            <p id="exp_image_count" style="font-size: 13px; margin-top: 4px; color: #717171; font-weight: 600;">0 images selected</p>
+                        </label>
+                        <div class="additional-images-preview" id="exp_additional_preview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 16px;">
+                            <!-- Previews will be added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Form -->
+            <div class="event-form">
+                <div class="form-section">
+                    <h2>Basic Information</h2>
+                    
+                    <div class="form-group">
+                        <label>Title <span class="required">*</span></label>
+                        <input type="text" name="evt_title" id="evt_title" maxlength="100" required>
+                        <span class="char-counter" id="evt_title_counter">0 / 100 characters</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description <span class="required">*</span></label>
+                        <textarea name="evt_description" id="evt_description" required></textarea>
+                        <span class="char-counter" id="evt_description_counter">0 characters (minimum 50)</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Event Start Date & Time <span class="required">*</span></label>
+                            <input type="datetime-local" name="evt_date_start" id="evt_date_start" required>
+                            <span class="help-text">When the event begins</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Event End Date & Time <span class="required">*</span></label>
+                            <input type="datetime-local" name="evt_date_end" id="evt_date_end" required>
+                            <span class="help-text">When the event ends</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Country <span class="optional">(optional)</span></label>
+                            <input type="text" name="evt_country" id="evt_country">
+                        </div>
+
+                        <div class="form-group">
+                            <label>City <span class="optional">(optional)</span></label>
+                            <input type="text" name="evt_city" id="evt_city">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Street <span class="optional">(optional)</span></label>
+                        <input type="text" name="evt_street" id="evt_street">
+                        <span class="help-text">Street name and number</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Building <span class="optional">(optional)</span></label>
+                            <input type="text" name="evt_building" id="evt_building">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Floor <span class="optional">(optional)</span></label>
+                            <input type="text" name="evt_floor" id="evt_floor">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location Display <span class="required">*</span></label>
+                        <input type="text" name="evt_location" id="evt_location" required>
+                        <span class="help-text">City or area to show publicly</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Availability Hours</h2>
+                    
+                    <div class="form-group">
+                        <label>Opening Time <span class="required">*</span></label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                            <select id="evt_open_hour" required>
+                                <option value="">Hour</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                            <select id="evt_open_minute" required>
+                                <option value="">Minute</option>
+                                <option value="00">00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <select id="evt_open_ampm" required>
+                                <option value="">AM/PM</option>
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                        <input type="hidden" name="evt_hour_start" id="evt_hour_start">
+                        <span class="help-text">When bookings can start</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Closing Time <span class="required">*</span></label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                            <select id="evt_close_hour" required>
+                                <option value="">Hour</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                            <select id="evt_close_minute" required>
+                                <option value="">Minute</option>
+                                <option value="00">00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <select id="evt_close_ampm" required>
+                                <option value="">AM/PM</option>
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                        <input type="hidden" name="evt_hour_end" id="evt_hour_end">
+                        <span class="help-text">Last booking time</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Guests & Pricing</h2>
+                    
+                    <div class="form-group">
+                        <label>Pricing Type <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="evt_price_per_person" id="evt_per_person" value="1" checked>
+                                <label for="evt_per_person">Per Person</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="evt_price_per_person" id="evt_per_group" value="0">
+                                <label for="evt_per_group">Per Group</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price (USD) <span class="required">*</span></label>
+                            <input type="number" name="evt_price" id="evt_price" min="0.50" step="0.01" required>
+                            <span class="help-text">Minimum $0.50</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Max Guests <span class="required">*</span></label>
+                            <input type="number" name="evt_max_guests" id="evt_max_guests" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="conditional-field" id="evt_group_size_field">
+                        <div class="form-group">
+                            <label>Group Size <span class="required">*</span></label>
+                            <input type="number" name="evt_max_guests_per_price" id="evt_max_guests_per_price" min="1">
+                            <span class="help-text">How many people per group booking</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Min Age <span class="optional">(optional)</span></label>
+                            <input type="number" name="evt_min_age" id="evt_min_age" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Max Age <span class="optional">(optional)</span></label>
+                            <input type="number" name="evt_max_age" id="evt_max_age" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Details</h2>
+                    
+                    <div class="form-group">
+                        <label>Difficulty Level <span class="optional">(optional)</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="evt_difficulty" id="evt_easy" value="easy">
+                                <label for="evt_easy">Easy</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="evt_difficulty" id="evt_moderate" value="moderate">
+                                <label for="evt_moderate">Moderate</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="evt_difficulty" id="evt_challenging" value="challenging">
+                                <label for="evt_challenging">Challenging</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cancellation Policy <span class="required">*</span></label>
+                        <select name="evt_cancellation_policy" id="evt_cancellation_policy" required>
+                            <option value="">Select a policy</option>
+                            <option value="flexible">Flexible - Full refund up to 24 hours before</option>
+                            <option value="moderate">Moderate - Full refund up to 5 days before</option>
+                            <option value="strict">Strict - No refund</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>What to Bring <span class="optional">(optional)</span></label>
+                        <textarea name="evt_what_to_bring" id="evt_what_to_bring"></textarea>
+                        <span class="help-text">Items guests should bring</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>What's Included <span class="optional">(optional)</span></label>
+                        <textarea name="evt_whats_included" id="evt_whats_included"></textarea>
+                        <span class="help-text">What you'll provide</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Additional Information <span class="optional">(optional)</span></label>
+                        <textarea name="evt_additional_info" id="evt_additional_info"></textarea>
+                        <span class="help-text">Any other important details</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Main Image</h2>
+                    
+                    <div class="form-group">
+                        <label class="image-upload" for="evt_main_image">
+                            <input type="file" name="evt_main_image" id="evt_main_image" accept="image/*" required>
+                            <i class="fa fa-cloud-upload"></i>
+                            <p><strong>Click to upload</strong> or drag and drop</p>
+                            <p style="font-size: 14px; margin-top: 8px;">PNG, JPG, JPEG up to 10MB</p>
+                        </label>
+                        <div class="image-preview" id="evt_image_preview">
+                            <img id="evt_preview_img" src="" alt="Preview">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Additional Images <span class="optional">(optional)</span></h2>
+                    
+                    <div class="form-group">
+                        <label class="image-upload" for="evt_additional_images">
+                            <input type="file" name="evt_additional_images[]" id="evt_additional_images" accept="image/*" multiple>
+                            <i class="fa fa-cloud-upload"></i>
+                            <p><strong>Click to upload multiple images</strong></p>
+                            <p style="font-size: 14px; margin-top: 8px;">Select multiple images to showcase your event (up to 20 images)</p>
+                            <p id="evt_image_count" style="font-size: 13px; margin-top: 4px; color: #717171; font-weight: 600;">0 images selected</p>
+                        </label>
+                        <div class="additional-images-preview" id="evt_additional_preview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 16px;">
+                            <!-- Previews will be added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stay Form -->
+            <div class="stay-form">
+                <div class="form-section">
+                    <h2>Basic Information</h2>
+                    
+                    <div class="form-group">
+                        <label>Title <span class="required">*</span></label>
+                        <input type="text" name="stay_title" id="stay_title" maxlength="20" required>
+                        <span class="char-counter" id="stay_title_counter">0 / 20 characters</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description <span class="required">*</span></label>
+                        <textarea name="stay_description" id="stay_description" required></textarea>
+                        <span class="char-counter" id="stay_description_counter">0 characters (minimum 50)</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Country <span class="required">*</span></label>
+                            <input type="text" name="stay_country" id="stay_country" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>City <span class="required">*</span></label>
+                            <input type="text" name="stay_city" id="stay_city" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Street <span class="required">*</span></label>
+                        <input type="text" name="stay_street" id="stay_street" required>
+                        <span class="help-text">Street name and number</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Building <span class="required">*</span></label>
+                            <input type="text" name="stay_building" id="stay_building" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Floor <span class="optional">(optional)</span></label>
+                            <input type="text" name="stay_floor" id="stay_floor">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Property Type <span class="required">*</span></label>
+                        <select name="stay_property_type" id="stay_property_type" required>
+                            <option value="">Loading property types...</option>
+                        </select>
+                        <span class="help-text" id="stay-property-type-help" style="margin-top: 6px; display: inline-block; color: #999;"></span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Pricing</h2>
+                    
+                    <div class="form-group">
+                        <label>Price Per Night (USD) <span class="required">*</span></label>
+                        <input type="number" name="stay_price_per_night" id="stay_price_per_night" min="0.50" step="0.01" required>
+                        <span class="help-text">Minimum $0.50</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Accept Cash Payment? <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="stay_cash_enabled" id="stay_cash_yes" value="1" checked>
+                                <label for="stay_cash_yes">Yes</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="stay_cash_enabled" id="stay_cash_no" value="0">
+                                <label for="stay_cash_no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Capacity & Rooms</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Max Guests <span class="required">*</span></label>
+                            <input type="number" name="stay_max_guests" id="stay_max_guests" min="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Number of Bedrooms <span class="required">*</span></label>
+                            <input type="number" name="stay_number_of_bedrooms" id="stay_number_of_bedrooms" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Double Beds <span class="required">*</span></label>
+                            <input type="number" name="stay_number_double_beds" id="stay_number_double_beds" min="0" value="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Single Beds <span class="required">*</span></label>
+                            <input type="number" name="stay_number_single_beds" id="stay_number_single_beds" min="0" value="0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Sofa Beds <span class="required">*</span></label>
+                            <input type="number" name="stay_number_sofa_beds" id="stay_number_sofa_beds" min="0" value="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Number of Bathrooms <span class="required">*</span></label>
+                            <input type="number" name="stay_number_of_bathrooms" id="stay_number_of_bathrooms" min="0.5" step="0.5" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Check-in & Check-out</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Check-in Time <span class="required">*</span></label>
+                            <select name="stay_check_in_time" id="stay_check_in_time" required>
+                                <option value="">Select check-in time</option>
+                                <option value="00:00">12:00 AM</option>
+                                <option value="00:30">12:30 AM</option>
+                                <option value="01:00">1:00 AM</option>
+                                <option value="01:30">1:30 AM</option>
+                                <option value="02:00">2:00 AM</option>
+                                <option value="02:30">2:30 AM</option>
+                                <option value="03:00">3:00 AM</option>
+                                <option value="03:30">3:30 AM</option>
+                                <option value="04:00">4:00 AM</option>
+                                <option value="04:30">4:30 AM</option>
+                                <option value="05:00">5:00 AM</option>
+                                <option value="05:30">5:30 AM</option>
+                                <option value="06:00">6:00 AM</option>
+                                <option value="06:30">6:30 AM</option>
+                                <option value="07:00">7:00 AM</option>
+                                <option value="07:30">7:30 AM</option>
+                                <option value="08:00">8:00 AM</option>
+                                <option value="08:30">8:30 AM</option>
+                                <option value="09:00">9:00 AM</option>
+                                <option value="09:30">9:30 AM</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="10:30">10:30 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="11:30">11:30 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="12:30">12:30 PM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="13:30">1:30 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="14:30">2:30 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                            </select>
+                            <span class="help-text">Cannot be after 3:00 PM</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Check-out Time <span class="required">*</span></label>
+                            <select name="stay_check_out_time" id="stay_check_out_time" required>
+                                <option value="">Select check-out time</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="11:30">11:30 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="12:30">12:30 PM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="13:30">1:30 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="14:30">2:30 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                                <option value="15:30">3:30 PM</option>
+                                <option value="16:00">4:00 PM</option>
+                                <option value="16:30">4:30 PM</option>
+                                <option value="17:00">5:00 PM</option>
+                                <option value="17:30">5:30 PM</option>
+                                <option value="18:00">6:00 PM</option>
+                                <option value="18:30">6:30 PM</option>
+                                <option value="19:00">7:00 PM</option>
+                                <option value="19:30">7:30 PM</option>
+                                <option value="20:00">8:00 PM</option>
+                                <option value="20:30">8:30 PM</option>
+                                <option value="21:00">9:00 PM</option>
+                                <option value="21:30">9:30 PM</option>
+                                <option value="22:00">10:00 PM</option>
+                                <option value="22:30">10:30 PM</option>
+                                <option value="23:00">11:00 PM</option>
+                                <option value="23:30">11:30 PM</option>
+                            </select>
+                            <span class="help-text">Cannot be before 11:00 AM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Booking Settings</h2>
+                    
+                    <div class="form-group">
+                        <label>Cancellation Policy <span class="required">*</span></label>
+                        <select name="stay_cancellation_policy" id="stay_cancellation_policy" required>
+                            <option value="">Select a policy</option>
+                            <option value="flexible">Flexible - Full refund up to 24 hours before</option>
+                            <option value="moderate">Moderate - Full refund up to 5 days before</option>
+                            <option value="strict">Strict - No refund</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Instant Book <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="stay_instant_book" id="stay_instant_yes" value="1">
+                                <label for="stay_instant_yes">Yes - Guests can book instantly</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="stay_instant_book" id="stay_instant_no" value="0" checked>
+                                <label for="stay_instant_no">No - Require approval</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>House Rules <span class="required">*</span></label>
+                        <span class="help-text" style="display: block; margin-bottom: 12px;">Select what is allowed at your property</span>
+                        
+                        <div style="display: grid; gap: 12px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 400;">
+                                <input type="checkbox" name="smoking_allowed" id="smoking_allowed" value="1" style="width: 20px; height: 20px; cursor: pointer;">
+                                <span>Smoking Allowed</span>
+                            </label>
+                            
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 400;">
+                                <input type="checkbox" name="pets_allowed" id="pets_allowed" value="1" style="width: 20px; height: 20px; cursor: pointer;">
+                                <span>Pets Allowed</span>
+                            </label>
+                            
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 400;">
+                                <input type="checkbox" name="parties_allowed" id="parties_allowed" value="1" style="width: 20px; height: 20px; cursor: pointer;">
+                                <span>Parties/Events Allowed</span>
+                            </label>
+                            
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 400;">
+                                <input type="checkbox" name="filming_allowed" id="filming_allowed" value="1" style="width: 20px; height: 20px; cursor: pointer;">
+                                <span>Commercial Filming Allowed</span>
+                            </label>
+                            
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 400;">
+                                <input type="checkbox" name="quiet_hours_enforced" id="quiet_hours_enforced" value="1" style="width: 20px; height: 20px; cursor: pointer;">
+                                <span>Quiet Hours Enforced</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Amenities</h2>
+                    <p class="help-text" style="display:block; margin-bottom: 16px;">Select the amenities available for guests at this stay.</p>
+                    <div id="stay-amenities-container" class="stay-amenities-container">
+                        <div class="stay-amenities-loading">Loading amenities...</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Main Image</h2>
+                    
+                    <div class="form-group">
+                        <label class="image-upload" for="stay_main_image">
+                            <input type="file" name="stay_main_image" id="stay_main_image" accept="image/*" required>
+                            <i class="fa fa-cloud-upload"></i>
+                            <p><strong>Click to upload</strong> or drag and drop</p>
+                            <p style="font-size: 14px; margin-top: 8px;">PNG, JPG, JPEG up to 10MB</p>
+                        </label>
+                        <div class="image-preview" id="stay_image_preview">
+                            <img id="stay_preview_img" src="" alt="Preview">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Additional Images <span class="required">*</span></h2>
+                    <p style="font-size: 14px; color: #717171; margin-bottom: 16px;">
+                        You must upload at least one image for each bedroom and bathroom. Optional rooms: Living Room, Kitchen, Dining Room, Balcony.
+                    </p>
+                    
+                    <div id="required-rooms-status" style="background: #f7f7f7; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px;">
+                        <strong>Required rooms:</strong> <span id="required-rooms-list">Enter number of bedrooms and bathrooms above</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="image-upload" for="stay_additional_images">
+                            <input type="file" name="stay_additional_images[]" id="stay_additional_images" accept="image/*" multiple>
+                            <i class="fa fa-cloud-upload"></i>
+                            <p><strong>Click to upload multiple images</strong></p>
+                            <p style="font-size: 14px; margin-top: 8px;">Select multiple images to showcase your stay (up to 20 images)</p>
+                            <p id="stay_image_count" style="font-size: 13px; margin-top: 4px; color: #717171; font-weight: 600;">0 images selected</p>
+                        </label>
+                        <div class="additional-images-preview" id="stay_additional_preview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 16px;">
+                            <!-- Previews will be added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submit-btn">Create Posting</button>
+        </form>
+    </div>
+
+    <!-- Header and auth scripts removed -->
+
+    <!-- Load auth script for access control -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/load-modals.js"></script>
+    <script src="assets/js/header.js"></script>
+    <script src="assets/js/load-header-standard.js"></script>
+    <script src="assets/js/form-validation.js"></script>
+    <script src="assets/js/posting.js"></script>
+        let accessGranted = false;
+        
+        function checkHostAccess(isFinalCheck = false) {
+            // If access already granted, don't check again
+            if (accessGranted) return;
+            
+            
+            if (window.Auth && window.Auth.isAuthenticated()) {
+                const currentUser = window.Auth.getCurrentUser();
+                
+                if (currentUser && (currentUser.user_type === 'host' || currentUser.user_type === 'admin')) {
+                    accessGranted = true;
+                    return; // All good, user is a host or admin
+                } else if (currentUser) {
+                    alert('You must be a host to create postings. Please become a host first.');
+                    window.location.href = 'become-host.html';
+                } else {
+                    // currentUser is null, auth still loading
+                    console.log('[POSTING] ⏳ Auth still loading, retrying...');
+                }
+            } else {
+                // Not authenticated - but only redirect on final check
+                if (isFinalCheck) {
+                    alert('Please sign in as a host to create postings');
+                    window.location.href = 'index.html';
+                } else {
+                    console.log('[POSTING] ⏳ Auth not ready yet, will retry...');
+                }
+            }
+        }
+
+        // Wait for Auth to be available, then check access
+        function waitForAuthAndCheck() {
+            if (typeof window.Auth !== 'undefined' && window.Auth.isAuthenticated) {
+                // Auth is loaded, check access
+                checkHostAccess(false);
+                setTimeout(() => checkHostAccess(false), 500);
+                setTimeout(() => checkHostAccess(true), 2000); // Final check after 2 seconds
+            } else {
+                // Auth not loaded yet, retry
+                console.log('[POSTING] ⏳ Waiting for Auth module to load...');
+                setTimeout(waitForAuthAndCheck, 100);
+            }
+        }
+        
+        // Start checking once DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', waitForAuthAndCheck);
+        } else {
+            waitForAuthAndCheck();
+        }
+        
+        // Also check on auth state change
+        document.addEventListener('authStateChanged', () => checkHostAccess(false));
+
+        // Handle listing type selection
+        const typeOptions = document.querySelectorAll('.type-option');
+        const experienceForm = document.querySelector('.experience-form');
+        const eventForm = document.querySelector('.event-form');
+        const stayForm = document.querySelector('.stay-form');
+
+        // Function to disable required fields in a form
+        function disableFormValidation(formElement) {
+            const requiredInputs = formElement.querySelectorAll('[required]');
+            requiredInputs.forEach(input => {
+                input.removeAttribute('required');
+                input.dataset.wasRequired = 'true';
+            });
+        }
+
+        // Function to enable required fields in a form
+        function enableFormValidation(formElement) {
+            const inputs = formElement.querySelectorAll('[data-was-required="true"]');
+            inputs.forEach(input => {
+                input.setAttribute('required', 'required');
+            });
+        }
+
+        // Initially disable validation for hidden forms
+        disableFormValidation(eventForm);
+        disableFormValidation(stayForm);
+
+        // Experience Opening Time - Combine hour, minute, AM/PM into 24-hour format
+        const expOpenHour = document.getElementById('exp_open_hour');
+        const expOpenMinute = document.getElementById('exp_open_minute');
+        const expOpenAmpm = document.getElementById('exp_open_ampm');
+        const expHourStart = document.getElementById('exp_hour_start');
+
+        function updateExpOpeningTime() {
+            const hour = expOpenHour.value;
+            const minute = expOpenMinute.value;
+            const ampm = expOpenAmpm.value;
+
+            if (hour && minute && ampm) {
+                let hour24 = parseInt(hour);
+                if (ampm === 'PM' && hour24 !== 12) {
+                    hour24 += 12;
+                } else if (ampm === 'AM' && hour24 === 12) {
+                    hour24 = 0;
+                }
+                expHourStart.value = `${String(hour24).padStart(2, '0')}:${minute}`;
+            }
+        }
+
+        expOpenHour.addEventListener('change', updateExpOpeningTime);
+        expOpenMinute.addEventListener('change', updateExpOpeningTime);
+        expOpenAmpm.addEventListener('change', updateExpOpeningTime);
+
+        // Experience Closing Time - Combine hour, minute, AM/PM into 24-hour format
+        const expCloseHour = document.getElementById('exp_close_hour');
+        const expCloseMinute = document.getElementById('exp_close_minute');
+        const expCloseAmpm = document.getElementById('exp_close_ampm');
+        const expHourEnd = document.getElementById('exp_hour_end');
+
+        function updateExpClosingTime() {
+            const hour = expCloseHour.value;
+            const minute = expCloseMinute.value;
+            const ampm = expCloseAmpm.value;
+
+            if (hour && minute && ampm) {
+                let hour24 = parseInt(hour);
+                if (ampm === 'PM' && hour24 !== 12) {
+                    hour24 += 12;
+                } else if (ampm === 'AM' && hour24 === 12) {
+                    hour24 = 0;
+                }
+                expHourEnd.value = `${String(hour24).padStart(2, '0')}:${minute}`;
+            }
+        }
+
+        expCloseHour.addEventListener('change', updateExpClosingTime);
+        expCloseMinute.addEventListener('change', updateExpClosingTime);
+        expCloseAmpm.addEventListener('change', updateExpClosingTime);
+
+        // Event Opening Time - Combine hour, minute, AM/PM into 24-hour format
+        const evtOpenHour = document.getElementById('evt_open_hour');
+        const evtOpenMinute = document.getElementById('evt_open_minute');
+        const evtOpenAmpm = document.getElementById('evt_open_ampm');
+        const evtHourStart = document.getElementById('evt_hour_start');
+
+        function updateEvtOpeningTime() {
+            const hour = evtOpenHour.value;
+            const minute = evtOpenMinute.value;
+            const ampm = evtOpenAmpm.value;
+
+            if (hour && minute && ampm) {
+                let hour24 = parseInt(hour);
+                if (ampm === 'PM' && hour24 !== 12) {
+                    hour24 += 12;
+                } else if (ampm === 'AM' && hour24 === 12) {
+                    hour24 = 0;
+                }
+                evtHourStart.value = `${String(hour24).padStart(2, '0')}:${minute}`;
+            }
+        }
+
+        evtOpenHour.addEventListener('change', updateEvtOpeningTime);
+        evtOpenMinute.addEventListener('change', updateEvtOpeningTime);
+        evtOpenAmpm.addEventListener('change', updateEvtOpeningTime);
+
+        // Event Closing Time - Combine hour, minute, AM/PM into 24-hour format
+        const evtCloseHour = document.getElementById('evt_close_hour');
+        const evtCloseMinute = document.getElementById('evt_close_minute');
+        const evtCloseAmpm = document.getElementById('evt_close_ampm');
+        const evtHourEnd = document.getElementById('evt_hour_end');
+
+        function updateEvtClosingTime() {
+            const hour = evtCloseHour.value;
+            const minute = evtCloseMinute.value;
+            const ampm = evtCloseAmpm.value;
+
+            if (hour && minute && ampm) {
+                let hour24 = parseInt(hour);
+                if (ampm === 'PM' && hour24 !== 12) {
+                    hour24 += 12;
+                } else if (ampm === 'AM' && hour24 === 12) {
+                    hour24 = 0;
+                }
+                evtHourEnd.value = `${String(hour24).padStart(2, '0')}:${minute}`;
+            }
+        }
+
+        evtCloseHour.addEventListener('change', updateEvtClosingTime);
+        evtCloseMinute.addEventListener('change', updateEvtClosingTime);
+        evtCloseAmpm.addEventListener('change', updateEvtClosingTime);
+
+        typeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all
+                typeOptions.forEach(opt => opt.classList.remove('active'));
+                // Add active class to clicked
+                this.classList.add('active');
+                // Check the radio inside
+                this.querySelector('input[type="radio"]').checked = true;
+
+                // Show appropriate form and manage validation
+                const type = this.dataset.type;
+                experienceForm.classList.remove('active');
+                eventForm.classList.remove('active');
+                stayForm.classList.remove('active');
+
+                // Disable validation for all forms
+                disableFormValidation(experienceForm);
+                disableFormValidation(eventForm);
+                disableFormValidation(stayForm);
+
+                // Enable validation and show only the selected form
+                if (type === 'experience') {
+                    experienceForm.classList.add('active');
+                    enableFormValidation(experienceForm);
+                } else if (type === 'event') {
+                    eventForm.classList.add('active');
+                    enableFormValidation(eventForm);
+                } else if (type === 'stay') {
+                    stayForm.classList.add('active');
+                    enableFormValidation(stayForm);
+                }
+            });
+        });
+
+        // Character counters - Experience
+        const titleInput = document.getElementById('exp_title');
+        const titleCounter = document.getElementById('title-counter');
+        const descInput = document.getElementById('exp_description');
+        const descCounter = document.getElementById('description-counter');
+
+        titleInput.addEventListener('input', function() {
+            titleCounter.textContent = `${this.value.length} / 100 characters`;
+        });
+
+        descInput.addEventListener('input', function() {
+            const length = this.value.length;
+            descCounter.textContent = `${length} characters ${length < 50 ? '(minimum 50)' : ''}`;
+            if (length < 50) {
+                descCounter.style.color = '#dc2626';
+            } else {
+                descCounter.style.color = '#717171';
+            }
+        });
+
+        // Character counters - Event
+        const evtTitleInput = document.getElementById('evt_title');
+        const evtTitleCounter = document.getElementById('evt_title_counter');
+        const evtDescInput = document.getElementById('evt_description');
+        const evtDescCounter = document.getElementById('evt_description_counter');
+
+        evtTitleInput.addEventListener('input', function() {
+            evtTitleCounter.textContent = `${this.value.length} / 100 characters`;
+        });
+
+        evtDescInput.addEventListener('input', function() {
+            const length = this.value.length;
+            evtDescCounter.textContent = `${length} characters ${length < 50 ? '(minimum 50)' : ''}`;
+            if (length < 50) {
+                evtDescCounter.style.color = '#dc2626';
+            } else {
+                evtDescCounter.style.color = '#717171';
+            }
+        });
+
+        // Character counters - Stay
+        const stayTitleInput = document.getElementById('stay_title');
+        const stayTitleCounter = document.getElementById('stay_title_counter');
+        const stayDescInput = document.getElementById('stay_description');
+        const stayDescCounter = document.getElementById('stay_description_counter');
+
+        stayTitleInput.addEventListener('input', function() {
+            stayTitleCounter.textContent = `${this.value.length} / 20 characters`;
+        });
+
+        stayDescInput.addEventListener('input', function() {
+            const length = this.value.length;
+            stayDescCounter.textContent = `${length} characters ${length < 50 ? '(minimum 50)' : ''}`;
+            if (length < 50) {
+                stayDescCounter.style.color = '#dc2626';
+            } else {
+                stayDescCounter.style.color = '#717171';
+            }
+        });
+
+        // Pricing type toggle - Experience
+        const perPersonRadio = document.getElementById('exp_per_person');
+        const perGroupRadio = document.getElementById('exp_per_group');
+        const groupSizeField = document.getElementById('group-size-field');
+
+        function updatePricingFields() {
+            if (perGroupRadio.checked) {
+                groupSizeField.classList.add('show');
+                document.getElementById('exp_max_guests_per_price').required = true;
+            } else {
+                groupSizeField.classList.remove('show');
+                document.getElementById('exp_max_guests_per_price').required = false;
+            }
+        }
+
+        perPersonRadio.addEventListener('change', updatePricingFields);
+        perGroupRadio.addEventListener('change', updatePricingFields);
+
+        // Pricing type toggle - Event
+        const evtPerPersonRadio = document.getElementById('evt_per_person');
+        const evtPerGroupRadio = document.getElementById('evt_per_group');
+        const evtGroupSizeField = document.getElementById('evt_group_size_field');
+
+        function updateEvtPricingFields() {
+            if (evtPerGroupRadio.checked) {
+                evtGroupSizeField.classList.add('show');
+                document.getElementById('evt_max_guests_per_price').required = true;
+            } else {
+                evtGroupSizeField.classList.remove('show');
+                document.getElementById('evt_max_guests_per_price').required = false;
+            }
+        }
+
+        evtPerPersonRadio.addEventListener('change', updateEvtPricingFields);
+        evtPerGroupRadio.addEventListener('change', updateEvtPricingFields);
+
+        // Main image preview - Experience
+        const imageInput = document.getElementById('exp_main_image');
+        const imagePreview = document.getElementById('exp_image_preview');
+        const previewImg = document.getElementById('exp_preview_img');
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Main image preview - Event
+        const evtImageInput = document.getElementById('evt_main_image');
+        const evtImagePreview = document.getElementById('evt_image_preview');
+        const evtPreviewImg = document.getElementById('evt_preview_img');
+
+        evtImageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    evtPreviewImg.src = e.target.result;
+                    evtImagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Store image metadata (category/room) with file indices
+        const imageMetadata = {
+            exp: [],
+            evt: [],
+            stay: []
+        };
+
+        // Additional images preview - Experience
+        const additionalImagesInput = document.getElementById('exp_additional_images');
+        const additionalPreviewContainer = document.getElementById('exp_additional_preview');
+
+        additionalImagesInput.addEventListener('change', function(e) {
+            let files = Array.from(e.target.files);
+            const maxImages = 20;
+            
+            // Limit to 20 images
+            if (files.length > maxImages) {
+                alert(`You can only upload up to ${maxImages} additional images. Only the first ${maxImages} will be selected.`);
+                files = files.slice(0, maxImages);
+                
+                // Create new FileList with limited files
+                const dt = new DataTransfer();
+                files.forEach(file => dt.items.add(file));
+                this.files = dt.files;
+            }
+            
+            // Update image count after limiting
+            const countElement = document.getElementById('exp_image_count');
+            if (countElement) {
+                const count = files.length;
+                countElement.textContent = `${count} image${count !== 1 ? 's' : ''} selected (max ${maxImages})`;
+                countElement.style.color = count > maxImages ? '#dc2626' : '#717171';
+            }
+            
+            additionalPreviewContainer.innerHTML = '';
+            imageMetadata.exp = [];
+            
+            files.forEach((file, index) => {
+                // Initialize metadata for this file index
+                imageMetadata.exp[index] = { category: 'General' };
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgWrapper = document.createElement('div');
+                    imgWrapper.style.position = 'relative';
+                    imgWrapper.dataset.fileIndex = index;
+                    imgWrapper.style.marginBottom = '16px';
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '100%';
+                    img.style.height = '150px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '8px';
+                    img.style.border = '2px solid #EBEBEB';
+                    img.style.marginBottom = '8px';
+                    
+                    // Category input for experiences/events
+                    const categoryLabel = document.createElement('label');
+                    categoryLabel.textContent = 'Category:';
+                    categoryLabel.style.display = 'block';
+                    categoryLabel.style.fontSize = '12px';
+                    categoryLabel.style.fontWeight = '600';
+                    categoryLabel.style.marginBottom = '4px';
+                    categoryLabel.style.color = '#222';
+                    
+                    const categoryInput = document.createElement('input');
+                    categoryInput.type = 'text';
+                    categoryInput.placeholder = 'e.g., Activity, Location, Group';
+                    categoryInput.className = 'image-category-input';
+                    categoryInput.value = 'General';
+                    categoryInput.style.width = '100%';
+                    categoryInput.style.padding = '8px';
+                    categoryInput.style.border = '1px solid #DDDDDD';
+                    categoryInput.style.borderRadius = '4px';
+                    categoryInput.style.fontSize = '14px';
+                    categoryInput.dataset.fileIndex = index;
+                    
+                    categoryInput.addEventListener('change', function() {
+                        if (imageMetadata.exp[index]) {
+                            imageMetadata.exp[index].category = this.value || 'General';
+                        }
+                    });
+                    
+                    imgWrapper.appendChild(img);
+                    imgWrapper.appendChild(categoryLabel);
+                    imgWrapper.appendChild(categoryInput);
+                    additionalPreviewContainer.appendChild(imgWrapper);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        // Additional images preview - Event
+        const evtAdditionalImagesInput = document.getElementById('evt_additional_images');
+        const evtAdditionalPreviewContainer = document.getElementById('evt_additional_preview');
+
+        evtAdditionalImagesInput.addEventListener('change', function(e) {
+            let files = Array.from(e.target.files);
+            const maxImages = 20;
+            
+            // Limit to 20 images
+            if (files.length > maxImages) {
+                alert(`You can only upload up to ${maxImages} additional images. Only the first ${maxImages} will be selected.`);
+                files = files.slice(0, maxImages);
+                
+                // Create new FileList with limited files
+                const dt = new DataTransfer();
+                files.forEach(file => dt.items.add(file));
+                this.files = dt.files;
+            }
+            
+            // Update image count after limiting
+            const countElement = document.getElementById('evt_image_count');
+            if (countElement) {
+                const count = files.length;
+                countElement.textContent = `${count} image${count !== 1 ? 's' : ''} selected (max ${maxImages})`;
+                countElement.style.color = count > maxImages ? '#dc2626' : '#717171';
+            }
+            
+            evtAdditionalPreviewContainer.innerHTML = '';
+            imageMetadata.evt = [];
+            
+            files.forEach((file, index) => {
+                // Initialize metadata for this file index
+                imageMetadata.evt[index] = { category: 'General' };
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgWrapper = document.createElement('div');
+                    imgWrapper.style.position = 'relative';
+                    imgWrapper.dataset.fileIndex = index;
+                    imgWrapper.style.marginBottom = '16px';
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '100%';
+                    img.style.height = '150px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '8px';
+                    img.style.border = '2px solid #EBEBEB';
+                    img.style.marginBottom = '8px';
+                    
+                    // Category input for events
+                    const categoryLabel = document.createElement('label');
+                    categoryLabel.textContent = 'Category:';
+                    categoryLabel.style.display = 'block';
+                    categoryLabel.style.fontSize = '12px';
+                    categoryLabel.style.fontWeight = '600';
+                    categoryLabel.style.marginBottom = '4px';
+                    categoryLabel.style.color = '#222';
+                    
+                    const categoryInput = document.createElement('input');
+                    categoryInput.type = 'text';
+                    categoryInput.placeholder = 'e.g., Activity, Location, Group';
+                    categoryInput.className = 'image-category-input';
+                    categoryInput.value = 'General';
+                    categoryInput.style.width = '100%';
+                    categoryInput.style.padding = '8px';
+                    categoryInput.style.border = '1px solid #DDDDDD';
+                    categoryInput.style.borderRadius = '4px';
+                    categoryInput.style.fontSize = '14px';
+                    categoryInput.dataset.fileIndex = index;
+                    
+                    categoryInput.addEventListener('change', function() {
+                        if (imageMetadata.evt[index]) {
+                            imageMetadata.evt[index].category = this.value || 'General';
+                        }
+                    });
+                    
+                    imgWrapper.appendChild(img);
+                    imgWrapper.appendChild(categoryLabel);
+                    imgWrapper.appendChild(categoryInput);
+                    evtAdditionalPreviewContainer.appendChild(imgWrapper);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        // Main image preview - Stay
+        const stayImageInput = document.getElementById('stay_main_image');
+        const stayImagePreview = document.getElementById('stay_image_preview');
+        const stayPreviewImg = document.getElementById('stay_preview_img');
+
+        stayImageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    stayPreviewImg.src = e.target.result;
+                    stayImagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Function to generate room options based on bedrooms and bathrooms
+        function generateStayRoomOptions() {
+            const bedrooms = parseInt(document.getElementById('stay_number_of_bedrooms').value) || 0;
+            const bathrooms = Math.ceil(parseFloat(document.getElementById('stay_number_of_bathrooms').value) || 0); // Round up for partial bathrooms
+            
+            const options = [];
+            
+            // Add bedrooms (required)
+            for (let i = 1; i <= bedrooms; i++) {
+                const roomName = bedrooms === 1 ? 'Bedroom' : `Bedroom ${i}`;
+                options.push({ value: roomName, text: roomName, required: true });
+            }
+            
+            // Add bathrooms (required)
+            for (let i = 1; i <= bathrooms; i++) {
+                const roomName = bathrooms === 1 ? 'Bathroom' : `Bathroom ${i}`;
+                options.push({ value: roomName, text: roomName, required: true });
+            }
+            
+            // Add optional rooms
+            options.push({ value: 'Living Room', text: 'Living Room', required: false });
+            options.push({ value: 'Kitchen', text: 'Kitchen', required: false });
+            options.push({ value: 'Dining Room', text: 'Dining Room', required: false });
+            options.push({ value: 'Balcony', text: 'Balcony', required: false });
+            options.push({ value: 'Other', text: 'Other', required: false });
+            
+            return options;
+        }
+        
+        // Function to update required rooms status
+        function updateRequiredRoomsStatus() {
+            const bedrooms = parseInt(document.getElementById('stay_number_of_bedrooms').value) || 0;
+            const bathrooms = Math.ceil(parseFloat(document.getElementById('stay_number_of_bathrooms').value) || 0);
+            
+            if (bedrooms === 0 && bathrooms === 0) {
+                document.getElementById('required-rooms-list').textContent = 'Enter number of bedrooms and bathrooms above';
+                return;
+            }
+            
+            const requiredRooms = [];
+            if (bedrooms > 0) {
+                for (let i = 1; i <= bedrooms; i++) {
+                    requiredRooms.push(bedrooms === 1 ? 'Bedroom' : `Bedroom ${i}`);
+                }
+            }
+            if (bathrooms > 0) {
+                for (let i = 1; i <= bathrooms; i++) {
+                    requiredRooms.push(bathrooms === 1 ? 'Bathroom' : `Bathroom ${i}`);
+                }
+            }
+            
+            document.getElementById('required-rooms-list').textContent = requiredRooms.join(', ') || 'None';
+        }
+        
+        // Function to check which required rooms have images
+        function checkRequiredRoomsCoverage() {
+            const bedrooms = parseInt(document.getElementById('stay_number_of_bedrooms').value) || 0;
+            const bathrooms = Math.ceil(parseFloat(document.getElementById('stay_number_of_bathrooms').value) || 0);
+            
+            const requiredRooms = [];
+            if (bedrooms > 0) {
+                for (let i = 1; i <= bedrooms; i++) {
+                    requiredRooms.push(bedrooms === 1 ? 'Bedroom' : `Bedroom ${i}`);
+                }
+            }
+            if (bathrooms > 0) {
+                for (let i = 1; i <= bathrooms; i++) {
+                    requiredRooms.push(bathrooms === 1 ? 'Bathroom' : `Bathroom ${i}`);
+                }
+            }
+            
+            // Get all room values from uploaded images
+            const coveredRooms = new Set();
+            imageMetadata.stay.forEach(meta => {
+                if (meta && meta.room && meta.room !== 'Other') {
+                    coveredRooms.add(meta.room);
+                }
+            });
+            
+            const missingRooms = requiredRooms.filter(room => !coveredRooms.has(room));
+            return { requiredRooms, coveredRooms: Array.from(coveredRooms), missingRooms };
+        }
+        
+        // Additional images preview - Stay
+        const stayAdditionalImagesInput = document.getElementById('stay_additional_images');
+        const stayAdditionalPreviewContainer = document.getElementById('stay_additional_preview');
+        const stayBedroomsInput = document.getElementById('stay_number_of_bedrooms');
+        const stayBathroomsInput = document.getElementById('stay_number_of_bathrooms');
+        const stayPropertyTypeSelect = document.getElementById('stay_property_type');
+        const stayPropertyTypeHelp = document.getElementById('stay-property-type-help');
+        const stayAmenitiesContainer = document.getElementById('stay-amenities-container');
+        const selectedStayAmenities = new Set();
+        let stayAmenitiesData = [];
+
+        const CACHE_KEYS = {
+            amenities: 'll_cache_amenities_v1',
+            propertyTypes: 'll_cache_property_types_v1'
+        };
+        const CACHE_TTL = 1000 * 60 * 60 * 6; // 6 hours
+
+        function getCachedData(key) {
+            try {
+                const raw = localStorage.getItem(key);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (!parsed || !parsed.timestamp || !parsed.data) return null;
+                if (Date.now() - parsed.timestamp > CACHE_TTL) {
+                    localStorage.removeItem(key);
+                    return null;
+                }
+                return parsed.data;
+            } catch (error) {
+                console.warn('[POSTING] Failed to read cache', error);
+                return null;
+            }
+        }
+
+        function setCachedData(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify({
+                    timestamp: Date.now(),
+                    data
+                }));
+            } catch (error) {
+                console.warn('[POSTING] Failed to write cache', error);
+            }
+        }
+        
+        // Update room options when bedrooms/bathrooms change
+        stayBedroomsInput.addEventListener('change', function() {
+            updateRequiredRoomsStatus();
+            // Refresh preview if images are already selected
+            if (stayAdditionalImagesInput.files.length > 0) {
+                stayAdditionalImagesInput.dispatchEvent(new Event('change'));
+            }
+        });
+        
+        stayBathroomsInput.addEventListener('change', function() {
+            updateRequiredRoomsStatus();
+            // Refresh preview if images are already selected
+            if (stayAdditionalImagesInput.files.length > 0) {
+                stayAdditionalImagesInput.dispatchEvent(new Event('change'));
+            }
+        });
+        
+        // Initialize required rooms status
+        updateRequiredRoomsStatus();
+        
+        function createStayImagePreview(files, startIndex = 0) {
+            const roomOptions = generateStayRoomOptions();
+            const existingIndices = Array.from(stayAdditionalPreviewContainer.children).map(el => parseInt(el.dataset.fileIndex)).filter(i => !isNaN(i));
+            let currentIndex = startIndex;
+            
+            if (existingIndices.length > 0) {
+                currentIndex = Math.max(...existingIndices) + 1;
+            }
+            
+            files.forEach((file, fileIndex) => {
+                const actualIndex = currentIndex + fileIndex;
+                
+                // Initialize metadata for this file index
+                if (!imageMetadata.stay[actualIndex]) {
+                    imageMetadata.stay[actualIndex] = { room: roomOptions.length > 0 ? roomOptions[0].value : 'General', customRoom: '' };
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgWrapper = document.createElement('div');
+                    imgWrapper.style.position = 'relative';
+                    imgWrapper.dataset.fileIndex = actualIndex;
+                    imgWrapper.style.marginBottom = '16px';
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '100%';
+                    img.style.height = '150px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '8px';
+                    img.style.border = '2px solid #EBEBEB';
+                    img.style.marginBottom = '8px';
+                    
+                    // Room label
+                    const roomLabel = document.createElement('label');
+                    roomLabel.textContent = 'Room:';
+                    roomLabel.style.display = 'block';
+                    roomLabel.style.fontSize = '12px';
+                    roomLabel.style.fontWeight = '600';
+                    roomLabel.style.marginBottom = '4px';
+                    roomLabel.style.color = '#222';
+                    
+                    // Room select dropdown
+                    const roomSelect = document.createElement('select');
+                    roomSelect.className = 'image-room-select';
+                    roomSelect.style.width = '100%';
+                    roomSelect.style.padding = '8px';
+                    roomSelect.style.border = '1px solid #DDDDDD';
+                    roomSelect.style.borderRadius = '4px';
+                    roomSelect.style.fontSize = '14px';
+                    roomSelect.style.marginBottom = '8px';
+                    roomSelect.dataset.fileIndex = actualIndex;
+                    
+                    // Populate options
+                    roomOptions.forEach(option => {
+                        const opt = document.createElement('option');
+                        opt.value = option.value;
+                        opt.textContent = option.text;
+                        roomSelect.appendChild(opt);
+                    });
+                    
+                    // Set current value if exists
+                    if (imageMetadata.stay[actualIndex] && imageMetadata.stay[actualIndex].room) {
+                        roomSelect.value = imageMetadata.stay[actualIndex].room;
+                    }
+                    
+                    // Custom room input (hidden by default, shown when "Other" is selected)
+                    const customRoomWrapper = document.createElement('div');
+                    customRoomWrapper.style.display = 'none';
+                    customRoomWrapper.style.marginTop = '8px';
+                    
+                    const customRoomLabel = document.createElement('label');
+                    customRoomLabel.textContent = 'Custom Room Name:';
+                    customRoomLabel.style.display = 'block';
+                    customRoomLabel.style.fontSize = '12px';
+                    customRoomLabel.style.fontWeight = '600';
+                    customRoomLabel.style.marginBottom = '4px';
+                    customRoomLabel.style.color = '#222';
+                    
+                    const customRoomInput = document.createElement('input');
+                    customRoomInput.type = 'text';
+                    customRoomInput.placeholder = 'Enter room name';
+                    customRoomInput.className = 'image-custom-room-input';
+                    customRoomInput.style.width = '100%';
+                    customRoomInput.style.padding = '8px';
+                    customRoomInput.style.border = '1px solid #DDDDDD';
+                    customRoomInput.style.borderRadius = '4px';
+                    customRoomInput.style.fontSize = '14px';
+                    customRoomInput.dataset.fileIndex = actualIndex;
+                    
+                    if (imageMetadata.stay[actualIndex] && imageMetadata.stay[actualIndex].customRoom) {
+                        customRoomInput.value = imageMetadata.stay[actualIndex].customRoom;
+                    }
+                    
+                    customRoomWrapper.appendChild(customRoomLabel);
+                    customRoomWrapper.appendChild(customRoomInput);
+                    
+                    // Handle room select change
+                    roomSelect.addEventListener('change', function() {
+                        const selectedRoom = this.value;
+                        if (!imageMetadata.stay[actualIndex]) {
+                            imageMetadata.stay[actualIndex] = { room: selectedRoom, customRoom: '' };
+                        } else {
+                            imageMetadata.stay[actualIndex].room = selectedRoom;
+                        }
+                        
+                        // Show/hide custom room input
+                        if (selectedRoom === 'Other') {
+                            customRoomWrapper.style.display = 'block';
+                        } else {
+                            customRoomWrapper.style.display = 'none';
+                            imageMetadata.stay[actualIndex].customRoom = '';
+                            customRoomInput.value = '';
+                        }
+                        
+                        // Update required rooms status
+                        updateRequiredRoomsCoverageDisplay();
+                    });
+                    
+                    // Handle custom room input change
+                    customRoomInput.addEventListener('input', function() {
+                        if (!imageMetadata.stay[actualIndex]) {
+                            imageMetadata.stay[actualIndex] = { room: 'Other', customRoom: '' };
+                        }
+                        imageMetadata.stay[actualIndex].customRoom = this.value;
+                        // Update required rooms coverage display
+                        updateRequiredRoomsCoverageDisplay();
+                    });
+                    
+                    // Show custom room input if "Other" is already selected
+                    if (roomSelect.value === 'Other') {
+                        customRoomWrapper.style.display = 'block';
+                    }
+                    
+                    // Update on initial load
+                    updateRequiredRoomsCoverageDisplay();
+                    
+                    imgWrapper.appendChild(img);
+                    imgWrapper.appendChild(roomLabel);
+                    imgWrapper.appendChild(roomSelect);
+                    imgWrapper.appendChild(customRoomWrapper);
+                    stayAdditionalPreviewContainer.appendChild(imgWrapper);
+                    
+                    // Update required rooms coverage display
+                    updateRequiredRoomsCoverageDisplay();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        function updateRequiredRoomsCoverageDisplay() {
+            const coverage = checkRequiredRoomsCoverage();
+            const statusElement = document.getElementById('required-rooms-status');
+            
+            if (coverage.requiredRooms.length === 0) {
+                statusElement.innerHTML = '<strong>Required rooms:</strong> <span id="required-rooms-list">Enter number of bedrooms and bathrooms above</span>';
+                updateRequiredRoomsStatus();
+                return;
+            }
+            
+            const missingCount = coverage.missingRooms.length;
+            if (missingCount === 0) {
+                statusElement.innerHTML = `
+                    <strong style="color: #0f7b0f;">✓ All required rooms have images</strong>
+                    <span style="margin-left: 8px; color: #717171;">(${coverage.requiredRooms.join(', ')})</span>
+                `;
+            } else {
+                statusElement.innerHTML = `
+                    <strong style="color: #dc2626;">Missing images for:</strong> 
+                    <span style="color: #dc2626; font-weight: 600;">${coverage.missingRooms.join(', ')}</span>
+                    <span style="margin-left: 8px; color: #717171;">(${missingCount} of ${coverage.requiredRooms.length} rooms)</span>
+                `;
+            }
+        }
+
+        async function loadStayPropertyTypes() {
+            if (!stayPropertyTypeSelect) return;
+            stayPropertyTypeSelect.innerHTML = '<option value="">Loading property types...</option>';
+            if (stayPropertyTypeHelp) stayPropertyTypeHelp.textContent = '';
+
+            const cached = getCachedData(CACHE_KEYS.propertyTypes);
+            if (cached && Array.isArray(cached) && cached.length) {
+                applyPropertyTypeOptions(cached, true);
+            }
+
+            try {
+                const response = await fetch('backend/api/property-types.php');
+                const data = await response.json();
+
+                if (response.ok && data.success && Array.isArray(data.data) && data.data.length) {
+                    setCachedData(CACHE_KEYS.propertyTypes, data.data);
+                    applyPropertyTypeOptions(data.data);
+                } else if (!cached) {
+                    setFallbackPropertyTypes();
+                }
+            } catch (error) {
+                console.error('[POSTING] Failed to load property types:', error);
+                if (!cached) {
+                    setFallbackPropertyTypes();
+                } else if (stayPropertyTypeHelp) {
+                    stayPropertyTypeHelp.textContent = 'Using cached property types.';
+                    stayPropertyTypeHelp.style.color = '#b45309';
+                }
+            }
+        }
+
+        function applyPropertyTypeOptions(list, fromCache = false) {
+            if (!stayPropertyTypeSelect || !Array.isArray(list)) return;
+            const optionsHtml = list.map(item => {
+                const value = (item.value || item.name || '').trim();
+                if (!value) return '';
+                return `<option value="${value}">${formatPropertyTypeLabel(value)}</option>`;
+            }).join('');
+            stayPropertyTypeSelect.innerHTML = `<option value="">Select property type</option>${optionsHtml}`;
+            if (stayPropertyTypeHelp) {
+                stayPropertyTypeHelp.textContent = fromCache ? 'Using cached property types.' : 'Loaded from database.';
+                stayPropertyTypeHelp.style.color = fromCache ? '#b45309' : '#10873D';
+            }
+        }
+
+        function setFallbackPropertyTypes() {
+            if (!stayPropertyTypeSelect) return;
+            const fallbackTypes = [
+                'apartment', 'house', 'villa', 'chalet', 'studio',
+                'cottage', 'cabin', 'bungalow', 'hotel_room', 'guest_house'
+            ];
+            stayPropertyTypeSelect.innerHTML = '<option value="">Select property type</option>' +
+                fallbackTypes.map(type => `<option value="${type}">${formatPropertyTypeLabel(type)}</option>`).join('');
+            if (stayPropertyTypeHelp) {
+                stayPropertyTypeHelp.textContent = 'Using fallback property types.';
+                stayPropertyTypeHelp.style.color = '#b45309';
+            }
+        }
+
+        function formatPropertyTypeLabel(value) {
+            return value.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        async function loadStayAmenitiesOptions() {
+            if (!stayAmenitiesContainer) return;
+
+            stayAmenitiesContainer.innerHTML = '<div class="stay-amenities-loading">Loading amenities...</div>';
+
+            const cached = getCachedData(CACHE_KEYS.amenities);
+            if (cached && Array.isArray(cached) && cached.length) {
+                stayAmenitiesData = cached;
+                renderStayAmenitiesOptions(stayAmenitiesData);
+            }
+
+            try {
+                const response = await fetch('backend/api/amenities.php');
+                const data = await response.json();
+
+                if (response.ok && data.success && Array.isArray(data.data)) {
+                    stayAmenitiesData = data.data;
+                    renderStayAmenitiesOptions(stayAmenitiesData);
+                    setCachedData(CACHE_KEYS.amenities, data.data);
+                } else if (!cached) {
+                    stayAmenitiesContainer.innerHTML = '<div class="stay-amenities-empty">Unable to load amenities. Please try again later.</div>';
+                }
+            } catch (error) {
+                console.error('[POSTING] Failed to load amenities:', error);
+                if (!cached) {
+                    stayAmenitiesContainer.innerHTML = '<div class="stay-amenities-empty">Unable to load amenities. Please try again later.</div>';
+                }
+            }
+        }
+
+        function renderStayAmenitiesOptions(amenities) {
+            if (!stayAmenitiesContainer) return;
+
+            if (!amenities || amenities.length === 0) {
+                stayAmenitiesContainer.innerHTML = '<div class="stay-amenities-empty">No amenities available yet.</div>';
+                return;
+            }
+
+            const grouped = amenities.reduce((acc, amenity) => {
+                const categoryKey = (amenity.category || 'General').toLowerCase();
+                if (!acc[categoryKey]) acc[categoryKey] = [];
+                acc[categoryKey].push(amenity);
+                return acc;
+            }, {});
+
+            stayAmenitiesContainer.innerHTML = Object.entries(grouped).map(([category, items]) => {
+                const formattedCategory = category.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+                const chips = items.map(amenity => {
+                    const amenityId = parseInt(amenity.id, 10);
+                    const isChecked = selectedStayAmenities.has(amenityId);
+                    return `
+                        <label class="amenity-chip ${isChecked ? 'selected' : ''}">
+                            <input type="checkbox" data-amenity-id="${amenityId}" value="${amenityId}" ${isChecked ? 'checked' : ''}>
+                            <span>${amenity.name}</span>
+                        </label>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="amenities-category-block">
+                        <div class="amenities-category-title">${formattedCategory}</div>
+                        <div class="amenities-chips">
+                            ${chips}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        if (stayAmenitiesContainer) {
+            stayAmenitiesContainer.addEventListener('change', (event) => {
+                const checkbox = event.target;
+                if (checkbox.matches('input[data-amenity-id]')) {
+                    const amenityId = parseInt(checkbox.value, 10);
+                    if (!amenityId) return;
+
+                    if (checkbox.checked) {
+                        selectedStayAmenities.add(amenityId);
+                        checkbox.closest('.amenity-chip')?.classList.add('selected');
+                    } else {
+                        selectedStayAmenities.delete(amenityId);
+                        checkbox.closest('.amenity-chip')?.classList.remove('selected');
+                    }
+                }
+            });
+        }
+
+        loadStayPropertyTypes();
+        loadStayAmenitiesOptions();
+        
+        stayAdditionalImagesInput.addEventListener('change', function(e) {
+            let files = Array.from(e.target.files);
+            const maxImages = 20;
+            
+            // Limit to 20 images
+            if (files.length > maxImages) {
+                alert(`You can only upload up to ${maxImages} additional images. Only the first ${maxImages} will be selected.`);
+                files = files.slice(0, maxImages);
+                
+                // Create new FileList with limited files
+                const dt = new DataTransfer();
+                files.forEach(file => dt.items.add(file));
+                this.files = dt.files;
+            }
+            
+            // Update image count after limiting
+            const countElement = document.getElementById('stay_image_count');
+            if (countElement) {
+                const count = files.length;
+                countElement.textContent = `${count} image${count !== 1 ? 's' : ''} selected (max ${maxImages})`;
+                countElement.style.color = count > maxImages ? '#dc2626' : '#717171';
+            }
+            
+            // Clear preview and metadata if starting fresh, otherwise append
+            const existingPreviews = stayAdditionalPreviewContainer.querySelectorAll('[data-file-index]');
+            if (existingPreviews.length === 0) {
+                stayAdditionalPreviewContainer.innerHTML = '';
+                imageMetadata.stay = [];
+                createStayImagePreview(files, 0);
+            } else {
+                createStayImagePreview(files);
+            }
+        });
+
+        // Form submission
+        const form = document.getElementById('posting-form');
+        const alertDiv = document.getElementById('alert');
+        const submitBtn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Determine which form is active
+            const listingType = document.querySelector('input[name="listing_type"]:checked').value;
+
+            // Validate based on type
+            if (listingType === 'experience') {
+                const description = descInput.value;
+                if (description.length < 50) {
+                    showAlert('Description must be at least 50 characters', 'error');
+                    return;
+                }
+
+                const price = parseFloat(document.getElementById('exp_price').value);
+                if (price < 0.50) {
+                    showAlert('Price must be at least $0.50', 'error');
+                    return;
+                }
+
+                // Validate time fields are filled
+                if (!expHourStart.value) {
+                    showAlert('Please select opening time', 'error');
+                    return;
+                }
+
+                if (!expHourEnd.value) {
+                    showAlert('Please select closing time', 'error');
+                    return;
+                }
+            } else if (listingType === 'event') {
+                const description = evtDescInput.value;
+                if (description.length < 50) {
+                    showAlert('Description must be at least 50 characters', 'error');
+                    return;
+                }
+
+                const price = parseFloat(document.getElementById('evt_price').value);
+                if (price < 0.50) {
+                    showAlert('Price must be at least $0.50', 'error');
+                    return;
+                }
+
+                // Validate dates
+                const dateStart = document.getElementById('evt_date_start').value;
+                const dateEnd = document.getElementById('evt_date_end').value;
+                if (dateStart && dateEnd && new Date(dateStart) >= new Date(dateEnd)) {
+                    showAlert('Event end date must be after start date', 'error');
+                    return;
+                }
+
+                // Validate time fields are filled
+                if (!evtHourStart.value) {
+                    showAlert('Please select opening time', 'error');
+                    return;
+                }
+
+                if (!evtHourEnd.value) {
+                    showAlert('Please select closing time', 'error');
+                    return;
+                }
+            } else if (listingType === 'stay') {
+                const description = stayDescInput.value;
+                if (description.length < 50) {
+                    showAlert('Description must be at least 50 characters', 'error');
+                    return;
+                }
+
+                const price = parseFloat(document.getElementById('stay_price_per_night').value);
+                if (price < 0.50) {
+                    showAlert('Price must be at least $0.50', 'error');
+                    return;
+                }
+
+                const title = stayTitleInput.value;
+                if (title.length > 20) {
+                    showAlert('Title must be 20 characters or less', 'error');
+                    return;
+                }
+
+                // Validate that at least one bed type is provided
+                const doubleBeds = parseInt(document.getElementById('stay_number_double_beds').value) || 0;
+                const singleBeds = parseInt(document.getElementById('stay_number_single_beds').value) || 0;
+                const sofaBeds = parseInt(document.getElementById('stay_number_sofa_beds').value) || 0;
+                const totalBeds = doubleBeds + singleBeds + sofaBeds;
+
+                if (totalBeds < 1) {
+                    showAlert('At least one bed is required (double, single, or sofa)', 'error');
+                    return;
+                }
+                
+                // Validate required rooms have images
+                const coverage = checkRequiredRoomsCoverage();
+                if (coverage.missingRooms.length > 0) {
+                    showAlert(`You must upload at least one image for each required room. Missing: ${coverage.missingRooms.join(', ')}`, 'error');
+                    // Scroll to images section
+                    document.getElementById('required-rooms-status').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+                
+                // Validate that if "Other" room is selected, custom room name is provided
+                if (imageMetadata.stay && imageMetadata.stay.length > 0) {
+                    for (let i = 0; i < imageMetadata.stay.length; i++) {
+                        const meta = imageMetadata.stay[i];
+                        if (meta && meta.room === 'Other' && (!meta.customRoom || meta.customRoom.trim() === '')) {
+                            showAlert('Please provide a custom room name for images marked as "Other"', 'error');
+                            // Scroll to images section
+                            document.getElementById('required-rooms-status').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            return;
+                        }
+                    }
+                }
+            }
+            
+            // Validate additional images count (limit to 20)
+            const additionalImagesInput = listingType === 'experience' ? document.getElementById('exp_additional_images') :
+                                         listingType === 'event' ? document.getElementById('evt_additional_images') :
+                                         document.getElementById('stay_additional_images');
+            
+            if (additionalImagesInput && additionalImagesInput.files.length > 20) {
+                showAlert('You can only upload up to 20 additional images', 'error');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating...';
+
+            try {
+                const formData = new FormData(form);
+                
+                // Add user_id
+                const currentUser = window.Auth.getCurrentUser();
+                formData.append('user_id', currentUser.id);
+                
+                // Add image metadata based on listing type
+                if (listingType === 'experience' && imageMetadata.exp.length > 0) {
+                    formData.append('image_metadata', JSON.stringify(imageMetadata.exp));
+                } else if (listingType === 'event' && imageMetadata.evt.length > 0) {
+                    formData.append('image_metadata', JSON.stringify(imageMetadata.evt));
+                } else if (listingType === 'stay' && imageMetadata.stay.length > 0) {
+                    // For stays, if room is "Other", use customRoom value; otherwise use room
+                    const processedStayMetadata = imageMetadata.stay.map(meta => {
+                        if (meta && meta.room === 'Other' && meta.customRoom) {
+                            return { room: meta.customRoom.trim() || 'Other' };
+                        }
+                        return { room: meta && meta.room ? meta.room : 'General' };
+                    });
+                    formData.append('image_metadata', JSON.stringify(processedStayMetadata));
+                }
+
+                if (listingType === 'stay' && selectedStayAmenities.size > 0) {
+                    formData.append('stay_amenities', JSON.stringify(Array.from(selectedStayAmenities)));
+                }
+
+                const response = await fetch('backend/api/create-posting.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert(`${listingType.charAt(0).toUpperCase() + listingType.slice(1)} created successfully! Redirecting...`, 'success');
+                    setTimeout(() => {
+                        window.location.href = 'my-host.html';
+                    }, 2000);
+                } else {
+                    showAlert(data.message || 'Failed to create posting', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Create Posting';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('An error occurred. Please try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create Posting';
+            }
+        });
+
+        function showAlert(message, type) {
+            alertDiv.textContent = message;
+            alertDiv.className = `alert ${type}`;
+            alertDiv.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+

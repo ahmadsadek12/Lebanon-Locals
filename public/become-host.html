@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource Hints -->
+    <link rel="preload" href="assets/css/variables.css" as="style">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="assets/js/load-header-standard.js" as="script">
     <title>Become a Host - Lebanon Locals</title>
 
     <!-- Favicon -->
@@ -268,17 +273,9 @@
 <body class="become-host-page">
     <!-- Unified Header -->
     <div id="header-placeholder"></div>
-    <script>
-        fetch('includes/header.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('header-placeholder').innerHTML = html;
-                
-                if (window.Auth && window.Auth.setupAuthButton) {
-                    window.Auth.setupAuthButton();
-                }
-            });
-    </script>
+    <script src="assets/js/load-modals.js"></script>
+    <script src="assets/js/header.js"></script>
+    <script src="assets/js/load-header-standard.js"></script>
 
     <!-- Main Content -->
     <div class="become-host-container">

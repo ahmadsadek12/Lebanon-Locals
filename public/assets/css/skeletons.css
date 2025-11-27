@@ -1,0 +1,248 @@
+/**
+ * Lebanon Locals - Skeleton Loading Components
+ * Reusable skeleton placeholders for loading states
+ */
+
+/* Base Skeleton Animation */
+@keyframes skeleton-loading {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+/* Card Skeletons */
+.skeleton-card {
+    min-width: 280px;
+    width: 280px;
+    height: 380px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.skeleton-card-image {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 16px;
+}
+
+.skeleton-card-title {
+    width: 80%;
+    height: 20px;
+    margin: 0 16px 8px;
+}
+
+.skeleton-card-subtitle {
+    width: 60%;
+    height: 16px;
+    margin: 0 16px 12px;
+}
+
+.skeleton-card-details {
+    width: 90%;
+    height: 14px;
+    margin: 0 16px 8px;
+}
+
+.skeleton-card-details:last-child {
+    width: 70%;
+}
+
+/* Grid Skeleton */
+.skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 24px 0;
+}
+
+/* Horizontal Scroll Skeleton */
+.horizontal-scroll-skeleton {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 20px 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.horizontal-scroll-skeleton::-webkit-scrollbar {
+    display: none;
+}
+
+/* List Skeleton */
+.skeleton-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.skeleton-list-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.skeleton-list-image {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+    border-radius: 8px;
+}
+
+.skeleton-list-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.skeleton-list-title {
+    width: 70%;
+    height: 20px;
+}
+
+.skeleton-list-text {
+    width: 100%;
+    height: 14px;
+}
+
+.skeleton-list-text:nth-child(3) {
+    width: 60%;
+}
+
+/* Form Field Skeleton */
+.skeleton-field {
+    margin-bottom: 24px;
+}
+
+.skeleton-label {
+    width: 120px;
+    height: 16px;
+    margin-bottom: 8px;
+}
+
+.skeleton-input {
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
+}
+
+.skeleton-textarea {
+    width: 100%;
+    height: 120px;
+    border-radius: 8px;
+}
+
+/* Profile Skeleton */
+.skeleton-profile {
+    display: flex;
+    gap: 24px;
+    padding: 32px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.skeleton-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.skeleton-profile-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skeleton-profile-name {
+    width: 200px;
+    height: 24px;
+}
+
+.skeleton-profile-bio {
+    width: 100%;
+    height: 16px;
+}
+
+.skeleton-profile-bio:nth-child(3) {
+    width: 80%;
+}
+
+/* Table Skeleton */
+.skeleton-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.skeleton-table-row {
+    border-bottom: 1px solid #EBEBEB;
+}
+
+.skeleton-table-cell {
+    padding: 16px;
+    height: 20px;
+}
+
+.skeleton-table-cell:first-child {
+    width: 40%;
+}
+
+.skeleton-table-cell:nth-child(2) {
+    width: 30%;
+}
+
+.skeleton-table-cell:nth-child(3) {
+    width: 20%;
+}
+
+/* Hide skeleton when content loads */
+.skeleton-hidden {
+    display: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .skeleton-card {
+        min-width: 240px;
+        width: 240px;
+        height: 320px;
+    }
+    
+    .skeleton-card-image {
+        height: 160px;
+    }
+    
+    .skeleton-profile {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .skeleton-list-item {
+        flex-direction: column;
+    }
+    
+    .skeleton-list-image {
+        width: 100%;
+        height: 200px;
+    }
+}
+

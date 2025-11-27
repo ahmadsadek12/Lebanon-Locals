@@ -3,12 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://lebanon-locals-media.s3.me-south-1.amazonaws.com">
+
+    <link rel="preload" href="assets/css/variables.css" as="style">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="assets/js/load-header-standard.js" as="script">
     <title>Privacy Policy - Lebanon Locals</title>
     
     <!-- CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/application.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="css/style.css">
     
     <link rel="icon" href="images/logos/favicon.png" type="image/png">
     
@@ -97,14 +109,10 @@
 <body class="hide-nav-words">
     <!-- Unified Header -->
     <div id="header-placeholder"></div>
-    <script>
-        fetch('includes/header.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('header-placeholder').innerHTML = html;
-            });
-    </script>
-
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/load-modals.js"></script>
+    <script src="assets/js/header.js"></script>
+    <script src="assets/js/load-header-standard.js"></script>
 <div style="max-width: 1000px; margin: 0 auto; padding: 40px 20px 0;">
         <a href="index.html" class="back-link">
             <i class="fa fa-arrow-left"></i> Back to Home

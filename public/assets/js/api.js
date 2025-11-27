@@ -30,7 +30,15 @@ const API = (function() {
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorText = await response.text();
+                let errorData;
+                try {
+                    errorData = JSON.parse(errorText);
+                } catch (e) {
+                    errorData = { message: errorText };
+                }
+                console.error(`[API] Error ${response.status}:`, errorData);
+                throw new Error(`HTTP error! status: ${response.status} - ${errorData.message || errorData.error || errorText}`);
             }
 
             const data = await response.json();
@@ -610,24 +618,35 @@ const API = (function() {
     /**
      * Load and display experiences
      */
-    async function loadExperiences() {
+    async function loadExperiences(limit = 20) {
         try {
             // Check for new home page structure
             const homeList = document.getElementById('experiences-list');
             const container = homeList || document.getElementById('experiences-groups');
+            const skeleton = homeList ? document.getElementById('experiences-skeleton') : null;
             
             if (!container) {
-                setTimeout(loadExperiences, 300);
+                setTimeout(() => loadExperiences(limit), 300);
                 return;
             }
 
-            container.innerHTML = '<p style="color: white; padding: 20px;">Loading experiences...</p>';
+            if (homeList) {
+                if (skeleton) {
+                    skeleton.classList.remove('hidden');
+                }
+                container.innerHTML = '';
+            } else {
+                container.innerHTML = '<p style="color: white; padding: 20px;">Loading experiences...</p>';
+            }
 
-            const response = await getExperiences({ limit: 20 });
+            const response = await getExperiences({ limit: limit });
 
             if (response.success && response.data.length > 0) {
                 // If home page (experiences-list), render simple horizontal list
                 if (homeList) {
+                    if (skeleton) {
+                        skeleton.classList.add('hidden');
+                    }
                     container.innerHTML = response.data.map(exp => renderExperienceCard(exp)).join('');
                     bindReviewLinkHandlers();
                     return;
@@ -727,11 +746,18 @@ const API = (function() {
                 }
             } else {
 
+                if (homeList && skeleton) {
+                    skeleton.classList.add('hidden');
+                }
                 container.innerHTML = '<p style="color: white; padding: 20px;">No experiences available yet.</p>';
             }
 
         } catch (error) {
             console.error('[EXPERIENCES LOAD] ❌ Error:', error);
+            const homeSkeleton = document.getElementById('experiences-skeleton');
+            if (homeSkeleton) {
+                homeSkeleton.classList.add('hidden');
+            }
             const container = document.getElementById('experiences-groups');
             if (container) {
                 container.innerHTML = '<p style="color: white; padding: 20px;">Failed to load experiences. Please try again later.</p>';
@@ -742,25 +768,36 @@ const API = (function() {
     /**
      * Load and display events
      */
-    async function loadEvents() {
+    async function loadEvents(limit = 20) {
         try {
             // Check if we're on home page (simple list) or collections page (week groups)
             const homeList = document.getElementById('events-list');
             const groupsContainer = document.getElementById('events-groups');
             const container = homeList || groupsContainer;
+            const skeleton = homeList ? document.getElementById('events-skeleton') : null;
             
             if (!container) {
-                setTimeout(loadEvents, 300);
+                setTimeout(() => loadEvents(limit), 300);
                 return;
             }
 
-            container.innerHTML = '<p style="color: white; padding: 20px;">Loading events...</p>';
+            if (homeList) {
+                if (skeleton) {
+                    skeleton.classList.remove('hidden');
+                }
+                container.innerHTML = '';
+            } else {
+                container.innerHTML = '<p style="color: white; padding: 20px;">Loading events...</p>';
+            }
 
-            const response = await getEvents({ limit: homeList ? 20 : 40 });
+            const response = await getEvents({ limit: homeList ? limit : 40 });
 
             if (response.success && response.data.length > 0) {
                 // If home page (events-list), render simple horizontal list
                 if (homeList) {
+                    if (skeleton) {
+                        skeleton.classList.add('hidden');
+                    }
                     container.innerHTML = response.data.map(event => renderEventCard(event)).join('');
                     bindReviewLinkHandlers();
                     return;
@@ -875,11 +912,18 @@ const API = (function() {
                 }
             } else {
 
+                if (homeList && skeleton) {
+                    skeleton.classList.add('hidden');
+                }
                 container.innerHTML = '<p style="color: white; padding: 20px;">No upcoming events available yet.</p>';
             }
 
         } catch (error) {
             console.error('[EVENTS LOAD] ❌ Error:', error);
+            const homeSkeleton = document.getElementById('events-skeleton');
+            if (homeSkeleton) {
+                homeSkeleton.classList.add('hidden');
+            }
             const container = document.getElementById('events-groups');
             if (container) {
                 container.innerHTML = '<p style="color: white; padding: 20px;">Failed to load events. Please try again later.</p>';
@@ -890,24 +934,35 @@ const API = (function() {
     /**
      * Load and display stays
      */
-    async function loadStays() {
+    async function loadStays(limit = 20) {
         try {
             // Check for new home page structure
             const homeList = document.getElementById('stays-list');
             const container = homeList || document.getElementById('stays-groups');
+            const skeleton = homeList ? document.getElementById('stays-skeleton') : null;
             
             if (!container) {
-                setTimeout(loadStays, 300);
+                setTimeout(() => loadStays(limit), 300);
                 return;
             }
 
-            container.innerHTML = '<p style="color: white; padding: 20px;">Loading stays...</p>';
+            if (homeList) {
+                if (skeleton) {
+                    skeleton.classList.remove('hidden');
+                }
+                container.innerHTML = '';
+            } else {
+                container.innerHTML = '<p style="color: white; padding: 20px;">Loading stays...</p>';
+            }
 
-            const response = await getStays({ limit: 20 });
+            const response = await getStays({ limit: limit });
 
             if (response.success && response.data.length > 0) {
                 // If home page (stays-list), render simple horizontal list
                 if (homeList) {
+                    if (skeleton) {
+                        skeleton.classList.add('hidden');
+                    }
                     container.innerHTML = response.data.map(stay => renderStayCard(stay)).join('');
                     bindReviewLinkHandlers();
                     return;
@@ -1012,11 +1067,18 @@ const API = (function() {
                 }
             } else {
 
+                if (homeList && skeleton) {
+                    skeleton.classList.add('hidden');
+                }
                 container.innerHTML = '<p style="color: white; padding: 20px;">No stays available yet.</p>';
             }
 
         } catch (error) {
             console.error('[STAYS LOAD] ❌ Error:', error);
+            const homeSkeleton = document.getElementById('stays-skeleton');
+            if (homeSkeleton) {
+                homeSkeleton.classList.add('hidden');
+            }
             const container = document.getElementById('stays-groups');
             if (container) {
                 container.innerHTML = '<p style="color: white; padding: 20px;">Failed to load stays. Please try again later.</p>';
@@ -1086,10 +1148,14 @@ const API = (function() {
 
     function init() {
         // Load data immediately - main.js has already ensured DOM is ready
-        // Order: Events → Experiences → Stays
-        loadEvents();
-        loadExperiences();
-        loadStays();
+        // Order: Experiences → Stays → Events (for home page)
+        // Limit to 10 items for home page
+        const isHomePage = document.body.classList.contains('home-page');
+        const limit = isHomePage ? 10 : 20;
+        
+        loadExperiences(limit);
+        loadStays(limit);
+        loadEvents(limit);
         loadSubtypeIcons('event', 'event-subtype-icons');
         loadSubtypeIcons('experience', 'experience-subtype-icons');
         loadSubtypeIcons('stay', 'stay-subtype-icons');

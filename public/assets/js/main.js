@@ -16,6 +16,7 @@
         heroScrollThreshold: 0.9, // Scroll to 90% on hero click
         animationDuration: 1000 // ms
     };
+    const isHomePage = document.body.classList.contains('home-page');
 
     let currentSection = 'experiences';
 
@@ -148,6 +149,17 @@
     }
 
     function showSection(sectionId) {
+        if (isHomePage) {
+            currentSection = sectionId;
+            updateActiveWords();
+            updateSearchLabels(currentSection);
+            const targetSection = elements.sections[sectionId];
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            return;
+        }
+
         let matchedSection = null;
 
         // Hide all sections and reveal the requested one
@@ -197,11 +209,12 @@
     function handleHeroWordClick(e) {
         e.preventDefault();
         const targetId = this.getAttribute('href').substring(1);
-        
+
         showSection(targetId);
         
-        // Scroll to content
-        scrollToHeroContent();
+        if (!isHomePage) {
+            scrollToHeroContent();
+        }
     }
 
     function handleScrollHintClick(e) {
@@ -226,6 +239,22 @@
                 behavior: 'smooth' 
             });
         }
+    }
+
+    function handleQuickFilterClick() {
+        const type = this.dataset.type || 'experience';
+        const params = new URLSearchParams();
+        params.set('type', type);
+
+        if (this.dataset.subtype) {
+            params.set('subtype', this.dataset.subtype);
+        }
+
+        if (this.dataset.location) {
+            params.set('location', this.dataset.location);
+        }
+
+        window.location.href = `collections.html?${params.toString()}`;
     }
 
     function getActiveCollectionType() {
@@ -402,6 +431,14 @@
             searchActionBtn.addEventListener('click', handleSearchSubmit);
         }
 
+        const searchForm = document.getElementById('home-search-form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                handleSearchSubmit(event);
+            });
+        }
+
         document.querySelectorAll('.search-bar-container input').forEach(input => {
             input.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') {
@@ -424,6 +461,10 @@
 
         // Smooth scroll
         setupSmoothScroll();
+
+        document.querySelectorAll('.hero-quick-filter').forEach(btn => {
+            btn.addEventListener('click', handleQuickFilterClick);
+        });
     }
 
     // ===========================================
@@ -467,7 +508,7 @@
             return;
         }
         // Show all sections on home page (no selection needed)
-        currentSection = 'all';
+        currentSection = isHomePage ? 'all' : 'experiences';
         
         // Make all sections visible
         Object.values(elements.sections).forEach(section => {
@@ -477,9 +518,11 @@
         });
 
         // Remove active class from all navigation words (no selection on home page)
-        document.querySelectorAll('.hero-word, .nav-word').forEach(w => {
-            w.classList.remove('active');
-        });
+        if (isHomePage) {
+            document.querySelectorAll('.hero-word, .nav-word').forEach(w => {
+                w.classList.remove('active');
+            });
+        }
 
         // Attach event listeners
         attachEventListeners();

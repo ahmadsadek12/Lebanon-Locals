@@ -13,8 +13,6 @@
             <a href="collections.html?type=stay" class="nav-word" data-type="stay">STAYS</a>
         </nav>
         
-        <script src="assets/js/header.js"></script>
-
         <!-- Search Button (scrolls to top) -->
         <button class="header-search-btn" id="headerSearchBtn" type="button" onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">
             <i class="fa fa-search"></i>
@@ -23,11 +21,31 @@
 
         <!-- Right Navigation -->
         <div class="header-nav">
-            <button class="host-btn" onclick="window.location.href='become-host.html'">Become a Host</button>
+            <button class="host-btn" id="become-host-btn" onclick="window.location.href='become-host.html'" style="display: none;">Become a Host</button>
+            <button class="add-posting-btn" id="add-posting-btn" title="Add a posting" style="display: none;">
+                <i class="fa fa-plus"></i>
+            </button>
             <a href="wishlist.html" class="wishlist-btn" title="Wishlist">
                 <i class="fa fa-heart"></i>
                 <span class="wishlist-count" id="wishlist-count">0</span>
             </a>
+            <div class="notifications-container" id="notifications-container">
+                <button class="notifications-btn" id="notifications-btn" title="Notifications">
+                    <i class="fa fa-bell"></i>
+                    <span class="notifications-count" id="notifications-count">0</span>
+                </button>
+                <div class="notifications-dropdown" id="notifications-dropdown">
+                    <div class="notifications-header">
+                        <h3>Notifications</h3>
+                        <button class="notifications-close" id="notifications-close">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="notifications-list" id="notifications-list">
+                        <div class="notifications-loading">Loading...</div>
+                    </div>
+                </div>
+            </div>
             <button class="auth-btn" id="auth-button">
                 <i class="fa fa-user"></i> Sign In
             </button>

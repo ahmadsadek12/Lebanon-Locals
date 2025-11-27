@@ -157,8 +157,8 @@
 .checkout-main {
     background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
     min-height: 100vh;
-    margin-top: 80px;
-    padding: var(--spacing-xxl) 0;
+    margin-top: 0;
+    padding: var(--spacing-lg) 0;
 }
 
 .checkout-container {
@@ -194,10 +194,9 @@
 
 /* ==================== CHECKOUT GRID ==================== */
 .checkout-grid {
-    display: grid;
-    grid-template-columns: 1fr 420px;
-    gap: 48px;
-    align-items: start;
+    display: block;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .checkout-left {
@@ -549,7 +548,17 @@
 
 /* ==================== ORDER SUMMARY ==================== */
 .checkout-right {
-    position: relative;
+    display: none; /* Hidden - content moved to left column */
+}
+
+/* Order summary section in left column */
+.checkout-summary-section {
+    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    border-radius: 20px;
+    padding: var(--spacing-xl);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    border: 1px solid rgba(0,0,0,0.08);
+    margin-top: var(--spacing-lg);
 }
 
 .order-summary-card {
@@ -561,9 +570,7 @@
 }
 
 .order-summary-card.sticky {
-    position: sticky;
-    top: 200px;
-    align-self: flex-start;
+    position: static;
 }
 
 .listing-preview {
@@ -713,11 +720,12 @@
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 968px) {
     .checkout-grid {
-        grid-template-columns: 1fr;
+        max-width: 100%;
+        padding: 0 var(--spacing-md);
     }
 
     .checkout-right {
-        order: -1;
+        display: none; /* Always hidden */
     }
 
     .order-summary-card.sticky {

@@ -60,16 +60,10 @@ try {
 
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$user) {
+    // Check if user exists AND is active (combined check for security)
+    if (!$user || !$user['is_active']) {
         http_response_code(401);
         echo json_encode(['success' => false, 'message' => 'Invalid email or password']);
-        exit();
-    }
-
-    // Check if account is active
-    if (!$user['is_active']) {
-        http_response_code(403);
-        echo json_encode(['success' => false, 'message' => 'Account is inactive. Please contact support.']);
         exit();
     }
 

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://lebanon-locals-media.s3.me-south-1.amazonaws.com">
+
+    <link rel="preload" href="assets/css/variables.css" as="style">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="assets/js/load-header-standard.js" as="script">
+    <title>Write a Review - Lebanon Locals</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="images/svgahmadLL.svg" type="image/svg+xml">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <style>
+        /* Remove ALL overlays and backgrounds */
+        #hero,
+        #hero::before,
+        #hero::after,
+        .hero-overlay {
+            display: none !important;
+            background: none !important;
+        }
+        
+        html, body {
+            background: #DC143C !important;
+            min-height: 100vh;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        .main-header {
+            position: relative !important;
+            z-index: 100;
+            background: white !important;
+        }
+
+        .review-page {
+            max-width: 800px;
+            margin: 0 auto 60px;
+            padding: 24px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        #header-placeholder {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        #header-placeholder + * {
+            margin-top: 0 !important;
+        }
+
+        .review-container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .review-header {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .review-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #222;
+            margin: 0 0 8px 0;
+        }
+
+        .review-header p {
+            font-size: 18px;
+            color: #717171;
+            margin: 0;
+        }
+
+        .booking-info {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: #f7f7f7;
+            border-radius: 8px;
+            margin-bottom: 32px;
+        }
+
+        .booking-info img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .booking-details h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #222;
+            margin: 0 0 8px 0;
+        }
+
+        .booking-details p {
+            font-size: 14px;
+            color: #717171;
+            margin: 4px 0;
+        }
+
+        .form-group {
+            margin-bottom: 32px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 12px;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .star-btn {
+            font-size: 48px;
+            background: none;
+            border: none;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+
+        .star-btn:hover,
+        .star-btn.active {
+            color: #FFD700;
+            transform: scale(1.1);
+        }
+
+        .review-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 16px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .review-textarea:focus {
+            outline: none;
+            border-color: #FF385C;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #222;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #f7f7f7;
+            border-color: #222;
+        }
+
+        .btn-primary {
+            background: #FF385C;
+            color: white;
+            box-shadow: 0 2px 8px rgba(255, 56, 92, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #E31C5F;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #d0d0d0;
+            cursor: not-allowed;
+            opacity: 0.7;
+            box-shadow: none;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #717171;
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #dc2626;
+        }
+
+        .success-message {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10873D;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            animation: slideDown 0.3s ease;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Success Message -->
+    <div id="success-message" class="success-message">
+        <i class="fa fa-check-circle"></i>
+        <span>Thank you for your review!</span>
+    </div>
+
+    <div id="header-placeholder"></div>
+    <script src="assets/js/wishlist.js"></script>
+    <div class="review-page">
+        <div class="review-container">
+            <div id="loading-state" class="loading-state">
+                <img src="images/status.gif" alt="Loading..." style="width: 60px; height: 60px; margin-bottom: 12px;">
+                <p>Loading booking details...</p>
+            </div>
+
+            <div id="review-content" style="display: none;">
+                <div class="review-header">
+                    <h1>Write a Review</h1>
+                    <p id="review-subtitle">Share your experience</p>
+                </div>
+
+                <div class="booking-info" id="booking-info">
+                    <!-- Booking details will be loaded here -->
+                </div>
+
+                <form id="review-form">
+                    <input type="hidden" id="booking-id">
+                    
+                    <div class="form-group">
+                        <label>Overall Rating *</label>
+                        <div class="star-rating" id="star-rating-overall">
+                            <button type="button" class="star-btn" data-rating="1" data-field="overall">★</button>
+                            <button type="button" class="star-btn" data-rating="2" data-field="overall">★</button>
+                            <button type="button" class="star-btn" data-rating="3" data-field="overall">★</button>
+                            <button type="button" class="star-btn" data-rating="4" data-field="overall">★</button>
+                            <button type="button" class="star-btn" data-rating="5" data-field="overall">★</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cleanliness</label>
+                        <div class="star-rating" id="star-rating-cleanliness">
+                            <button type="button" class="star-btn" data-rating="1" data-field="cleanliness">★</button>
+                            <button type="button" class="star-btn" data-rating="2" data-field="cleanliness">★</button>
+                            <button type="button" class="star-btn" data-rating="3" data-field="cleanliness">★</button>
+                            <button type="button" class="star-btn" data-rating="4" data-field="cleanliness">★</button>
+                            <button type="button" class="star-btn" data-rating="5" data-field="cleanliness">★</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Communication</label>
+                        <div class="star-rating" id="star-rating-communication">
+                            <button type="button" class="star-btn" data-rating="1" data-field="communication">★</button>
+                            <button type="button" class="star-btn" data-rating="2" data-field="communication">★</button>
+                            <button type="button" class="star-btn" data-rating="3" data-field="communication">★</button>
+                            <button type="button" class="star-btn" data-rating="4" data-field="communication">★</button>
+                            <button type="button" class="star-btn" data-rating="5" data-field="communication">★</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Accuracy</label>
+                        <div class="star-rating" id="star-rating-accuracy">
+                            <button type="button" class="star-btn" data-rating="1" data-field="accuracy">★</button>
+                            <button type="button" class="star-btn" data-rating="2" data-field="accuracy">★</button>
+                            <button type="button" class="star-btn" data-rating="3" data-field="accuracy">★</button>
+                            <button type="button" class="star-btn" data-rating="4" data-field="accuracy">★</button>
+                            <button type="button" class="star-btn" data-rating="5" data-field="accuracy">★</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location</label>
+                        <div class="star-rating" id="star-rating-location">
+                            <button type="button" class="star-btn" data-rating="1" data-field="location">★</button>
+                            <button type="button" class="star-btn" data-rating="2" data-field="location">★</button>
+                            <button type="button" class="star-btn" data-rating="3" data-field="location">★</button>
+                            <button type="button" class="star-btn" data-rating="4" data-field="location">★</button>
+                            <button type="button" class="star-btn" data-rating="5" data-field="location">★</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Value for money</label>
+                        <div class="star-rating" id="star-rating-value">
+                            <button type="button" class="star-btn" data-rating="1" data-field="value">★</button>
+                            <button type="button" class="star-btn" data-rating="2" data-field="value">★</button>
+                            <button type="button" class="star-btn" data-rating="3" data-field="value">★</button>
+                            <button type="button" class="star-btn" data-rating="4" data-field="value">★</button>
+                            <button type="button" class="star-btn" data-rating="5" data-field="value">★</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="review-text">Share your thoughts with other travelers *</label>
+                        <textarea id="review-text" class="review-textarea" placeholder="What did you enjoy? What could be better? Share the details..." required></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="submit-btn">Submit Review</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="error-state" class="error-state" style="display: none;">
+                <i class="fa fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 16px; color: #dc2626;"></i>
+                <h3>Unable to Load Booking</h3>
+                <p id="error-message">Please try again later</p>
+                <button class="btn btn-secondary" onclick="window.history.back()" style="margin-top: 24px;">Go Back</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/load-modals.js"></script>
+    <script src="assets/js/header.js"></script>
+    <script src="assets/js/load-header-standard.js"></script>
+    <script>
+        document.addEventListener('headerLoaded', () => {
+            if (window.Auth && window.Auth.setupAuthButton) {
+                window.Auth.setupAuthButton();
+                console.log('[REVIEW] Auth button setup');
+            }
+            if (window.Wishlist && window.Wishlist.loadWishlistCount) {
+                window.Wishlist.loadWishlistCount();
+                console.log('[REVIEW] Wishlist count loading');
+            }
+        });
+
+        let currentRatings = {
+            overall: 0,
+            cleanliness: 0,
+            communication: 0,
+            accuracy: 0,
+            location: 0,
+            value: 0
+        };
+        let bookingData = null;
+
+        // Get booking ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookingId = urlParams.get('booking_id');
+
+        // Check authentication with retry logic (same pattern as my-host.html)
+        let accessGranted = false;
+        
+        function checkReviewAccess(isFinalCheck = false) {
+            if (accessGranted) return;
+            
+            console.log('[REVIEW] Checking access... (final:', isFinalCheck, ')');
+
+            if (window.Auth && window.Auth.isAuthenticated()) {
+                const currentUser = window.Auth.getCurrentUser();
+   
+                if (currentUser) {
+                    console.log('[REVIEW] ✅ Access granted for user:', currentUser);
+                    accessGranted = true;
+                    
+                    if (!bookingId) {
+                        showError('No booking ID provided');
+                    } else {
+                        loadBookingData(bookingId);
+                    }
+                    return;
+                }
+            } else {
+                if (isFinalCheck) {
+                    console.log('[REVIEW] ❌ Not authenticated after retries');
+                    alert('Please sign in to write a review');
+                    window.location.href = 'index.html';
+                } else {
+                    console.log('[REVIEW] ⏳ Auth not ready yet, will retry...');
+                }
+            }
+        }
+
+        // Try multiple times with delays (same as my-host.html)
+        setTimeout(() => checkReviewAccess(false), 100);
+        setTimeout(() => checkReviewAccess(false), 500);
+        setTimeout(() => checkReviewAccess(true), 2000);
+        
+        // Also listen for auth state changes
+        document.addEventListener('authStateChanged', () => checkReviewAccess(false));
+
+        // Load booking data
+        async function loadBookingData(bookingId) {
+            // Get token from Auth module (more reliable)
+            const token = window.Auth && window.Auth.getAuthToken ? window.Auth.getAuthToken() : localStorage.getItem('token');
+            
+            console.log('[REVIEW] Loading booking data for ID:', bookingId);
+            console.log('[REVIEW] Token exists:', !!token);
+
+            if (!token) {
+                console.error('[REVIEW] No token available');
+                showError('Authentication error. Please refresh and try again.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/backend/api/user-bookings.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                console.log('[REVIEW] API response status:', response.status);
+                const data = await response.json();
+                console.log('[REVIEW] API response data:', data);
+
+                if (data.success && data.bookings) {
+                    // Find the specific booking
+                    const allBookings = [...(data.bookings.upcoming || []), ...(data.bookings.previous || [])];
+                    console.log('[REVIEW] Total bookings found:', allBookings.length);
+                    
+                    bookingData = allBookings.find(b => b.id == bookingId);
+
+                    if (bookingData) {
+                        console.log('[REVIEW] Found booking:', bookingData);
+                        displayBooking(bookingData);
+                    } else {
+                        console.error('[REVIEW] Booking not found in list');
+                        showError('Booking not found. It may have been deleted or you may not have access to it.');
+                    }
+                } else {
+                    console.error('[REVIEW] API returned error:', data);
+                    showError('Unable to load booking details: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('[REVIEW] Error loading booking:', error);
+                showError('An error occurred while loading booking details');
+            }
+        }
+
+        // Display booking details
+        function displayBooking(booking) {
+            const listingType = booking.listing_type || 'experience';
+            const typeName = listingType === 'experience' ? 'Experience' : 
+                            listingType === 'event' ? 'Event' : 'Stay';
+
+            document.getElementById('review-subtitle').textContent = `Rate your ${typeName.toLowerCase()}`;
+            document.getElementById('booking-id').value = booking.id;
+
+            const formatDate = (dateStr) => {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+            };
+
+            document.getElementById('booking-info').innerHTML = `
+                <img src="${booking.listing_image || 'images/default-listing.jpg'}" 
+                     alt="${booking.listing_title}"
+                     onerror="this.src='images/default-listing.jpg'">
+                <div class="booking-details">
+                    <h3>${booking.listing_title || 'Booking'}</h3>
+                    <p><i class="fa fa-calendar"></i> ${formatDate(booking.start_date)} - ${formatDate(booking.end_date)}</p>
+                    <p><i class="fa fa-users"></i> ${booking.number_of_guests || booking.guests || 1} guest${(booking.number_of_guests || booking.guests || 1) > 1 ? 's' : ''}</p>
+                    <p><i class="fa fa-money"></i> Total: $${parseFloat(booking.total_price).toFixed(2)}</p>
+                </div>
+            `;
+
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('review-content').style.display = 'block';
+        }
+
+        // Show error state
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('error-state').style.display = 'block';
+        }
+
+        // Star rating interaction
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('star-btn')) {
+                const rating = parseInt(e.target.dataset.rating);
+                const field = e.target.dataset.field;
+                
+                // Update the rating for this field
+                currentRatings[field] = rating;
+                
+                console.log('[REVIEW] Set', field, 'rating to', rating);
+
+                // Update star display for this specific rating group
+                const container = e.target.closest('.star-rating');
+                const stars = container.querySelectorAll('.star-btn');
+                stars.forEach((btn, index) => {
+                    if (index < rating) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('review-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (currentRatings.overall === 0) {
+                alert('Please select an overall rating');
+                return;
+            }
+
+            const token = window.Auth && window.Auth.getAuthToken ? window.Auth.getAuthToken() : localStorage.getItem('token');
+            if (!token) {
+                alert('Authentication error. Please log in again.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const reviewText = document.getElementById('review-text').value.trim();
+            if (!reviewText) {
+                alert('Please write a review');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            const reviewData = {
+                booking_id: bookingId,
+                stars: currentRatings.overall,
+                review_text: reviewText,
+                cleanliness_rating: currentRatings.cleanliness || null,
+                communication_rating: currentRatings.communication || null,
+                accuracy_rating: currentRatings.accuracy || null,
+                location_rating: currentRatings.location || null,
+                value_rating: currentRatings.value || null
+            };
+
+            console.log('[REVIEW] Submitting review data:', reviewData);
+
+            try {
+                const response = await fetch('/backend/api/submit-review.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(reviewData)
+                });
+
+                console.log('[REVIEW] Response status:', response.status);
+                
+                const responseText = await response.text();
+                console.log('[REVIEW] Response text:', responseText);
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('[REVIEW] JSON parse error:', parseError);
+                    console.error('[REVIEW] Raw response:', responseText);
+                    alert('Server error. Check console for details.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Review';
+                    return;
+                }
+
+                console.log('[REVIEW] Parsed data:', data);
+
+                if (data.success) {
+                    // Show success message
+                    const successMsg = document.getElementById('success-message');
+                    successMsg.classList.add('show');
+                    
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    alert('Error: ' + (data.message || 'Unknown error'));
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Review';
+                }
+            } catch (error) {
+                console.error('[REVIEW] Error submitting review:', error);
+                alert('Error submitting review. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Review';
+            }
+        });
+    </script>
+</body>
+</html>
+

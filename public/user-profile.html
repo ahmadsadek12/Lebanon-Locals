@@ -4,6 +4,12 @@
     <!-- ==================== META TAGS ==================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource Hints -->
+    <link rel="preload" href="assets/css/variables.css" as="style">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="assets/js/config.js" as="script">
+    <link rel="preload" href="assets/js/load-header-standard.js" as="script">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <!-- SEO Meta Tags -->
@@ -571,6 +577,240 @@
             margin-bottom: 16px;
             color: #e0e0e0;
         }
+
+        /* Bookings Styles */
+        .booking-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 20px;
+            transition: box-shadow 0.3s;
+        }
+
+        .booking-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .booking-image {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .booking-details {
+            flex: 1;
+        }
+
+        .booking-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .booking-info {
+            color: #717171;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .booking-info i {
+            margin-right: 6px;
+            width: 16px;
+        }
+
+        .booking-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .booking-status.confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .booking-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .booking-status.cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .booking-status.completed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .btn-review {
+            padding: 10px 20px;
+            background: #FF385C;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-review:hover {
+            background: #E31C5F;
+        }
+
+        .btn-view-details {
+            padding: 10px 20px;
+            background: white;
+            color: #222;
+            border: 1px solid #222;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-view-details:hover {
+            background: #222;
+            color: white;
+        }
+
+        .already-reviewed {
+            color: #00A699;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .no-bookings {
+            text-align: center;
+            padding: 60px 20px;
+            color: #717171;
+        }
+
+        .no-bookings i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #e0e0e0;
+        }
+
+        /* Review Modal Styles */
+        #review-modal {
+            display: none;
+            position: fixed;
+            z-index: 10001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        #review-modal .modal-content {
+            background-color: #ffffff;
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .review-modal-header {
+            margin-bottom: 24px;
+        }
+
+        .review-modal-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #222;
+            margin: 0 0 8px 0;
+        }
+
+        .review-modal-subtitle {
+            color: #717171;
+            font-size: 16px;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .star-rating label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .star-rating-input {
+            display: flex;
+            gap: 8px;
+        }
+
+        .star-btn {
+            font-size: 32px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #ddd;
+            transition: all 0.2s;
+            padding: 0;
+        }
+
+        .star-btn:hover,
+        .star-btn.active {
+            color: #FFD700;
+            transform: scale(1.1);
+        }
+
+        .review-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 16px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 24px;
+        }
+
+        .review-textarea:focus {
+            outline: none;
+            border-color: #FF385C;
+        }
+
+        .review-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
         
         /* Success message */
         .success-message {
@@ -608,19 +848,10 @@
 <body class="user-profile-page">
     <!-- Unified Header -->
     <div id="header-placeholder"></div>
-    <script>
-        fetch('includes/header.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('header-placeholder').innerHTML = html;
-                
-                // Re-initialize auth button after header loads
-                if (window.Auth && window.Auth.setupAuthButton) {
-                    window.Auth.setupAuthButton();
-                }
-            })
-            .catch(error => console.error('Error loading header:', error));
-    </script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/load-modals.js"></script>
+    <script src="assets/js/header.js"></script>
+    <script src="assets/js/load-header-standard.js"></script>
 
     <!-- Main Content -->
     <main class="profile-page">
@@ -661,6 +892,7 @@
         <!-- Tabs -->
         <div class="profile-tabs">
             <button class="profile-tab active" data-tab="profile">Personal Info</button>
+            <button class="profile-tab" data-tab="bookings">My Bookings</button>
             <button class="profile-tab" data-tab="reviews">Reviews About Me</button>
     </div>
 
@@ -813,6 +1045,33 @@
             </div>
         </div>
 
+        <!-- Bookings Tab -->
+        <div class="tab-panel" id="panel-bookings">
+            <div class="bookings-sections">
+                <!-- Upcoming Bookings -->
+                <div class="booking-section">
+                    <h3 style="font-size: 22px; margin-bottom: 20px; color: #222;">Upcoming Bookings</h3>
+                    <div id="upcoming-bookings-list">
+                        <div class="bookings-loading" style="text-align: center; padding: 40px; color: #717171;">
+                            <img src="images/status.gif" alt="Loading..." style="width: 60px; height: 60px; margin-bottom: 12px;">
+                            <p>Loading bookings...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Previous Bookings -->
+                <div class="booking-section" style="margin-top: 40px;">
+                    <h3 style="font-size: 22px; margin-bottom: 20px; color: #222;">Previous Bookings</h3>
+                    <div id="previous-bookings-list">
+                        <div class="bookings-loading" style="text-align: center; padding: 40px; color: #717171;">
+                            <img src="images/status.gif" alt="Loading..." style="width: 60px; height: 60px; margin-bottom: 12px;">
+                            <p>Loading bookings...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Reviews Tab -->
         <div class="tab-panel" id="panel-reviews">
             <div id="reviews-container">
@@ -930,6 +1189,41 @@
         </div>
     </div>
 
+    <!-- Review Modal -->
+    <div id="review-modal">
+        <div class="modal-content">
+            <div class="review-modal-header">
+                <h2 id="review-modal-title">Rate Your Experience</h2>
+                <p class="review-modal-subtitle" id="review-modal-subtitle"></p>
+            </div>
+
+            <form id="review-form">
+                <input type="hidden" id="review-booking-id">
+                
+                <div class="star-rating">
+                    <div style="width: 100%;">
+                        <label>Overall Rating</label>
+                        <div class="star-rating-input" id="star-rating-input">
+                            <button type="button" class="star-btn" data-rating="1">★</button>
+                            <button type="button" class="star-btn" data-rating="2">★</button>
+                            <button type="button" class="star-btn" data-rating="3">★</button>
+                            <button type="button" class="star-btn" data-rating="4">★</button>
+                            <button type="button" class="star-btn" data-rating="5">★</button>
+                        </div>
+                    </div>
+                </div>
+
+                <label style="display: block; font-size: 14px; font-weight: 600; color: #222; margin-bottom: 12px;">Your Review</label>
+                <textarea id="review-text" class="review-textarea" placeholder="Share your experience with other travelers..." required></textarea>
+
+                <div class="review-modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeReviewModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Fixed Chatbot -->
     <button class="chatbot-fixed" onclick="alert('Live chat coming soon! For now, call us at 961 81 434 070 or visit our help page.')" title="Chat with us">
         <i class="fa fa-comments"></i>
@@ -950,7 +1244,6 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="assets/js/config.js"></script>
     <script src="assets/js/wishlist.js"></script>
-    <script src="assets/js/auth.js"></script>
 
     <script>
         (function() {
@@ -1649,7 +1942,6 @@
                     successMsg.textContent = message;
                     successMsg.classList.add('show');
                     successMsg.style.display = 'block';
-                    console.log('✅ Success message shown:', message);
                     setTimeout(() => {
                         successMsg.classList.remove('show');
                         successMsg.style.display = 'none';
@@ -1673,6 +1965,12 @@
                     // Update panels
                     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
                     document.getElementById('panel-' + tabName).classList.add('active');
+
+                    // Load bookings when bookings tab is clicked
+                    if (tabName === 'bookings') {
+                        console.log('[BOOKINGS] Bookings tab clicked, calling loadBookings()');
+                        loadBookings();
+                    }
                 });
             });
 
@@ -1942,6 +2240,297 @@
             } else {
                 checkAuth();
             }
+
+            //==================== BOOKINGS MANAGEMENT ====================
+
+            // Load user bookings
+            async function loadBookings() {
+                console.log('[BOOKINGS] Loading bookings...');
+                
+                if (!window.Auth) {
+                    console.error('[BOOKINGS] Auth module not available');
+                    return;
+                }
+                
+                const user = window.Auth.getCurrentUser();
+                if (!user || !user.id) {
+                    console.error('[BOOKINGS] No user logged in');
+                    return;
+                }
+
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.error('[BOOKINGS] No token found');
+                    return;
+                }
+
+                console.log('[BOOKINGS] Fetching bookings for user:', user.id);
+
+                try {
+                    const response = await fetch('/backend/api/user-bookings.php', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    const data = await response.json();
+                    console.log('[BOOKINGS] API Response:', data);
+
+                    if (data.success && data.bookings) {
+                        console.log('[BOOKINGS] Upcoming:', data.bookings.upcoming.length, 'Previous:', data.bookings.previous.length);
+                        displayBookings('upcoming', data.bookings.upcoming);
+                        displayBookings('previous', data.bookings.previous);
+                    } else {
+                        console.log('[BOOKINGS] No bookings or API error');
+                        showNoBookings('upcoming');
+                        showNoBookings('previous');
+                    }
+                } catch (error) {
+                    console.error('[BOOKINGS] Error loading bookings:', error);
+                    showNoBookings('upcoming');
+                    showNoBookings('previous');
+                }
+            }
+
+            // Display bookings
+            async function displayBookings(type, bookings) {
+                console.log(`[BOOKINGS] Displaying ${type} bookings:`, bookings);
+                const container = document.getElementById(`${type}-bookings-list`);
+                
+                if (!bookings || bookings.length === 0) {
+                    console.log(`[BOOKINGS] No ${type} bookings to display`);
+                    showNoBookings(type);
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                for (const booking of bookings) {
+                    console.log(`[BOOKINGS] Creating card for booking:`, booking);
+                    const card = await createBookingCard(booking, type);
+                    container.innerHTML += card;
+                }
+                
+                console.log(`[BOOKINGS] Displayed ${bookings.length} ${type} bookings`);
+            }
+
+            // Create booking card HTML
+            async function createBookingCard(booking, type) {
+                const formatDate = (dateStr) => {
+                    const date = new Date(dateStr);
+                    return date.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                };
+
+                const listingType = booking.listing_type;
+                const typeName = listingType === 'experience' ? 'Experience' : 
+                               listingType === 'event' ? 'Event' : 'Stay';
+
+                // Check if already reviewed
+                let reviewStatus = '';
+                if (type === 'previous') {
+                    console.log(`[BOOKINGS] Checking review status for booking ${booking.id}`);
+                    const hasReviewed = await checkIfReviewed(booking.id);
+                    console.log(`[BOOKINGS] Has reviewed:`, hasReviewed);
+                    
+                    if (hasReviewed) {
+                        reviewStatus = `<div class="already-reviewed">
+                            <i class="fa fa-check-circle"></i> You reviewed this ${typeName.toLowerCase()}
+                        </div>`;
+                    } else {
+                        // Escape quotes in title for onclick attribute
+                        const escapedTitle = (booking.listing_title || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                        console.log(`[BOOKINGS] Creating review button for booking ${booking.id}`);
+                        reviewStatus = `<div class="booking-actions">
+                            <button class="btn-review" onclick="openReviewModal(${booking.id}, '${escapedTitle}', '${listingType}')">
+                                <i class="fa fa-star"></i> Rate your ${typeName.toLowerCase()}
+                            </button>
+                        </div>`;
+                    }
+                } else {
+                    console.log(`[BOOKINGS] Booking type is '${type}', not 'previous', so no review button`);
+                }
+
+                return `
+                    <div class="booking-card">
+                        <img src="${booking.listing_image || 'images/default-listing.jpg'}" 
+                             alt="${booking.listing_title}" 
+                             class="booking-image"
+                             onerror="this.src='images/default-listing.jpg'">
+                        <div class="booking-details">
+                            <h4 class="booking-title">${booking.listing_title}</h4>
+                            <p class="booking-info">
+                                <i class="fa fa-calendar"></i> 
+                                ${formatDate(booking.start_date)} - ${formatDate(booking.end_date)}
+                            </p>
+                            <p class="booking-info">
+                                <i class="fa fa-users"></i> 
+                                ${booking.number_of_guests} guest${booking.number_of_guests > 1 ? 's' : ''}
+                            </p>
+                            <p class="booking-info">
+                                <i class="fa fa-money"></i> 
+                                Total: $${parseFloat(booking.total_price).toFixed(2)}
+                            </p>
+                            <span class="booking-status ${booking.status}">${booking.status}</span>
+                            ${reviewStatus}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Check if booking has been reviewed
+            async function checkIfReviewed(bookingId) {
+                const token = localStorage.getItem('token');
+                if (!token) return false;
+
+                try {
+                    const response = await fetch(`/backend/api/check-review.php?booking_id=${bookingId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    const data = await response.json();
+                    return data.success && data.has_review;
+                } catch (error) {
+                    console.error('[REVIEW CHECK] Error:', error);
+                    return false;
+                }
+            }
+
+            // Show no bookings message
+            function showNoBookings(type) {
+                const container = document.getElementById(`${type}-bookings-list`);
+                const message = type === 'upcoming' 
+                    ? 'You have no upcoming bookings'
+                    : 'You have no previous bookings';
+                
+                container.innerHTML = `
+                    <div class="no-bookings">
+                        <i class="fa fa-calendar-o"></i>
+                        <h3>${message}</h3>
+                        <p>Start exploring amazing experiences, events, and stays!</p>
+                    </div>
+                `;
+            }
+
+            //==================== REVIEW MODAL ====================
+
+            let currentBookingId = null;
+            let currentStarRating = 0;
+
+            // Open review modal
+            window.openReviewModal = function(bookingId, listingTitle, listingType) {
+                currentBookingId = bookingId;
+                currentStarRating = 0;
+
+                const typeName = listingType === 'experience' ? 'Experience' : 
+                               listingType === 'event' ? 'Event' : 'Stay';
+
+                document.getElementById('review-modal-title').textContent = `Rate Your ${typeName}`;
+                document.getElementById('review-modal-subtitle').textContent = listingTitle;
+                document.getElementById('review-booking-id').value = bookingId;
+                document.getElementById('review-text').value = '';
+
+                // Reset star rating
+                document.querySelectorAll('.star-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                document.getElementById('review-modal').style.display = 'block';
+            };
+
+            // Close review modal
+            window.closeReviewModal = function() {
+                document.getElementById('review-modal').style.display = 'none';
+                currentBookingId = null;
+                currentStarRating = 0;
+            };
+
+            // Star rating interaction
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('star-btn')) {
+                    const rating = parseInt(e.target.dataset.rating);
+                    currentStarRating = rating;
+
+                    // Update star display
+                    document.querySelectorAll('.star-btn').forEach((btn, index) => {
+                        if (index < rating) {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                }
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function(e) {
+                const modal = document.getElementById('review-modal');
+                if (e.target === modal) {
+                    closeReviewModal();
+                }
+            });
+
+            // Handle review form submission
+            document.getElementById('review-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                if (currentStarRating === 0) {
+                    alert('Please select a star rating');
+                    return;
+                }
+
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('Authentication error. Please log in again.');
+                    return;
+                }
+
+                const reviewText = document.getElementById('review-text').value.trim();
+                if (!reviewText) {
+                    alert('Please write a review');
+                    return;
+                }
+
+                const reviewData = {
+                    booking_id: currentBookingId,
+                    stars: currentStarRating,
+                    review_text: reviewText
+                };
+
+                try {
+                    const response = await fetch('/backend/api/submit-review.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(reviewData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        closeReviewModal();
+                        showSuccessMessage('Thank you for your review!');
+                        // Reload bookings to update UI
+                        setTimeout(() => loadBookings(), 1000);
+                    } else {
+                        alert('Error submitting review: ' + (data.message || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('[REVIEW SUBMIT] Error:', error);
+                    alert('Error submitting review. Please try again.');
+                }
+            });
+
+            // Make loadBookings available globally
+            window.loadBookings = loadBookings;
+
         })();
     </script>
 </body>

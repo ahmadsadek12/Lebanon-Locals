@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://lebanon-locals-media.s3.me-south-1.amazonaws.com">
+
+    <link rel="preload" href="assets/css/variables.css" as="style">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="assets/js/load-header-standard.js" as="script">
+    <title>Listing Analytics - Lebanon Locals</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/wishlist.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <style>
+        body {
+            background: #f7f7f7;
+            padding-top: 40px;
+        }
+
+        .analytics-container {
+            max-width: 1400px;
+            margin: 40px auto 60px;
+            padding: 0 24px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: white;
+            border: 1px solid #DDDDDD;
+            border-radius: 8px;
+            color: #222;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #f7f7f7;
+        }
+
+        /* Listing Header */
+        .listing-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .listing-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #222;
+            margin: 0 0 12px 0;
+        }
+
+        .listing-meta {
+            display: flex;
+            gap: 24px;
+            color: #717171;
+            font-size: 14px;
+        }
+
+        .listing-meta i {
+            margin-right: 6px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .stat-card-label {
+            font-size: 13px;
+            color: #717171;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .stat-card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .stat-card-value.green {
+            color: #009639;
+        }
+
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* Calendar Section */
+        .calendar-section, .bookings-section, .accounting-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #222;
+            margin: 0 0 24px 0;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #EBEBEB;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-day.available {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .calendar-day.reserved {
+            background: #ff9800;
+            color: white;
+            font-weight: 700;
+        }
+
+        .calendar-day.reserved-middle {
+            background: #ffe0b2;
+            color: #e65100;
+        }
+
+        .calendar-day.past {
+            background: #f5f5f5;
+            color: #999;
+        }
+
+        .calendar-day:hover {
+            transform: scale(1.05);
+        }
+
+        /* Bookings List */
+        .booking-card {
+            border: 1px solid #EBEBEB;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .booking-card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .booking-customer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .booking-customer:hover {
+            text-decoration: underline;
+        }
+
+        .customer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .customer-name {
+            font-weight: 600;
+            color: #222;
+        }
+
+        .booking-date {
+            font-size: 13px;
+            color: #717171;
+            margin-bottom: 8px;
+        }
+
+        .booking-amount {
+            font-size: 16px;
+            font-weight: 700;
+            color: #009639;
+        }
+
+        /* Accounting Table */
+        .accounting-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .accounting-table th {
+            background: #f7f7f7;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #717171;
+            text-transform: uppercase;
+            border-bottom: 2px solid #EBEBEB;
+        }
+
+        .accounting-table td {
+            padding: 12px;
+            border-bottom: 1px solid #EBEBEB;
+            color: #222;
+        }
+
+        .accounting-table tr:hover {
+            background: #f7f7f7;
+        }
+
+        .accounting-table .total-row {
+            font-weight: 700;
+            background: #f7f7f7;
+        }
+
+        .accounting-table .total-row td {
+            padding: 16px 12px;
+            border-top: 2px solid #EBEBEB;
+            border-bottom: none;
+        }
+
+        .amount-positive {
+            color: #009639;
+            font-weight: 600;
+        }
+
+        .amount-negative {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #717171;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #DDDDDD;
+            margin-bottom: 12px;
+        }
+
+        /* Booking Actions */
+        .booking-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #EBEBEB;
+        }
+
+        .btn-accept, .btn-reject {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-accept {
+            background: linear-gradient(135deg, #00a699 0%, #008489 100%);
+            color: white;
+        }
+
+        .btn-accept:hover:not(:disabled) {
+            background: linear-gradient(135deg, #008489 0%, #006b6f 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 150, 153, 0.3);
+        }
+
+        .btn-accept:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 150, 153, 0.2);
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, #E53E3E 0%, #C53030 100%);
+            color: white;
+        }
+
+        .btn-reject:hover:not(:disabled) {
+            background: linear-gradient(135deg, #C53030 0%, #9B2C2C 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(229, 62, 62, 0.3);
+        }
+
+        .btn-reject:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(229, 62, 62, 0.2);
+        }
+
+        .btn-accept:disabled, .btn-reject:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-accept i, .btn-reject i {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body class="view-details-page hide-nav-words">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/load-modals.js"></script>
+    <script src="assets/js/header.js"></script>
+    <script src="assets/js/load-header-standard.js"></script>
+<div class="analytics-container">
+
+        <!-- Listing Header -->
+        <div class="listing-header">
+            <h1 class="listing-title" id="listing-title">Loading...</h1>
+            <div class="listing-meta">
+                <span><i class="fa fa-map-marker"></i> <span id="listing-location">-</span></span>
+                <span><i class="fa fa-dollar"></i> <span id="listing-price">-</span></span>
+                <span><i class="fa fa-users"></i> <span id="listing-guests">-</span> max guests</span>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-label">Total Bookings</div>
+                <div class="stat-card-value" id="total-bookings">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-label">Total Revenue</div>
+                <div class="stat-card-value green" id="total-revenue">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-label">Upcoming Bookings</div>
+                <div class="stat-card-value" id="upcoming-bookings">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-label">Completed</div>
+                <div class="stat-card-value" id="completed-bookings">0</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-grid">
+            <!-- Calendar -->
+            <div class="calendar-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <h2 class="section-title" style="margin: 0; padding: 0; border: none;">Booking Calendar</h2>
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="changeMonth(-1)" style="padding: 8px 12px; background: white; border: 1px solid #DDDDDD; border-radius: 8px; cursor: pointer;">
+                            <i class="fa fa-chevron-left"></i>
+                        </button>
+                        <span id="calendar-month-year" style="font-weight: 600; display: flex; align-items: center; padding: 0 8px;"></span>
+                        <button onclick="changeMonth(1)" style="padding: 8px 12px; background: white; border: 1px solid #DDDDDD; border-radius: 8px; cursor: pointer;">
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Calendar Grid -->
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px;">
+                    <div style="text-align: center; font-weight: 600; color: #717171; padding: 8px; font-size: 12px;">Sun</div>
+                    <div style="text-align: center; font-weight: 600; color: #717171; padding: 8px; font-size: 12px;">Mon</div>
+                    <div style="text-align: center; font-weight: 600; color: #717171; padding: 8px; font-size: 12px;">Tue</div>
+                    <div style="text-align: center; font-weight: 600; color: #717171; padding: 8px; font-size: 12px;">Wed</div>
+                    <div style="text-align: center; font-weight: 600; color: #717171; padding: 8px; font-size: 12px;">Thu</div>
+                    <div style="text-align: center; font-weight: 600; color: #717171; padding: 8px; font-size: 12px;">Fri</div>
+                    <div style="text-align: center; font-weight: 600; color: #717171; padding: 8px; font-size: 12px;">Sat</div>
+                </div>
+                <div id="calendar-grid" class="calendar"></div>
+                
+                <!-- Legend -->
+                <div style="display: flex; gap: 16px; justify-content: center; margin-top: 16px; font-size: 13px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 16px; height: 16px; background: #ff9800; border-radius: 4px;"></div>
+                        <span>Check-in/Check-out</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 16px; height: 16px; background: #ffe0b2; border-radius: 4px;"></div>
+                        <span>Occupied</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 16px; height: 16px; background: #e8f5e9; border-radius: 4px;"></div>
+                        <span>Available</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 16px; height: 16px; background: #f5f5f5; border-radius: 4px;"></div>
+                        <span>Past</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bookings -->
+            <div class="bookings-section">
+                <h2 class="section-title">Recent Bookings</h2>
+                <div id="bookings-list">
+                    <div class="empty-state">
+                        <i class="fa fa-calendar-o"></i>
+                        <p>No bookings yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accounting Table -->
+        <div class="accounting-section">
+            <h2 class="section-title">Financial Summary</h2>
+            <table class="accounting-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Booking Period</th>
+                        <th>Base Price</th>
+                        <th>Service Fee</th>
+                        <th>Your Earnings</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="accounting-tbody">
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <i class="fa fa-table"></i>
+                            <p>No transactions yet</p>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="5">Total Earnings</td>
+                        <td colspan="2" class="amount-positive" id="total-earnings">$0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <script src="assets/js/wishlist.js"></script>
+    <script src="assets/js/notifications.js"></script>
+    <script>
+        // Header is loaded above via loadHeaderAndModals()
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const listingType = urlParams.get('type');
+        const listingId = urlParams.get('id');
+
+        if (!listingType || !listingId) {
+            alert('Invalid listing parameters');
+            window.location.href = 'my-host.html';
+        }
+
+        // Check authentication
+        let accessGranted = false;
+        
+        function checkHostAccess(isFinalCheck = false) {
+            if (accessGranted) return;
+            
+            if (window.Auth && window.Auth.isAuthenticated()) {
+                const currentUser = window.Auth.getCurrentUser();
+                
+                if (currentUser && (currentUser.user_type === 'host' || currentUser.user_type === 'admin')) {
+                    accessGranted = true;
+                    loadData();
+                    return;
+                } else if (currentUser) {
+                    alert('This page is only accessible to hosts');
+                    window.location.href = 'index.html';
+                }
+            } else {
+                if (isFinalCheck) {
+                    alert('Please sign in to access this page');
+                    window.location.href = 'index.html';
+                }
+            }
+        }
+
+        setTimeout(() => checkHostAccess(false), 100);
+        setTimeout(() => checkHostAccess(false), 500);
+        setTimeout(() => checkHostAccess(true), 2000);
+        
+        document.addEventListener('authStateChanged', () => checkHostAccess(false));
+
+        async function loadData() {
+            await Promise.all([
+                loadListingInfo(),
+                loadBookings()
+            ]);
+        }
+
+        // Load listing basic info
+        async function loadListingInfo() {
+            try {
+                let apiUrl = '';
+                if (listingType === 'stay') {
+                    apiUrl = `backend/api/stay-detail.php?id=${listingId}`;
+                } else if (listingType === 'experience') {
+                    apiUrl = `backend/api/experience-detail.php?id=${listingId}`;
+                } else if (listingType === 'event') {
+                    apiUrl = `backend/api/event-detail.php?id=${listingId}`;
+                }
+
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    displayListingInfo(data.data);
+                }
+            } catch (error) {
+                console.error('Error loading listing:', error);
+            }
+        }
+
+        function displayListingInfo(listing) {
+            document.getElementById('listing-title').textContent = listing.title;
+            document.getElementById('listing-location').textContent = listing.location || '-';
+            document.getElementById('listing-guests').textContent = listing.max_guests || '-';
+
+            if (listingType === 'stay') {
+                document.getElementById('listing-price').textContent = `$${parseFloat(listing.price_per_night).toFixed(2)} per night`;
+            } else {
+                const priceType = listing.price_per_person == 1 ? 'per person' : 'per group';
+                document.getElementById('listing-price').textContent = `$${parseFloat(listing.price).toFixed(2)} ${priceType}`;
+            }
+        }
+
+        // Load bookings for this listing
+        async function loadBookings() {
+            try {
+                const currentUser = window.Auth.getCurrentUser();
+                const response = await fetch(`backend/api/listing-bookings.php?type=${listingType}&id=${listingId}&user_id=${currentUser.id}`);
+                const data = await response.json();
+
+                console.log('[VIEW-DETAILS] Bookings:', data);
+
+                if (data.success && data.bookings) {
+                    displayBookings(data.bookings);
+                    calculateFinancials(data.bookings);
+                }
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+            }
+        }
+
+        function displayBookings(bookings) {
+            const container = document.getElementById('bookings-list');
+
+            if (!bookings || bookings.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa fa-calendar-o"></i>
+                        <p>No bookings yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = bookings.map(booking => {
+                const bookingDate = new Date(booking.created_at).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                const startDate = new Date(booking.start_date).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                // Determine if booking is pending
+                const isPending = (booking.status === 'pending' || booking.booking_status === 'pending') && 
+                                  booking.status !== 'confirmed' && booking.booking_status !== 'confirmed' &&
+                                  booking.status !== 'rejected' && booking.booking_status !== 'rejected';
+                
+                // Get status for display
+                const displayStatus = booking.booking_status || booking.status || 'pending';
+
+                return `
+                    <div class="booking-card">
+                        <div class="booking-customer" onclick="viewCustomer(${booking.user_id})">
+                            <img src="${booking.guest_profile_picture || 'images/logos/logo.jpg'}" 
+                                 alt="${booking.guest_first_name}" 
+                                 class="customer-avatar"
+                                 onerror="this.src='images/logos/logo.jpg'">
+                            <div>
+                                <div class="customer-name">${booking.guest_first_name} ${booking.guest_last_name}</div>
+                                <div class="booking-date">${bookingDate}</div>
+                            </div>
+                        </div>
+                        <div class="booking-date">
+                            <i class="fa fa-calendar"></i> ${startDate}
+                            ${booking.number_of_nights ? `(${booking.number_of_nights} nights)` : ''}
+                            ${booking.number_of_guests ? `• ${booking.number_of_guests} guests` : ''}
+                        </div>
+                        <div class="booking-amount">$${parseFloat(booking.total_price).toFixed(2)}</div>
+                        <div class="booking-status ${displayStatus}">${displayStatus}</div>
+                        ${isPending ? `
+                            <div class="booking-actions">
+                                <button class="btn-accept" onclick="acceptBooking(${booking.id})">
+                                    <i class="fa fa-check-circle"></i> Accept
+                                </button>
+                                <button class="btn-reject" onclick="rejectBooking(${booking.id})">
+                                    <i class="fa fa-times-circle"></i> Reject
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            // Update stats
+            const totalBookings = bookings.length;
+            const upcomingBookings = bookings.filter(b => new Date(b.start_date) > new Date()).length;
+            const completedBookings = bookings.filter(b => b.status === 'completed' || b.status === 'confirmed').length;
+
+            document.getElementById('total-bookings').textContent = totalBookings;
+            document.getElementById('upcoming-bookings').textContent = upcomingBookings;
+            document.getElementById('completed-bookings').textContent = completedBookings;
+        }
+
+        // Accept booking
+        async function acceptBooking(bookingId) {
+            try {
+                const currentUser = window.Auth.getCurrentUser();
+                const response = await fetch('backend/api/update-booking-status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        booking_id: bookingId,
+                        action: 'accept'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Booking accepted successfully');
+                    loadBookings(); // Refresh bookings list
+                } else {
+                    alert(data.message || 'Failed to accept booking');
+                }
+            } catch (error) {
+                console.error('Error accepting booking:', error);
+                alert('An error occurred while accepting the booking');
+            }
+        }
+
+        // Reject booking
+        async function rejectBooking(bookingId) {
+            if (!confirm('Are you sure you want to reject this booking?')) {
+                return;
+            }
+
+            try {
+                const currentUser = window.Auth.getCurrentUser();
+                const response = await fetch('backend/api/update-booking-status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        booking_id: bookingId,
+                        action: 'reject'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Booking rejected successfully');
+                    loadBookings(); // Refresh bookings list
+                } else {
+                    alert(data.message || 'Failed to reject booking');
+                }
+            } catch (error) {
+                console.error('Error rejecting booking:', error);
+                alert('An error occurred while rejecting the booking');
+            }
+        }
+
+        function calculateFinancials(bookings) {
+            if (!bookings || bookings.length === 0) return;
+
+            const tbody = document.getElementById('accounting-tbody');
+            let totalEarnings = 0;
+
+            const rows = bookings.map(booking => {
+                const basePrice = parseFloat(booking.total_price || 0);
+                const serviceFee = parseFloat(booking.service_fee || 0);
+                const earnings = basePrice - serviceFee;
+                totalEarnings += earnings;
+
+                const bookingDate = new Date(booking.created_at).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                const startDate = new Date(booking.start_date).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                const endDate = booking.end_date ? new Date(booking.end_date).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                }) : '-';
+
+                return `
+                    <tr>
+                        <td>${bookingDate}</td>
+                        <td>${booking.guest_first_name} ${booking.guest_last_name}</td>
+                        <td>${startDate} ${endDate !== '-' ? '- ' + endDate : ''}</td>
+                        <td>$${basePrice.toFixed(2)}</td>
+                        <td class="amount-negative">-$${serviceFee.toFixed(2)}</td>
+                        <td class="amount-positive">$${earnings.toFixed(2)}</td>
+                        <td><span style="text-transform: capitalize;">${booking.payment_status || booking.status}</span></td>
+                    </tr>
+                `;
+            }).join('');
+
+            tbody.innerHTML = rows;
+
+            // Update total revenue stats
+            document.getElementById('total-revenue').textContent = `$${totalEarnings.toFixed(2)}`;
+            document.getElementById('total-earnings').textContent = `$${totalEarnings.toFixed(2)}`;
+        }
+
+        function viewCustomer(userId) {
+            window.location.href = `customer-profile.html?id=${userId}`;
+        }
+
+        // Calendar functionality
+        let currentCalendarDate = new Date();
+        let allBookings = [];
+
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            // Update month/year display
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('calendar-month-year').textContent = `${monthNames[month]} ${year}`;
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            // Create calendar grid
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+            
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.style.minHeight = '40px';
+                grid.appendChild(emptyCell);
+            }
+            
+            // Add days of month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                date.setHours(0, 0, 0, 0);
+                
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day';
+                dayCell.textContent = day;
+                dayCell.style.minHeight = '40px';
+                dayCell.style.display = 'flex';
+                dayCell.style.alignItems = 'center';
+                dayCell.style.justifyContent = 'center';
+                dayCell.style.borderRadius = '8px';
+                dayCell.style.fontSize = '14px';
+                dayCell.style.cursor = 'pointer';
+                dayCell.style.transition = 'all 0.3s ease';
+                
+                // Check booking status for this date
+                let bookingStatus = null;
+                let relevantBooking = null;
+                
+                for (const booking of allBookings) {
+                    const startDate = new Date(booking.start_date);
+                    const endDate = new Date(booking.end_date);
+                    startDate.setHours(0, 0, 0, 0);
+                    endDate.setHours(0, 0, 0, 0);
+                    
+                    // Check-in date (start date) - Dark Orange
+                    if (date.getTime() === startDate.getTime()) {
+                        bookingStatus = 'check-in';
+                        relevantBooking = booking;
+                        break;
+                    }
+                    // Check-out date (end date) - Dark Orange
+                    else if (date.getTime() === endDate.getTime()) {
+                        bookingStatus = 'check-out';
+                        relevantBooking = booking;
+                        break;
+                    }
+                    // Occupied (between check-in and check-out)
+                    else if (date > startDate && date < endDate) {
+                        bookingStatus = 'occupied';
+                        relevantBooking = booking;
+                        break;
+                    }
+                }
+                
+                // Style based on status
+                if (date < today) {
+                    dayCell.classList.add('past');
+                } else if (bookingStatus === 'check-in') {
+                    dayCell.classList.add('reserved');
+                    dayCell.title = 'Check-in day (may be available depending on time)';
+                } else if (bookingStatus === 'check-out') {
+                    dayCell.classList.add('reserved');
+                    dayCell.title = 'Check-out day (may be available depending on time)';
+                } else if (bookingStatus === 'occupied') {
+                    dayCell.classList.add('reserved-middle');
+                    dayCell.title = 'Occupied';
+                } else {
+                    dayCell.classList.add('available');
+                    dayCell.title = 'Available';
+                }
+                
+                // Add click handler to show booking details
+                if (bookingStatus) {
+                    dayCell.onclick = () => {
+                        if (relevantBooking) {
+                            alert(`Booking Details:\n\nGuest: ${relevantBooking.guest_first_name} ${relevantBooking.guest_last_name}\nCheck-in: ${relevantBooking.start_date}\nCheck-out: ${relevantBooking.end_date}\nGuests: ${relevantBooking.number_of_guests}\nAmount: $${relevantBooking.total_price}\nStatus: ${relevantBooking.status}`);
+                        }
+                    };
+                }
+                
+                grid.appendChild(dayCell);
+            }
+        }
+
+        function changeMonth(direction) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            renderCalendar();
+        }
+
+        // Update displayBookings to also store bookings for calendar
+        const originalDisplayBookings = displayBookings;
+        displayBookings = function(bookings) {
+            allBookings = bookings || [];
+            renderCalendar();
+            originalDisplayBookings(bookings);
+        };
+
+        // Initialize calendar on load
+        renderCalendar();
+    </script>
+</body>
+</html>
+

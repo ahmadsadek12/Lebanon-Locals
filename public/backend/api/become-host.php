@@ -58,8 +58,8 @@ try {
         exit();
     }
 
-    // Check if already a host or pending
-    if ($user['user_type'] === 'host') {
+    // Check if already a host, admin, or pending
+    if ($user['user_type'] === 'host' || $user['user_type'] === 'admin') {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'User is already a host']);
         exit();

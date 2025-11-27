@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Lebanon Locals</title>
+    <link rel="icon" href="../public/images/svgahmadLL.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="../public/images/logos/logo.jpg" alt="Lebanon Locals" class="login-logo">
+                <h1>Admin Panel</h1>
+                <p>Sign in to access the dashboard</p>
+            </div>
+
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="admin@lebanonlocals.com" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn-primary" id="login-btn">
+                    <i class="fa fa-sign-in"></i> Sign In
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <a href="../public/index.html">← Back to Main Site</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/admin-auth.js"></script>
+    <script>
+        document.getElementById('admin-login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('login-btn');
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Signing in...';
+
+            try {
+                // Use main site API (adjust port/domain as needed)
+                const hostname = window.location.hostname;
+                let apiUrl;
+                if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                    apiUrl = 'http://127.0.0.1:8080/backend/api/login.php';
+                } else {
+                    apiUrl = '/backend/api/login.php';  // Production uses same domain
+                }
+                
+                console.log('[ADMIN] Login attempt:', { email, apiUrl });
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                console.log('[ADMIN] Response status:', response.status);
+                
+                const responseText = await response.text();
+                console.log('[ADMIN] Response text:', responseText);
+                
+                const data = JSON.parse(responseText);
+                console.log('[ADMIN] Parsed data:', data);
+
+                if (data.success && data.user) {
+                    // Check if user is admin
+                    if (data.user.user_type !== 'admin') {
+                        alert('Access denied. This area is for administrators only.');
+                        loginBtn.disabled = false;
+                        loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+                        return;
+                    }
+
+                    // Store admin token and user
+                    localStorage.setItem('admin_token', data.token);
+                    localStorage.setItem('admin_user', JSON.stringify(data.user));
+
+                    console.log('[ADMIN] Login successful:', data.user);
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert(data.message || 'Invalid credentials');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+                }
+            } catch (error) {
+                console.error('[ADMIN] Login error:', error);
+                alert('Login failed. Please try again.');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+            }
+        });
+    </script>
+</body>
+</html>
+

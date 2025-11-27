@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stays - Lebanon Locals Admin</title>
+    <link rel="icon" href="../public/images/svgahmadLL.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="admin-page">
+    <aside class="admin-sidebar">
+        <div class="admin-logo">
+            <img src="../public/images/logos/logo.jpg" alt="Lebanon Locals">
+            <h2>Admin Panel</h2>
+        </div>
+        <nav>
+            <ul class="admin-nav">
+                <li class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="users.html" class="nav-link"><i class="fa fa-users"></i> Users</a></li>
+                <li class="nav-item"><a href="bookings.html" class="nav-link"><i class="fa fa-calendar"></i> Bookings</a></li>
+                <li class="nav-item"><a href="experiences.html" class="nav-link"><i class="fa fa-star"></i> Experiences</a></li>
+                <li class="nav-item"><a href="events.html" class="nav-link"><i class="fa fa-calendar-check-o"></i> Events</a></li>
+                <li class="nav-item"><a href="stays.html" class="nav-link active"><i class="fa fa-home"></i> Stays</a></li>
+                <li class="nav-item"><a href="reviews.html" class="nav-link"><i class="fa fa-comment"></i> Reviews</a></li>
+                <li class="nav-item"><a href="amenities.html" class="nav-link"><i class="fa fa-cube"></i> Amenities</a></li>
+                <li class="nav-item"><a href="subtypes.html" class="nav-link"><i class="fa fa-tags"></i> Subtypes</a></li>
+                <li class="nav-item"><a href="messages.html" class="nav-link"><i class="fa fa-envelope"></i> Messages</a></li>
+                <li class="nav-item"><a href="notifications.html" class="nav-link"><i class="fa fa-bell"></i> Notifications</a></li>
+                <li class="nav-item"><a href="payments.html" class="nav-link"><i class="fa fa-dollar"></i> Payments</a></li>
+                <li class="nav-item"><a href="verifications.html" class="nav-link"><i class="fa fa-check-circle"></i> Verifications</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-header">
+            <h1>Stays Management</h1>
+            <div class="admin-user">
+                <div class="admin-user-avatar" id="admin-avatar">A</div>
+                <span id="admin-name">Admin</span>
+                <button class="btn-logout" onclick="window.AdminAuth.logoutAdmin()"><i class="fa fa-sign-out"></i> Logout</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h2>All Stays</h2>
+                <div class="table-actions">
+                    <select id="filter-active" style="padding: 10px 16px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; cursor: pointer;">
+                        <option value="">All Statuses</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                    </select>
+                    <input type="search" id="search-listings" placeholder="Search..." style="padding: 10px 16px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; min-width: 250px;">
+                    <button class="btn btn-add" onclick="openAddModal()">
+                        <i class="fa fa-plus"></i> Add Stay
+                    </button>
+                </div>
+            </div>
+            <div id="listings-table">
+                <div class="loading"><i class="fa fa-spinner fa-spin"></i><p>Loading...</p></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Stay Modal -->
+    <div id="add-modal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>Add New Stay</h2>
+                <button class="modal-close" onclick="closeAddModal()">&times;</button>
+            </div>
+            <form id="add-form">
+                <div class="form-group">
+                    <label>Title *</label>
+                    <input type="text" id="title" required>
+                </div>
+                <div class="form-group">
+                    <label>Description *</label>
+                    <textarea id="description" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Location *</label>
+                    <input type="text" id="location" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label>Price per Night ($) *</label>
+                        <input type="number" id="price" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Service Fee (%) *</label>
+                        <input type="number" id="service_fee" step="0.1" min="0" max="100" value="10" required>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label>Bedrooms</label>
+                        <input type="number" id="min_guests" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Bathrooms</label>
+                        <input type="number" id="max_guests" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Max Guests</label>
+                        <input type="number" id="length_hours" min="1" value="4">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Property Type</label>
+                    <select id="difficulty">
+                        <option value="apartment">Apartment</option>
+                        <option value="house">House</option>
+                        <option value="villa">Villa</option>
+                        <option value="cabin">Cabin</option>
+                        <option value="chalet">Chalet</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Main Image URL</label>
+                    <input type="text" id="main_image" placeholder="https://...">
+                </div>
+                <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-view" onclick="closeAddModal()">Cancel</button>
+                    <button type="submit" class="btn btn-add">
+                        <i class="fa fa-plus"></i> Create Stay
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/toast.js"></script>
+    <script src="assets/js/admin-auth.js"></script>
+    <script>
+        window.LISTING_TYPE = 'stay';
+        window.LISTING_TITLE = 'Stays';
+    </script>
+    <script src="assets/js/listings.js"></script>
+</body>
+</html>
+

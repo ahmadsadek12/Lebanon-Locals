@@ -79,7 +79,15 @@ try {
                 h.date_end,
                 h.cancellation_policy,
                 h.cash_enabled,
-                (h.max_guests - COALESCE(h.total_bookings, 0)) AS available_capacity,
+                (h.max_guests - COALESCE((
+                    SELECT SUM(b.number_of_guests)
+                    FROM bookings b
+                    WHERE b.listing_type = 'experience'
+                      AND b.listing_id = h.id
+                      AND (b.booking_status IN ('confirmed', 'pending') OR b.status IN ('confirmed', 'pending'))
+                      AND b.booking_status != 'rejected'
+                      AND b.status != 'rejected'
+                ), 0)) AS available_capacity,
                 COALESCE(r.avg_rating, 0) AS average_rating,
                 COALESCE(r.review_count, 0) AS total_reviews,
                 u.id AS host_id,

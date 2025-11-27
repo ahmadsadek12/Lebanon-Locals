@@ -230,7 +230,7 @@ try {
                     GROUP BY reviewee_id
               ) r ON r.reviewee_id = h.id
               WHERE $whereClause
-              ORDER BY COALESCE(r.avg_rating, 0) DESC, COALESCE(r.review_count, 0) DESC
+              ORDER BY RAND()
                 LIMIT :limit OFFSET :offset";
     
     $stmt = $db->prepare($query);

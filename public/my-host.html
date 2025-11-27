@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://lebanon-locals-media.s3.me-south-1.amazonaws.com">
+
+    <link rel="preload" href="assets/css/variables.css" as="style">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="assets/js/load-header-standard.js" as="script">
+    <title>My Host Dashboard - Lebanon Locals</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="images/svgahmadLL.svg" type="image/svg+xml">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/wishlist.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <style>
+        body {
+            background: #f7f7f7;
+            padding-top: 0 !important;
+        }
+        
+        /* Header is now shown */
+
+        .my-host-page {
+            max-width: 1200px;
+            margin: 40px auto 60px;
+            padding: 40px 24px;
+        }
+
+        /* Host Header Section */
+        .host-header {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            margin-top: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .host-header-top {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .host-avatar-section {
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .host-avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #f7f7f7;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .edit-avatar-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #222;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .edit-avatar-btn:hover {
+            background: #222;
+            color: white;
+        }
+
+        .host-info-section {
+            flex: 1;
+        }
+
+        .host-name {
+            font-size: 36px;
+            font-weight: 700;
+            color: #222;
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .host-stats {
+            display: flex;
+            gap: 32px;
+            margin-bottom: 24px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #717171;
+        }
+
+        .host-bio {
+            color: #222;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .edit-bio-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid #222;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .edit-bio-btn:hover {
+            background: #222;
+            color: white;
+        }
+
+        /* Listings Sections */
+        .listings-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #222;
+            margin: 0;
+        }
+
+        .add-listing-btn {
+            padding: 10px 20px;
+            background: #009639;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .add-listing-btn:hover {
+            background: #007a2e;
+        }
+
+        /* Horizontal Scroll for Listings */
+        .horizontal-scroll {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 16px 0 24px 0;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .horizontal-scroll .listing-card {
+            flex: 0 0 320px;
+            margin-bottom: 0;
+        }
+
+        .listing-card {
+            border: 1px solid #EBEBEB;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .listing-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .listing-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .listing-content {
+            padding: 16px;
+        }
+
+        .listing-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #222;
+            margin: 0 0 8px 0;
+        }
+
+        .listing-location {
+            font-size: 14px;
+            color: #717171;
+            margin-bottom: 8px;
+        }
+
+        .listing-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .listing-actions {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            border-top: 1px solid #EBEBEB;
+        }
+
+        .listing-actions button {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #DDDDDD;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .listing-actions button:hover {
+            background: #f7f7f7;
+        }
+
+        .listing-actions button.delete {
+            color: #dc2626;
+            border-color: #dc2626;
+        }
+
+        .listing-actions button.delete:hover {
+            background: #dc2626;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #717171;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: #DDDDDD;
+            margin-bottom: 16px;
+        }
+
+        /* Reviews */
+        .review-card {
+            border: 1px solid #EBEBEB;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .reviewer-info {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .reviewer-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .reviewer-details h4 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .review-date {
+            font-size: 13px;
+            color: #717171;
+        }
+
+        .review-stars {
+            color: #FFD700;
+            font-size: 14px;
+        }
+
+        .review-text {
+            color: #222;
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+
+        .review-listing {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #f7f7f7;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #717171;
+            margin-top: 8px;
+        }
+
+        /* Edit Modal */
+        .edit-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-modal.active {
+            display: flex;
+        }
+
+        .edit-modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .edit-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .edit-modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #222;
+            margin: 0;
+        }
+
+        .close-modal {
+            font-size: 32px;
+            cursor: pointer;
+            color: #717171;
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            color: #222;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #DDDDDD;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .btn-cancel, .btn-save {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel {
+            background: white;
+            border: 1px solid #DDDDDD;
+            color: #222;
+        }
+
+        .btn-cancel:hover {
+            background: #f7f7f7;
+        }
+
+        .btn-save {
+            background: #009639;
+            border: none;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #007a2e;
+        }
+    </style>
+</head>
+<body class="my-host-page">
+    <!-- Unified Header -->
+    <div id="header-placeholder"></div>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/load-modals.js"></script>
+    <script src="assets/js/header.js"></script>
+    <script src="assets/js/load-header-standard.js"></script>
+<div class="my-host-page">
+        <!-- Host Header -->
+        <div class="host-header">
+            <div class="host-header-top">
+                <div class="host-avatar-section">
+                    <img id="host-avatar" src="images/users/default-avatar.jpg" alt="Host" class="host-avatar" onerror="this.src='images/logos/logo.jpg'">
+                    <button class="edit-avatar-btn" onclick="alert('Edit avatar feature coming soon')" title="Change avatar">
+                        <i class="fa fa-camera"></i>
+                    </button>
+                </div>
+                <div class="host-info-section">
+                    <div>
+                        <span id="host-type-badge" class="host-type">HOST</span>
+                        <span id="verified-badge" class="verified-badge" style="display: none;">
+                            <i class="fa fa-check-circle"></i> Verified
+                        </span>
+                    </div>
+                    <h1 id="host-name" class="host-name"></h1>
+                    
+                    <div class="host-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="host-rating">-</span>
+                            <span class="stat-label">Rating</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="host-reviews-count">-</span>
+                            <span class="stat-label">Reviews</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="host-years">-</span>
+                            <span class="stat-label">Years Hosting</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="host-listings-count">-</span>
+                            <span class="stat-label">Listings</span>
+                        </div>
+                    </div>
+                    
+                    <div id="host-bio-display" class="host-bio"></div>
+                    <button class="edit-bio-btn" onclick="window.location.href='edit-profile.html'">
+                        <i class="fa fa-edit"></i> Edit Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Posting Button -->
+        <div class="listings-section">
+            <div class="section-header">
+                <h2 class="section-title">My Listings</h2>
+                <button class="add-listing-btn" onclick="window.location.href='posting.html'">
+                    <i class="fa fa-plus"></i> Add Posting
+                </button>
+            </div>
+        </div>
+
+        <!-- My Experiences -->
+        <div class="listings-section" id="experiences-section" style="display: none;">
+            <div class="section-header">
+                <h2 class="section-title">My Experiences</h2>
+            </div>
+            <div class="horizontal-scroll" id="my-experiences">
+                <!-- Experiences will be populated here -->
+            </div>
+        </div>
+
+        <!-- My Events -->
+        <div class="listings-section" id="events-section" style="display: none;">
+            <div class="section-header">
+                <h2 class="section-title">My Events</h2>
+            </div>
+            <div class="horizontal-scroll" id="my-events">
+                <!-- Events will be populated here -->
+            </div>
+        </div>
+
+        <!-- My Stays -->
+        <div class="listings-section" id="stays-section" style="display: none;">
+            <div class="section-header">
+                <h2 class="section-title">My Stays</h2>
+            </div>
+            <div class="horizontal-scroll" id="my-stays">
+                <!-- Stays will be populated here -->
+            </div>
+        </div>
+
+        <!-- Reviews About Me -->
+        <div class="listings-section">
+            <div class="section-header">
+                <h2 class="section-title">Reviews About Me</h2>
+            </div>
+            <div id="host-reviews">
+                <div class="empty-state">
+                    <i class="fa fa-star-o"></i>
+                    <p>No reviews yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="assets/js/wishlist.js"></script>
+    <script>
+        let currentHost = null;
+
+        // Header is loaded above via loadHeaderAndModals()
+
+        // Check authentication with retry logic
+        let accessGranted = false;
+        
+        function checkHostAccess(isFinalCheck = false) {
+            if (accessGranted) return;
+            
+
+            if (window.Auth && window.Auth.isAuthenticated()) {
+                const currentUser = window.Auth.getCurrentUser();
+   
+                if (currentUser && (currentUser.user_type === 'host' || currentUser.user_type === 'admin')) {
+                    accessGranted = true;
+                    loadHostData(); // Load data once access is granted
+                    return;
+                } else if (currentUser) {
+                    alert('This page is only accessible to hosts');
+                    window.location.href = 'user-profile.html';
+                } else {
+                }
+            } else {
+                if (isFinalCheck) {
+                    alert('Please sign in to access your host dashboard');
+                    window.location.href = 'index.html';
+                } else {
+                    console.log('[MY-HOST] ⏳ Auth not ready yet, will retry...');
+                }
+            }
+        }
+
+        // Try multiple times with delays
+        setTimeout(() => checkHostAccess(false), 100);
+        setTimeout(() => checkHostAccess(false), 500);
+        setTimeout(() => checkHostAccess(true), 2000);
+        
+        document.addEventListener('authStateChanged', () => checkHostAccess(false));
+
+        // Load host data
+        async function loadHostData() {
+            const currentUser = window.Auth.getCurrentUser();
+            try {
+                const response = await fetch(`backend/api/get-user.php?user_id=${currentUser.id}`);
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    currentHost = data.data;
+                    displayHostInfo(currentHost);
+                    loadHostListings();
+                } else {
+                    console.error('[MY-HOST] Failed to load:', data);
+                    alert('Failed to load host data: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('[MY-HOST] Error:', error);
+                alert('An error occurred while loading host data');
+            }
+        }
+
+        function displayHostInfo(host) {
+            // Avatar
+            const avatarEl = document.getElementById('host-avatar');
+            if (host.profile_picture) {
+                avatarEl.src = host.profile_picture;
+            }
+
+            // Name
+            document.getElementById('host-name').textContent = `${host.first_name} ${host.last_name}`;
+
+            // Verified badge
+            if (host.is_verified == 1) {
+                document.getElementById('verified-badge').style.display = 'inline-flex';
+            }
+
+            // Stats
+            document.getElementById('host-rating').textContent = host.user_ranking || '5.0';
+            document.getElementById('host-reviews-count').textContent = host.total_reviews || '0';
+            document.getElementById('host-years').textContent = host.years_hosting || '0';
+
+            // Bio
+            document.getElementById('host-bio-display').textContent = host.bio || 'No bio yet. Click Edit Bio to add one.';
+        }
+
+        async function loadHostListings() {
+            await Promise.all([
+                loadExperiences(),
+                loadEvents(),
+                loadStays(),
+                loadReviews()
+            ]);
+
+            // Update listings count
+            const expCount = document.querySelectorAll('#my-experiences .listing-card').length;
+            const evtCount = document.querySelectorAll('#my-events .listing-card').length;
+            const stayCount = document.querySelectorAll('#my-stays .listing-card').length;
+            const totalListings = expCount + evtCount + stayCount;
+            
+            document.getElementById('host-listings-count').textContent = totalListings;
+        }
+
+        async function loadExperiences() {
+            try {
+                const currentUser = window.Auth.getCurrentUser();
+                const response = await fetch(`backend/api/my-listings.php?type=experience&user_id=${currentUser.id}`);
+                const data = await response.json();
+
+                const container = document.getElementById('my-experiences');
+                const section = document.getElementById('experiences-section');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    section.style.display = 'block';
+                    container.innerHTML = data.data.map(exp => `
+                        <div class="listing-card">
+                            <img src="${exp.main_image || 'images/default-listing.jpg'}" alt="${exp.title}" class="listing-image">
+                            <div class="listing-content">
+                                <h3 class="listing-title">${exp.title}</h3>
+                                <p class="listing-location"><i class="fa fa-map-marker"></i> ${exp.location}</p>
+                                <p class="listing-price">$${parseFloat(exp.price).toFixed(2)} ${exp.price_per_person == 1 ? 'per person' : 'per group'}</p>
+                            </div>
+                            <div class="listing-actions">
+                                <button onclick="viewListing('experience', ${exp.id})"><i class="fa fa-eye"></i> View</button>
+                                <button onclick="editListing('experience', ${exp.id})"><i class="fa fa-edit"></i> Edit</button>
+                                <button class="delete" onclick="deleteListing('experience', ${exp.id}, '${escapeHtml(exp.title)}')"><i class="fa fa-trash"></i> Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    section.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error loading experiences:', error);
+            }
+        }
+
+        async function loadEvents() {
+            try {
+                const currentUser = window.Auth.getCurrentUser();
+                const response = await fetch(`backend/api/my-listings.php?type=event&user_id=${currentUser.id}`);
+                const data = await response.json();
+
+                const container = document.getElementById('my-events');
+                const section = document.getElementById('events-section');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    section.style.display = 'block';
+                    container.innerHTML = data.data.map(evt => `
+                        <div class="listing-card">
+                            <img src="${evt.main_image || 'images/default-listing.jpg'}" alt="${evt.title}" class="listing-image">
+                            <div class="listing-content">
+                                <h3 class="listing-title">${evt.title}</h3>
+                                <p class="listing-location"><i class="fa fa-map-marker"></i> ${evt.location}</p>
+                                <p class="listing-price">$${parseFloat(evt.price).toFixed(2)} ${evt.price_per_person == 1 ? 'per person' : 'per group'}</p>
+                            </div>
+                            <div class="listing-actions">
+                                <button onclick="viewListing('event', ${evt.id})"><i class="fa fa-eye"></i> View</button>
+                                <button onclick="editListing('event', ${evt.id})"><i class="fa fa-edit"></i> Edit</button>
+                                <button class="delete" onclick="deleteListing('event', ${evt.id}, '${escapeHtml(evt.title)}')"><i class="fa fa-trash"></i> Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    section.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error loading events:', error);
+            }
+        }
+
+        async function loadStays() {
+            try {
+                const currentUser = window.Auth.getCurrentUser();
+                const response = await fetch(`backend/api/my-listings.php?type=stay&user_id=${currentUser.id}`);
+                const data = await response.json();
+
+                const container = document.getElementById('my-stays');
+                const section = document.getElementById('stays-section');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    section.style.display = 'block';
+                    container.innerHTML = data.data.map(stay => `
+                        <div class="listing-card">
+                            <img src="${stay.main_image || 'images/default-listing.jpg'}" alt="${stay.title}" class="listing-image">
+                            <div class="listing-content">
+                                <h3 class="listing-title">${stay.title}</h3>
+                                <p class="listing-location"><i class="fa fa-map-marker"></i> ${stay.location}</p>
+                                <p class="listing-price">$${parseFloat(stay.price_per_night).toFixed(2)} per night</p>
+                            </div>
+                            <div class="listing-actions">
+                                <button onclick="viewListing('stay', ${stay.id})"><i class="fa fa-eye"></i> View</button>
+                                <button onclick="editListing('stay', ${stay.id})"><i class="fa fa-edit"></i> Edit</button>
+                                <button class="delete" onclick="deleteListing('stay', ${stay.id}, '${escapeHtml(stay.title)}')"><i class="fa fa-trash"></i> Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    section.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error loading stays:', error);
+            }
+        }
+
+        async function loadReviews() {
+            try {
+                const currentUser = window.Auth.getCurrentUser();
+                const response = await fetch(`backend/api/user-reviews.php?user_id=${currentUser.id}`);
+                const data = await response.json();
+
+                const container = document.getElementById('host-reviews');
+                
+                if (data.success && data.reviews && data.reviews.length > 0) {
+                    container.innerHTML = data.reviews.map(review => {
+                        const stars = renderStars(review.stars);
+                        const reviewDate = new Date(review.created_at).toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        });
+
+                        return `
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <img src="${review.reviewer_picture || 'images/logos/logo.jpg'}" 
+                                             alt="${review.reviewer_name}" 
+                                             class="reviewer-avatar"
+                                             onerror="this.src='images/logos/logo.jpg'">
+                                        <div class="reviewer-details">
+                                            <h4>${review.reviewer_name}</h4>
+                                            <p class="review-date">${reviewDate}</p>
+                                        </div>
+                                    </div>
+                                    <div class="review-stars">${stars}</div>
+                                </div>
+                                <p class="review-text">${review.review_text || 'No comment provided.'}</p>
+                                ${review.listing_title ? `<span class="review-listing">Review for: ${review.listing_title}</span>` : ''}
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fa fa-star-o"></i>
+                            <p>No reviews yet</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+            }
+        }
+
+        function renderStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+            let stars = '';
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fa fa-star"></i>';
+            }
+            if (hasHalfStar) {
+                stars += '<i class="fa fa-star-half-o"></i>';
+            }
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="fa fa-star-o"></i>';
+            }
+            return stars;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function viewListing(type, id) {
+            window.location.href = `view-details.html?type=${type}&id=${id}`;
+        }
+
+        function editListing(type, id) {
+            window.location.href = `edit-posting.html?type=${type}&id=${id}`;
+        }
+
+        async function deleteListing(type, id, title) {
+            if (!confirm(`Are you sure you want to delete "${title}"? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const currentUser = window.Auth.getCurrentUser();
+                if (!currentUser) {
+                    alert('Authentication error. Please refresh the page.');
+                    return;
+                }
+
+                const response = await fetch('backend/api/delete-listing.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: type,
+                        id: id,
+                        user_id: currentUser.id
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Listing deleted successfully');
+                    loadHostListings(); // Reload listings
+                } else {
+                    alert(data.message || 'Failed to delete listing');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the listing');
+            }
+        }
+
+        // Note: loadHostData() is called from checkHostAccess() after auth is verified
+    </script>
+</body>
+</html>
+

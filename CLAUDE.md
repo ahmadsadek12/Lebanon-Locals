@@ -20,8 +20,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Starting the Development Server
 
 ```bash
-# Run PHP development server (recommended - backend API will work)
+# For ADMIN PANEL: Run from project root (serves both /public and /admin_panel)
+php -S 127.0.0.1:8080
+
+# For USER SITE ONLY: Run from public directory
 php -S 127.0.0.1:8080 -t public
+
+# Access URLs:
+# - User site: http://127.0.0.1:8080/public/
+# - Admin panel: http://127.0.0.1:8080/admin_panel/
 
 # Alternative: Using Python (static files only, API won't work)
 cd public
@@ -90,7 +97,19 @@ frontend_bundle/
 │   │       └── database.php     # PDO database connection class
 │   ├── assets/                  # Organized modern assets
 │   │   ├── css/
-│   │   │   └── variables.css    # CSS custom properties
+│   │   │   ├── variables.css    # CSS custom properties
+│   │   │   ├── skeletons.css    # Skeleton loading components
+│   │   │   ├── form-errors.css  # Inline form error styles
+│   │   │   ├── posting.css      # Posting page styles (extracted)
+│   │   │   └── *.css            # Other page-specific styles
+│   │   ├── js/
+│   │   │   ├── config.js        # Global configuration
+│   │   │   ├── posting.js       # Posting page logic (extracted)
+│   │   │   ├── form-validation.js # Inline form validation
+│   │   │   └── *.js             # Other modules
+│   │   └── bundles/             # Production bundles
+│   │       ├── common.js        # Combined JS bundle (~100 KB)
+│   │       └── common.css       # Combined CSS bundle (~16 KB)
 │   │   └── js/
 │   │       ├── config.js        # Global configuration & feature flags
 │   │       ├── main.js          # Main app logic, GSAP animations
@@ -155,6 +174,7 @@ Handles all backend communication:
 - `loadEvents()` - Fetches events from API
 - `loadExperiences()` - Fetches experiences from API
 - Error handling and loading states
+- Client-side caching with TTL for static data (amenities, property types)
 
 ### Backend API Architecture
 
@@ -215,7 +235,9 @@ Comprehensive CSS custom properties:
 3. Use event delegation for event listeners
 4. Reference CSS variables from `variables.css`
 5. Add error handling and loading states
-6. Update feature flag to `true` when ready to enable
+6. Use skeleton loaders for async content (see `skeletons.css`)
+7. Use inline form errors for validation (see `form-validation.js`)
+8. Update feature flag to `true` when ready to enable
 
 ### Database Schema Changes
 
@@ -234,6 +256,10 @@ Comprehensive CSS custom properties:
 - Event delegation for dynamic content: `document.addEventListener('click', handler);`
 - Descriptive function names with JSDoc comments
 - Error handling with try-catch blocks
+- Extract page-specific logic to dedicated JS files (e.g., `posting.js`)
+- Use `FormValidation` API for inline form errors
+- Use client-side caching for static data (amenities, property types)
+- Use standardized header/footer loaders (`load-header-standard.js`, `load-footer.js`)
 
 ### PHP Patterns
 
@@ -249,6 +275,9 @@ Comprehensive CSS custom properties:
 - CSS custom properties for all reusable values
 - BEM naming convention recommended for new components
 - Avoid `!important` unless absolutely necessary
+- Extract page-specific styles to dedicated CSS files (e.g., `posting.css`)
+- Use skeleton components for loading states
+- Use inline error styles for form validation feedback
 
 ### Security Practices
 
@@ -272,6 +301,54 @@ DB_PASSWORD=[your-password]
 
 The database connection class automatically loads these via `env-loader.php`.
 
+## Performance Optimizations
+
+### Asset Bundling
+
+For production, use bundled assets to reduce HTTP requests:
+
+```bash
+# Generate bundles
+python scripts/bundle-assets.py
+```
+
+This creates:
+- `public/assets/bundles/common.js` - Combined JavaScript (~100 KB)
+- `public/assets/bundles/common.css` - Combined CSS (~16 KB)
+
+**See [BUNDLING_GUIDE.md](BUNDLING_GUIDE.md) for detailed instructions.**
+
+### Client-Side Caching
+
+The application uses `localStorage` with TTL for:
+- Amenity data (6 hours)
+- Property type data (6 hours)
+- User authentication tokens
+- Wishlist data
+
+Cache utilities are in `public/assets/js/api.js`.
+
+### Skeleton Loading
+
+Use skeleton components for better perceived performance:
+
+```html
+<link rel="stylesheet" href="assets/css/skeletons.css">
+```
+
+**See [SKELETONS_AND_ERRORS_GUIDE.md](SKELETONS_AND_ERRORS_GUIDE.md) for usage.**
+
+### Inline Form Validation
+
+Use inline errors instead of alerts:
+
+```html
+<link rel="stylesheet" href="assets/css/form-errors.css">
+<script src="assets/js/form-validation.js"></script>
+```
+
+**See [SKELETONS_AND_ERRORS_GUIDE.md](SKELETONS_AND_ERRORS_GUIDE.md) for API.**
+
 ## Known Issues & Limitations
 
 1. **Legacy Code**: `public/css/` and `public/js/` contain old code being migrated to `public/assets/`
@@ -279,6 +356,7 @@ The database connection class automatically loads these via `env-loader.php`.
 3. **Database Schema**: Schema files are not in root - may need to be created/imported from existing database
 4. **Mixed Architecture**: Some inline JavaScript still exists in HTML files during migration
 5. **PhpMyAdmin**: Full phpMyAdmin installation exists in `public/pma/` - may be unnecessary for production
+6. **Bundles**: Production bundles need to be regenerated after code changes
 
 ## Contact & Resources
 
@@ -294,3 +372,7 @@ The database connection class automatically loads these via `env-loader.php`.
 - Date format is 'YYYY-MM-DD' internally, 'MMM DD, YYYY' for display
 - When working with Python tools, always activate the venv first: `source venv/bin/activate` (if venv exists)
 - This project has Cursor rules at `.cursor/rules/devin.mdc` that emphasize maintaining a scratchpad for task planning
+- All public pages use unified header/footer loaded via `load-header-standard.js` and `load-footer.js`
+- Posting page styles and scripts are extracted to `posting.css` and `posting.js` for better organization
+- Skeleton loading components available in `skeletons.css` for improved UX during async operations
+- Inline form validation system available via `form-validation.js` for better user feedback

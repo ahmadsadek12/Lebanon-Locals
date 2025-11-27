@@ -4,6 +4,12 @@
     <!-- ==================== META TAGS ==================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource Hints -->
+    <link rel="preload" href="assets/css/variables.css" as="style">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="assets/js/config.js" as="script">
+    <link rel="preload" href="assets/js/load-header-standard.js" as="script">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <!-- SEO Meta Tags -->
@@ -32,19 +38,10 @@
 <body class="checkout-page">
     <!-- Unified Header -->
     <div id="header-placeholder"></div>
-    <script>
-        fetch('includes/header.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('header-placeholder').innerHTML = html;
-                
-                // Re-initialize auth button after header loads
-                if (window.Auth && window.Auth.setupAuthButton) {
-                    window.Auth.setupAuthButton();
-                }
-            })
-            .catch(error => console.error('Error loading header:', error));
-    </script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/load-modals.js"></script>
+    <script src="assets/js/header.js"></script>
+    <script src="assets/js/load-header-standard.js"></script>
 
     <header class="checkout-header" id="checkoutHeader" style="display: none;">
         <div class="header-container">
@@ -81,12 +78,6 @@
             <div class="checkout-grid">
                 <!-- Left Column: Payment Details -->
                 <div class="checkout-left">
-                    <div class="back-section">
-                        <a href="javascript:history.back()" class="back-btn">
-                            <i class="fa fa-arrow-left"></i> Back to listing
-                        </a>
-                    </div>
-
                     <h1 class="checkout-title">Complete your booking</h1>
 
                     <!-- Booking Details -->
@@ -197,6 +188,42 @@
                             <span>I agree to the <a href="terms.html" target="_blank">Terms & Conditions</a> and <a href="privacy.html" target="_blank">Privacy Policy</a></span>
                         </label>
                     </div>
+
+                    <!-- Order Summary Section -->
+                    <div class="checkout-summary-section">
+                        <div class="listing-preview" id="listing-preview">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+
+                        <div class="price-breakdown">
+                            <h3>Price Details</h3>
+                            <div class="price-row">
+                                <span id="price-label">Price</span>
+                                <span id="price-value">$0.00</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Service Fee</span>
+                                <span id="service-fee">$0.00</span>
+                            </div>
+                            <div class="price-row" id="cleaning-fee-row" style="display: none;">
+                                <span>Cleaning Fee</span>
+                                <span id="cleaning-fee">$0.00</span>
+                            </div>
+                            <div class="price-row total">
+                                <span>Total</span>
+                                <span id="total-price">$0.00</span>
+                            </div>
+                        </div>
+
+                        <button type="button" id="complete-booking-btn" class="btn-complete-booking">
+                            Complete Booking
+                        </button>
+
+                        <div class="secure-notice">
+                            <i class="fa fa-lock"></i>
+                            <span>Your payment information is secure</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Right Column: Order Summary -->
@@ -241,15 +268,8 @@
     </main>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-container">
-            <div class="footer-bottom">
-                <div class="footer-copyright">
-                    Copyright © 2025 Lebanon Locals. All rights reserved
-                </div>
-            </div>
-        </div>
-    </footer>
+    <div id="footer-placeholder"></div>
+    <script src="assets/js/load-footer.js"></script>
 
     <!-- ==================== JAVASCRIPT ==================== -->
     <script src="https://js.stripe.com/v3/"></script>
@@ -271,7 +291,6 @@
     </script>
 
     <!-- Scripts -->
-    <script src="assets/js/auth.js"></script>
     <script src="assets/js/checkout.js"></script>
 </body>
 </html>

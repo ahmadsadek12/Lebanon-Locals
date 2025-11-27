@@ -1,6 +1,7 @@
 /**
  * Authentication Styles
  * Login, Signup, User Menu Modal and Components
+ * Notifications System
  */
 
 /* ====================
@@ -46,6 +47,51 @@
     object-fit: cover;
 }
 
+/* Error Message Styles - Works for both modals and pages */
+.auth-error-message {
+    background: #fee;
+    border: 1px solid #fcc;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    color: #c33;
+    font-size: 14px;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    animation: shake 0.3s ease;
+}
+
+.auth-error-message::before {
+    content: "⚠";
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Support HTML content in error messages (for multiple errors) */
+.auth-error-message ul {
+    margin: 0;
+    padding-left: 20px;
+    list-style-type: disc;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Page-specific error container */
+#auth-error-container {
+    min-height: 0;
+}
+
+#auth-error-container .auth-error-message {
+    margin-bottom: 0;
+}
+
 .user-avatar-placeholder {
     background: linear-gradient(135deg, var(--color-primary, #FF385C) 0%, #E8344E 100%);
     color: white;
@@ -65,7 +111,7 @@
 #user-menu-modal {
     display: none;
     position: fixed;
-    z-index: 10000;
+    z-index: 10001;
     left: 0;
     top: 0;
     width: 100%;
@@ -74,6 +120,8 @@
     align-items: center;
     justify-content: center;
     animation: fadeIn 0.2s ease;
+    visibility: visible;
+    opacity: 1;
 }
 
 @keyframes fadeIn {
@@ -385,6 +433,53 @@
     color: #3F51B5;
 }
 
+/* Review Button for Previous Bookings */
+.btn-review-booking {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #FF385C;
+    color: white !important;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    text-decoration: none;
+}
+
+.btn-review-booking:hover {
+    background: #E31C5F;
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 56, 92, 0.3);
+    text-decoration: none;
+}
+
+.btn-review-booking i {
+    font-size: 12px;
+}
+
+.review-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #E7F5EC;
+    color: #10873D;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.review-status-badge i {
+    font-size: 14px;
+}
+
 .empty-state {
     text-align: center;
     padding: var(--spacing-xxl, 80px) var(--spacing-lg, 24px);
@@ -612,5 +707,260 @@
         right: 10px;
         left: 10px;
         max-width: none;
+    }
+}
+
+/* ====================
+   Notifications System
+   ==================== */
+
+/* ===== Notifications ===== */
+.notifications-container {
+    position: relative;
+    display: none;
+    align-items: center;
+    margin-left: 8px;
+}
+
+.notifications-container.visible {
+    display: flex !important;
+}
+
+.notifications-btn {
+    position: relative;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 999px;
+    cursor: pointer;
+    padding: 8px 14px;
+    color: #222;
+    font-size: 18px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.notifications-btn i {
+    pointer-events: none;
+}
+
+.notifications-btn:hover {
+    color: #FF385C;
+    border-color: rgba(255, 56, 92, 0.35);
+    box-shadow: 0 4px 12px rgba(255, 56, 92, 0.25);
+}
+
+.notifications-count {
+    position: absolute;
+    top: -4px;
+    right: -2px;
+    background: #FF385C;
+    color: white;
+    border-radius: 50%;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    border: 2px solid white;
+    line-height: 1;
+}
+
+.notifications-count.hidden {
+    display: none;
+}
+
+.notifications-dropdown {
+    position: fixed;
+    top: 72px;
+    right: 32px;
+    width: 360px;
+    max-height: 520px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.08);
+    z-index: 10000;
+    overflow: hidden;
+    display: none;
+    opacity: 0;
+    transform-origin: top right;
+}
+
+.notifications-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #EBEBEB;
+}
+
+.notifications-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #222;
+}
+
+.notifications-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #717171;
+    font-size: 16px;
+    padding: 4px;
+    transition: color 0.2s ease;
+}
+
+.notifications-close:hover {
+    color: #222;
+}
+
+}
+
+.notifications-list {
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.notifications-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notifications-list::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 999px;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px 20px;
+    border-bottom: 1px solid #F1F1F1;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    position: relative;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item:hover {
+    background: #fef6f7;
+    transform: translateX(2px);
+}
+
+.notification-item.unread {
+    background: #fff7f8;
+}
+
+.notification-item.unread:hover {
+    background: #ffeef1;
+}
+
+.notification-item.read {
+    background: #ffffff;
+    opacity: 0.85;
+}
+
+.notification-item.read:hover {
+    background: #fafafa;
+    opacity: 1;
+}
+
+.notification-content {
+    flex: 1;
+    cursor: pointer;
+}
+
+.notification-title {
+    font-weight: 600;
+    color: #222;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.notification-message {
+    color: #555;
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 6px;
+}
+
+.notification-time {
+    color: #999;
+    font-size: 12px;
+}
+
+.notification-unread-indicator {
+    width: 8px;
+    height: 8px;
+    background: #FF385C;
+    border-radius: 50%;
+    margin-left: 12px;
+    margin-top: 6px;
+    flex-shrink: 0;
+}
+
+.notification-delete-btn {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 12px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    opacity: 0;
+}
+
+.notification-item:hover .notification-delete-btn {
+    opacity: 1;
+}
+
+.notification-delete-btn:hover {
+    background: #f1f1f1;
+    color: #dc2626;
+}
+
+.notifications-loading,
+.notifications-empty,
+.notifications-guest {
+    padding: 36px 24px;
+    text-align: center;
+    color: #717171;
+    font-size: 14px;
+}
+
+.notifications-guest button {
+    margin-top: 12px;
+    border: none;
+    background: #FF385C;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .notifications-dropdown {
+        width: 320px;
+        right: -10px;
     }
 }

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Lebanon Locals Admin</title>
+    <link rel="icon" href="../public/images/svgahmadLL.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="admin-page">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="admin-logo">
+            <img src="../public/images/logos/logo.jpg" alt="Lebanon Locals">
+            <h2>Admin Panel</h2>
+        </div>
+
+        <nav>
+            <ul class="admin-nav">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link active">
+                        <i class="fa fa-dashboard"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="users.html" class="nav-link">
+                        <i class="fa fa-users"></i> Users
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="bookings.html" class="nav-link">
+                        <i class="fa fa-calendar"></i> Bookings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="experiences.html" class="nav-link">
+                        <i class="fa fa-star"></i> Experiences
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="events.html" class="nav-link">
+                        <i class="fa fa-calendar-check-o"></i> Events
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="stays.html" class="nav-link">
+                        <i class="fa fa-home"></i> Stays
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="reviews.html" class="nav-link">
+                        <i class="fa fa-comment"></i> Reviews
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="amenities.html" class="nav-link">
+                        <i class="fa fa-cube"></i> Amenities
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="subtypes.html" class="nav-link">
+                        <i class="fa fa-tags"></i> Subtypes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="messages.html" class="nav-link">
+                        <i class="fa fa-envelope"></i> Messages
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="notifications.html" class="nav-link">
+                        <i class="fa fa-bell"></i> Notifications
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="payments.html" class="nav-link">
+                        <i class="fa fa-dollar"></i> Payments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="verifications.html" class="nav-link">
+                        <i class="fa fa-check-circle"></i> Verifications
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="admin-header">
+            <h1>Dashboard</h1>
+            <div class="admin-user">
+                <div class="admin-user-avatar" id="admin-avatar">A</div>
+                <span id="admin-name">Admin</span>
+                <button class="btn-logout" onclick="window.AdminAuth.logoutAdmin()">
+                    <i class="fa fa-sign-out"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid" id="stats-grid">
+            <div class="loading">
+                <i class="fa fa-spinner fa-spin"></i>
+                <p>Loading statistics...</p>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Recent Bookings</h2>
+                <a href="bookings.html" class="btn btn-view">View All</a>
+            </div>
+            <div id="recent-bookings">
+                <div class="loading">
+                    <i class="fa fa-spinner fa-spin"></i>
+                    <p>Loading recent bookings...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/js/admin-auth.js"></script>
+    <script>
+        // Require admin authentication
+        if (!window.AdminAuth.requireAdmin()) {
+            // Will redirect if not admin
+        }
+
+        // Display admin info
+        const adminUser = window.AdminAuth.getAdminUser();
+        if (adminUser) {
+            const initials = (adminUser.first_name.charAt(0) + adminUser.last_name.charAt(0)).toUpperCase();
+            document.getElementById('admin-avatar').textContent = initials;
+            document.getElementById('admin-name').textContent = `${adminUser.first_name} ${adminUser.last_name}`;
+        }
+
+        // Load dashboard statistics
+        async function loadStatistics() {
+            try {
+                const data = await window.AdminAuth.apiRequest('../public/backend/api/admin/dashboard-stats.php');
+
+                if (data.success && data.stats) {
+                    displayStatistics(data.stats);
+                } else {
+                    showError('Failed to load statistics');
+                }
+            } catch (error) {
+                console.error('[ADMIN] Error loading stats:', error);
+                showError('Error loading statistics');
+            }
+        }
+
+        // Display statistics
+        function displayStatistics(stats) {
+            const statsGrid = document.getElementById('stats-grid');
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div class="stat-value">${stats.total_users || 0}</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fa fa-calendar-check-o"></i>
+                    </div>
+                    <div class="stat-value">${stats.total_bookings || 0}</div>
+                    <div class="stat-label">Total Bookings</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fa fa-star"></i>
+                    </div>
+                    <div class="stat-value">${stats.total_listings || 0}</div>
+                    <div class="stat-label">Active Listings</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon red">
+                        <i class="fa fa-dollar"></i>
+                    </div>
+                    <div class="stat-value">$${parseFloat(stats.total_revenue || 0).toLocaleString()}</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+            `;
+        }
+
+        // Load recent bookings
+        async function loadRecentBookings() {
+            try {
+                const data = await window.AdminAuth.apiRequest('../public/backend/api/admin/recent-bookings.php?limit=10');
+
+                const container = document.getElementById('recent-bookings');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    container.innerHTML = `
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Guest</th>
+                                    <th>Listing</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.data.map(booking => `
+                                    <tr>
+                                        <td>#${booking.id}</td>
+                                        <td>${booking.guest_name || 'N/A'}</td>
+                                        <td>${booking.listing_title || 'N/A'}</td>
+                                        <td>${formatDate(booking.start_date)}</td>
+                                        <td>$${parseFloat(booking.total_price).toFixed(2)}</td>
+                                        <td><span class="badge badge-${getStatusClass(booking.booking_status || booking.status)}">${booking.booking_status || booking.status}</span></td>
+                                        <td>
+                                            <button class="btn btn-view" onclick="viewBooking(${booking.id})">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                } else {
+                    container.innerHTML = '<div class="empty-state"><p>No recent bookings</p></div>';
+                }
+            } catch (error) {
+                console.error('[ADMIN] Error loading bookings:', error);
+                document.getElementById('recent-bookings').innerHTML = '<div class="empty-state"><p>Error loading bookings</p></div>';
+            }
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function getStatusClass(status) {
+            const statusMap = {
+                'confirmed': 'success',
+                'pending': 'warning',
+                'cancelled': 'danger',
+                'completed': 'info'
+            };
+            return statusMap[status] || 'secondary';
+        }
+
+        function viewBooking(id) {
+            window.location.href = `bookings.html?id=${id}`;
+        }
+
+        function showError(message) {
+            document.getElementById('stats-grid').innerHTML = `<div class="empty-state"><p>${message}</p></div>`;
+        }
+
+        // Load data on page load
+        loadStatistics();
+        loadRecentBookings();
+    </script>
+</body>
+</html>
+

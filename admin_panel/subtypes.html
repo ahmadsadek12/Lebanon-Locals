@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subtypes - Lebanon Locals Admin</title>
+    <link rel="icon" href="../public/images/svgahmadLL.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="admin-page">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="admin-logo">
+            <img src="../public/images/logos/logo.jpg" alt="Lebanon Locals">
+            <h2>Admin Panel</h2>
+        </div>
+        <nav>
+            <ul class="admin-nav">
+                <li class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="users.html" class="nav-link"><i class="fa fa-users"></i> Users</a></li>
+                <li class="nav-item"><a href="bookings.html" class="nav-link"><i class="fa fa-calendar"></i> Bookings</a></li>
+                <li class="nav-item"><a href="experiences.html" class="nav-link"><i class="fa fa-star"></i> Experiences</a></li>
+                <li class="nav-item"><a href="events.html" class="nav-link"><i class="fa fa-calendar-check-o"></i> Events</a></li>
+                <li class="nav-item"><a href="stays.html" class="nav-link"><i class="fa fa-home"></i> Stays</a></li>
+                <li class="nav-item"><a href="reviews.html" class="nav-link"><i class="fa fa-comment"></i> Reviews</a></li>
+                <li class="nav-item"><a href="amenities.html" class="nav-link"><i class="fa fa-cube"></i> Amenities</a></li>
+                <li class="nav-item"><a href="subtypes.html" class="nav-link active"><i class="fa fa-tags"></i> Subtypes</a></li>
+                <li class="nav-item"><a href="messages.html" class="nav-link"><i class="fa fa-envelope"></i> Messages</a></li>
+                <li class="nav-item"><a href="notifications.html" class="nav-link"><i class="fa fa-bell"></i> Notifications</a></li>
+                <li class="nav-item"><a href="payments.html" class="nav-link"><i class="fa fa-dollar"></i> Payments</a></li>
+                <li class="nav-item"><a href="verifications.html" class="nav-link"><i class="fa fa-check-circle"></i> Verifications</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-header">
+            <h1>Subtypes Management</h1>
+            <div class="admin-user">
+                <div class="admin-user-avatar" id="admin-avatar">A</div>
+                <span id="admin-name">Admin</span>
+                <button class="btn-logout" onclick="window.AdminAuth.logoutAdmin()"><i class="fa fa-sign-out"></i> Logout</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h2>All Subtypes</h2>
+                <div class="table-actions">
+                    <select id="filter-category" style="padding: 10px 16px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                        <option value="">All Categories</option>
+                        <option value="experience">Experience</option>
+                        <option value="event">Event</option>
+                        <option value="stay">Stay</option>
+                    </select>
+                    <input type="search" id="search-subtypes" placeholder="Search subtypes..." style="padding: 10px 16px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                    <button class="btn btn-add" onclick="openAddModal()">
+                        <i class="fa fa-plus"></i> Add Subtype
+                    </button>
+                </div>
+            </div>
+            <div id="subtypes-table">
+                <div class="loading"><i class="fa fa-spinner fa-spin" style="font-size: 32px;"></i><p>Loading subtypes...</p></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit/Add Subtype Modal -->
+    <div id="edit-subtype-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Edit Subtype</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="edit-subtype-form">
+                <input type="hidden" id="subtype-id">
+
+                <div class="form-group">
+                    <label for="subtype-name">Name *</label>
+                    <input type="text" id="subtype-name" placeholder="e.g., Adventure, Cultural, Luxury" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="subtype-category">Category *</label>
+                    <select id="subtype-category" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px;" required>
+                        <option value="">Select Category</option>
+                        <option value="experience">Experience</option>
+                        <option value="event">Event</option>
+                        <option value="stay">Stay</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="subtype-description">Description</label>
+                    <textarea id="subtype-description" rows="4" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit;" placeholder="Enter description..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="subtype-icon-file">Icon Image</label>
+                    <input type="file" id="subtype-icon-file" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+                    <p class="form-hint">Upload JPG, PNG, WEBP, or SVG. Leave empty to keep the current icon.</p>
+                    <input type="hidden" id="subtype-icon-existing">
+                    <div class="icon-preview" id="subtype-icon-preview">
+                        <span class="icon-preview-placeholder">No icon selected</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                    <button type="button" class="btn btn-view" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/admin-auth.js"></script>
+    <script src="assets/js/subtypes.js"></script>
+</body>
+</html>

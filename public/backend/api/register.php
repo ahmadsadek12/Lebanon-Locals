@@ -98,10 +98,27 @@ try {
     $insertStmt->bindParam(':password_hash', $passwordHash);
     $insertStmt->bindParam(':first_name', $firstName);
     $insertStmt->bindParam(':last_name', $lastName);
-    $insertStmt->bindParam(':phone_number', $phoneNumber);
-    $insertStmt->bindParam(':date_of_birth', $dateOfBirth);
+    
+    // Handle nullable fields properly
+    if (empty($phoneNumber)) {
+        $insertStmt->bindValue(':phone_number', null, PDO::PARAM_NULL);
+    } else {
+        $insertStmt->bindParam(':phone_number', $phoneNumber);
+    }
+    
+    if (empty($dateOfBirth)) {
+        $insertStmt->bindValue(':date_of_birth', null, PDO::PARAM_NULL);
+    } else {
+        $insertStmt->bindParam(':date_of_birth', $dateOfBirth);
+    }
+    
     $insertStmt->bindValue(':age', $age, PDO::PARAM_INT);
-    $insertStmt->bindParam(':gender', $gender);
+    
+    if (empty($gender)) {
+        $insertStmt->bindValue(':gender', null, PDO::PARAM_NULL);
+    } else {
+        $insertStmt->bindParam(':gender', $gender);
+    }
 
     if ($insertStmt->execute()) {
         $userId = $db->lastInsertId();
@@ -128,13 +145,38 @@ try {
             ]
         ]);
     } else {
-        throw new Exception('Failed to create user account');
+        $errorInfo = $insertStmt->errorInfo();
+        $errorMessage = 'Failed to create user account';
+        if (isset($errorInfo[2])) {
+            $errorMessage .= ': ' . $errorInfo[2];
+        }
+        error_log("Registration failed: " . print_r($errorInfo, true));
+        throw new Exception($errorMessage);
     }
 
-} catch (Exception $e) {
+} catch (PDOException $e) {
     http_response_code(500);
+    $errorMessage = 'Registration error: ' . $e->getMessage();
+    error_log("PDO Exception in register.php: " . $e->getMessage());
+    
+    // Provide user-friendly error messages
+    if (strpos($e->getMessage(), 'Duplicate entry') !== false && strpos($e->getMessage(), 'email') !== false) {
+        $errorMessage = 'An account with this email already exists. Please sign in instead.';
+    } else if (strpos($e->getMessage(), 'SQLSTATE') !== false) {
+        $errorMessage = 'Database error occurred. Please try again or contact support.';
+    }
+    
     echo json_encode([
         'success' => false,
-        'message' => 'Registration error: ' . $e->getMessage()
+        'message' => $errorMessage,
+        'error' => $e->getMessage()
+    ]);
+} catch (Exception $e) {
+    http_response_code(500);
+    error_log("Exception in register.php: " . $e->getMessage());
+    echo json_encode([
+        'success' => false,
+        'message' => 'Registration error: ' . $e->getMessage(),
+        'error' => $e->getMessage()
     ]);
 }

@@ -70,7 +70,7 @@ try {
                 s.number_of_beds,
                 s.number_double_beds,
                 s.number_single_beds,
-                s.number_bunk_beds,
+                COALESCE(s.number_bunk_beds, 0) AS number_sofa_beds,
                 s.number_of_bathrooms,
                 s.property_type,
                 s.min_nights,
@@ -86,7 +86,7 @@ try {
                 a.street AS address_street,
                 a.city AS address_city,
                 a.country AS address_country,
-                (s.max_guests - COALESCE(s.total_bookings, 0)) AS available_capacity,
+                s.max_guests AS available_capacity,
                 COALESCE(r.avg_rating, 0) AS average_rating,
                 COALESCE(r.review_count, 0) AS total_reviews,
                 u.id AS host_id,
@@ -139,7 +139,7 @@ try {
 
     // Fetch amenities (column may not exist)
     try {
-        $amenitiesQuery = "SELECT a.id, a.name, a.category
+        $amenitiesQuery = "SELECT a.id, a.name, a.category, a.icon_url
                             FROM stay_amenities sa
                             JOIN amenities a ON sa.amenity_id = a.id
                             WHERE sa.stay_id = :id

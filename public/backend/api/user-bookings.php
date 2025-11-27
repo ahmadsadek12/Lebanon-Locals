@@ -68,11 +68,11 @@ try {
               LEFT JOIN stays s ON b.listing_type = 'stay' AND b.listing_id = s.id
               WHERE b.user_id = :user_id";
 
-    // Add status filter
+    // Add status filter (using booking_status column)
     if ($status === 'upcoming') {
-        $query .= " AND b.end_date >= CURDATE() AND b.status IN ('confirmed', 'pending')";
+        $query .= " AND b.end_date >= CURDATE() AND (b.booking_status IN ('confirmed', 'pending') OR b.status IN ('confirmed', 'pending'))";
     } elseif ($status === 'previous') {
-        $query .= " AND (b.end_date < CURDATE() OR b.status IN ('cancelled', 'completed'))";
+        $query .= " AND (b.end_date < CURDATE() OR b.booking_status IN ('cancelled', 'completed') OR b.status IN ('cancelled', 'completed'))";
     }
 
     $query .= " ORDER BY b.start_date DESC";
@@ -88,8 +88,10 @@ try {
     $previous = [];
 
     foreach ($bookings as $booking) {
+        // Check both status and booking_status fields
+        $bookingStatus = isset($booking['booking_status']) ? $booking['booking_status'] : $booking['status'];
         $isUpcoming = (strtotime($booking['end_date']) >= strtotime('today')) &&
-                      in_array($booking['status'], ['confirmed', 'pending']);
+                      in_array($bookingStatus, ['confirmed', 'pending']);
 
         if ($isUpcoming) {
             $upcoming[] = $booking;

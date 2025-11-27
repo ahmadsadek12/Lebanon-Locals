@@ -46,6 +46,9 @@ foreach ($requiredFields as $field) {
     }
 }
 
+// Optional debug info for notifications
+$notificationsError = null;
+
 try {
     $database = new Database();
     $db = $database->getConnection();
@@ -53,6 +56,8 @@ try {
     // Validate listing exists and get details
     $listingType = $input['listing_type'];
     $listingId = intval($input['listing_id']);
+
+    $listingTitle = 'Your listing';
 
     if ($listingType === 'experience' || $listingType === 'event') {
         // Query hostings table
@@ -69,6 +74,30 @@ try {
 
         $price = floatval($listing['price']);
         $hostId = $listing['host_id'];
+        $listingTitle = $listing['title'] ?? 'Your listing';
+        $maxGuests = intval($listing['max_guests']);
+
+        // Check available capacity for events and experiences
+        $capacityQuery = "SELECT COALESCE(SUM(number_of_guests), 0) AS current_guests
+                          FROM bookings 
+                          WHERE listing_type = :type 
+                            AND listing_id = :id 
+                            AND (booking_status IN ('confirmed', 'pending') OR status IN ('confirmed', 'pending'))
+                            AND booking_status != 'rejected'
+                            AND status != 'rejected'";
+        
+        $capacityStmt = $db->prepare($capacityQuery);
+        $capacityStmt->bindParam(':type', $listingType);
+        $capacityStmt->bindParam(':id', $listingId);
+        $capacityStmt->execute();
+        $capacityResult = $capacityStmt->fetch(PDO::FETCH_ASSOC);
+        $currentGuests = intval($capacityResult['current_guests']);
+
+        // Validate guests count
+        $guests = intval($input['guests']);
+        if (($currentGuests + $guests) > $maxGuests) {
+            throw new Exception("Maximum guests limit reached for this listing. Available capacity: " . ($maxGuests - $currentGuests));
+        }
 
     } elseif ($listingType === 'stay') {
         // Query stays table
@@ -84,6 +113,7 @@ try {
 
         $price = floatval($listing['price_per_night']);
         $hostId = $listing['host_id'];
+        $listingTitle = $listing['title'] ?? 'Your listing';
 
     } else {
         throw new Exception('Invalid listing type');
@@ -184,7 +214,85 @@ try {
 
     $bookingId = $db->lastInsertId();
 
-    // TODO: Send confirmation email to guest and notification to host
+    // Create notifications in main `notifications` table for host and admins
+    // Using 'from' (booking user) and 'to' (host/admin) columns
+    $notificationsError = null;
+    try {
+        // Validate required values before inserting
+        if (empty($userId) || empty($hostId) || empty($bookingId)) {
+            throw new Exception("Missing required values: userId={$userId}, hostId={$hostId}, bookingId={$bookingId}");
+        }
+        
+        // Host notification: from = booking user, to = host
+        $hostTitle = 'New booking';
+        $hostMessage = "You have a new booking request for \"{$listingTitle}\" from {$input['email']}.";
+        
+        error_log("[BOOKING] Attempting to create notification - from: {$userId}, to: {$hostId}, booking_id: {$bookingId}");
+        $hostNotif = $db->prepare("
+            INSERT INTO notifications (`from`, `to`, title, message, related_id, is_read, created_at)
+            VALUES (:from, :to, :title, :message, :related_id, 0, NOW())
+        ");
+        $result = $hostNotif->execute([
+            ':from'       => $userId,
+            ':to'         => $hostId,
+            ':title'      => $hostTitle,
+            ':message'    => $hostMessage,
+            ':related_id' => $bookingId,
+        ]);
+        
+        // With PDO::ERRMODE_EXCEPTION, execute() will throw on failure, so this check is redundant
+        // But we keep it for safety
+        if (!$result) {
+            $errorInfo = $hostNotif->errorInfo();
+            throw new Exception("Failed to insert host notification: " . print_r($errorInfo, true));
+        }
+        
+        error_log("[BOOKING] Host notification created successfully - booking_id: {$bookingId}, host_id: {$hostId}, user_id: {$userId}");
+
+        // One notification per admin as well: from = booking user, to = each admin
+        $adminStmt = $db->query("SELECT id FROM users WHERE user_type = 'admin'");
+        $adminIds = $adminStmt->fetchAll(PDO::FETCH_COLUMN);
+        if ($adminIds) {
+            $adminNotif = $db->prepare("
+                INSERT INTO notifications (`from`, `to`, title, message, related_id, is_read, created_at)
+                VALUES (:from, :to, :title, :message, :related_id, 0, NOW())
+            ");
+            $adminTitle = 'New booking';
+            $adminMessage = "You have a new booking request for \"{$listingTitle}\" from {$input['email']}.";
+            foreach ($adminIds as $adminId) {
+                $result = $adminNotif->execute([
+                    ':from'       => $userId,
+                    ':to'         => $adminId,
+                    ':title'      => $adminTitle,
+                    ':message'    => $adminMessage,
+                    ':related_id' => $bookingId,
+                ]);
+                
+                if (!$result) {
+                    $errorInfo = $adminNotif->errorInfo();
+                    error_log("Failed to insert admin notification for admin ID {$adminId}: " . print_r($errorInfo, true));
+                }
+            }
+        }
+    } catch (PDOException $e) {
+        $notificationsError = $e->getMessage();
+        error_log('[BOOKING] PDO Exception creating notifications: ' . $e->getMessage());
+        error_log('[BOOKING] SQL State: ' . $e->getCode());
+        error_log('[BOOKING] SQL Error Info: ' . print_r($db->errorInfo(), true));
+        // Don't fail the booking if notifications fail - just log the error
+    } catch (Exception $e) {
+        $notificationsError = $e->getMessage();
+        error_log('[BOOKING] Exception creating notifications: ' . $e->getMessage());
+        error_log('[BOOKING] Exception trace: ' . $e->getTraceAsString());
+        // Don't fail the booking if notifications fail - just log the error
+    }
+    
+    // Log successful notification creation for debugging
+    if ($notificationsError === null) {
+        error_log('[BOOKING] ✓ All notifications created successfully for booking_id: ' . $bookingId);
+    } else {
+        error_log('[BOOKING] ✗ Notification creation failed for booking_id: ' . $bookingId . ' - Error: ' . $notificationsError);
+    }
 
     $response = [
         'success' => true,
@@ -193,6 +301,11 @@ try {
         'payment_status' => $paymentStatus,
         'total_price' => $totalPrice
     ];
+
+    if ($notificationsError !== null) {
+        $response['notifications_error'] = $notificationsError;
+        $response['notifications_warning'] = 'Booking created but notifications failed. Check server logs.';
+    }
 
     echo json_encode($response);
 
@@ -203,3 +316,4 @@ try {
         'message' => $e->getMessage()
     ]);
 }
+

@@ -46,46 +46,87 @@
     <link rel="stylesheet" href="assets/css/variables.css">
     <link rel="stylesheet" href="assets/css/auth.css">
     <link rel="stylesheet" href="assets/css/wishlist.css">
+    <link rel="stylesheet" href="assets/css/skeletons.css">
     <link rel="stylesheet" href="css/style.css">
     
     <!-- ==================== PRELOAD CRITICAL ASSETS ==================== -->
     <link rel="preload" href="images/Lebanon Locals Posts (14).jpg" as="image">
     
+    <style>
+        /* White background for header on index page */
+        body.home-page .main-header {
+            background: white !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Main content spacing with background image and red overlay */
+        .home-main-content {
+            padding: 40px 20px;
+            position: relative;
+            background-image: url('images/backgrounds/lebanon-locals-background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .home-main-content .content-search-bar {
+            max-width: 1200px;
+            margin: 0 auto 40px auto;
+        }
+        
+        .home-main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(160, 0, 0, 0.2);
+            z-index: 0;
+        }
+        
+        .home-main-content > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .home-section {
+            margin-bottom: 60px;
+        }
+        
+        .home-section:last-child {
+            margin-bottom: 0;
+        }
+    </style>
 </head>
-<body>
+<body class="home-page">
     <!-- Unified Header -->
     <div id="header-placeholder"></div>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/load-modals.js"></script>
+    <script src="assets/js/header.js"></script>
+    <script src="assets/js/load-header-standard.js"></script>
     <script>
-        fetch('includes/header.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('header-placeholder').innerHTML = html;
-                
-                // Re-initialize auth button after header loads
-                if (window.Auth && window.Auth.setupAuthButton) {
-                    window.Auth.setupAuthButton();
-                }
-                
-                // On index page, header nav words go to collections page
-                setTimeout(() => {
-                    const navWords = document.querySelectorAll('.header-nav-words .nav-word');
-                    
-                    navWords.forEach(word => {
-                        const type = word.dataset.type;
-                        
-                        word.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            window.location.href = `collections.html?type=${type}`;
-                        });
-                    });
-                }, 200);
+        document.addEventListener('headerLoaded', function handleHomeHeaderNav() {
+            const navWords = document.querySelectorAll('.header-nav-words .nav-word');
+            if (!navWords.length) {
+                return;
+            }
+            navWords.forEach(word => {
+                const type = word.dataset.type;
+                word.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    if (type) {
+                        window.location.href = `collections.html?type=${type}`;
+                    }
+                });
             });
+        });
     </script>
-    
+
     <!-- Main Content -->
-    <main class="main-content">
-        <!-- Search Bar - COMMENTED OUT -->
-        <!--
+    <main class="home-main-content">
+        <!-- Search Bar -->
         <div class="content-search-bar">
             <div class="search-bar-container">
                 <div class="search-field-group">
@@ -94,13 +135,13 @@
                 </div>
                 <div class="search-divider"></div>
                 <div class="search-field-group date-field-wrapper">
-                    <label id="label-date-start">Check in</label>
+                    <label id="label-date-start">Date from</label>
                     <input id="input-date-start" type="date" class="date-input" />
                     <span class="date-placeholder">Add date</span>
                 </div>
                 <div class="search-divider"></div>
                 <div class="search-field-group date-field-wrapper">
-                    <label id="label-date-end">Check out</label>
+                    <label id="label-date-end">Date to</label>
                     <input id="input-date-end" type="date" class="date-input" />
                     <span class="date-placeholder">Add date</span>
                 </div>
@@ -109,34 +150,26 @@
                     <label id="label-guests">Guests</label>
                     <input id="input-guests" type="number" placeholder="Add guests" min="1" />
                 </div>
-                <button class="search-action-btn">
+                <button class="search-action-btn" type="button" id="home-search-btn">
                     <i class="fa fa-search"></i>
                     <span>Search</span>
                 </button>
             </div>
         </div>
-        -->
-        
-        <!-- Events Section -->
-        <section id="events" class="home-section">
-            <div class="section-header">
-                <h2 class="section-title">All Our Events</h2>
-                <a href="collections.html?type=event" class="view-all-btn">
-                    View All <i class="fa fa-arrow-right"></i>
-                </a>
-            </div>
-            <div class="horizontal-scroll" id="events-list">
-                <!-- Event cards will render here -->
-            </div>
-        </section>
         
         <!-- Experiences Section -->
         <section id="experiences" class="home-section">
             <div class="section-header">
-                <h2 class="section-title">All Our Experiences</h2>
+                <h2 class="section-title">Experiences</h2>
                 <a href="collections.html?type=experience" class="view-all-btn">
-                    View All <i class="fa fa-arrow-right"></i>
+                    Show more <i class="fa fa-arrow-right"></i>
                 </a>
+            </div>
+            <div class="horizontal-scroll-skeleton" id="experiences-skeleton" aria-hidden="true">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
             </div>
             <div class="horizontal-scroll" id="experiences-list">
                 <!-- Experience cards will render here -->
@@ -146,296 +179,104 @@
         <!-- Stays Section -->
         <section id="stays" class="home-section">
             <div class="section-header">
-                <h2 class="section-title">All Our Stays</h2>
+                <h2 class="section-title">Stays</h2>
                 <a href="collections.html?type=stay" class="view-all-btn">
-                    View All <i class="fa fa-arrow-right"></i>
+                    Show more <i class="fa fa-arrow-right"></i>
                 </a>
+            </div>
+            <div class="horizontal-scroll-skeleton" id="stays-skeleton" aria-hidden="true">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
             </div>
             <div class="horizontal-scroll" id="stays-list">
                 <!-- Stay cards will render here -->
             </div>
         </section>
+        
+        <!-- Events Section -->
+        <section id="events" class="home-section">
+            <div class="section-header">
+                <h2 class="section-title">Events</h2>
+                <a href="collections.html?type=event" class="view-all-btn">
+                    Show more <i class="fa fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="horizontal-scroll-skeleton" id="events-skeleton" aria-hidden="true">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+            <div class="horizontal-scroll" id="events-list">
+                <!-- Event cards will render here -->
+            </div>
+        </section>
     </main>
     
-    <!-- Community Section -->
-    <section class="community-section">
-        <div class="community-container">
-            <h2 class="community-title">Our Community</h2>
-            <div class="community-grid">
-                <div class="community-card">
-                    <div class="community-header">
-                        <i class="fa fa-phone community-icon"></i>
-                        <h3 class="community-card-title">24/7 customer support</h3>
-                    </div>
-                    <p class="community-text">If you need help while traveling or hosting, contact us at our number: 961 81 434 070</p>
-                </div>
-                
-                <div class="community-card">
-                    <div class="community-header">
-                        <i class="fa fa-briefcase community-icon"></i>
-                        <h3 class="community-card-title">Host Guarantee</h3>
-                    </div>
-                    <p class="community-text">Our Host Guarantee ensures a smooth, worry-free hosting experience so you can focus on creating memorable stays.</p>
-                </div>
-                
-                <div class="community-card">
-                    <div class="community-header">
-                        <i class="fa fa-shield community-icon"></i>
-                        <h3 class="community-card-title">Verified ID</h3>
-                    </div>
-                    <p class="community-text">We aim to build a trusted community by giving you more info when you're deciding who to host or stay with.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-container">
-            <div class="footer-top">
-                <div>
-                    <img src="images/logos/logo.jpg" alt="Lebanon Locals" class="footer-logo">
-                </div>
-                
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4>Company</h4>
-                        <ul>
-                            <li><a href="terms.html">Terms & Conditions</a></li>
-                            <li><a href="privacy.html">Your Privacy</a></li>
-                            <li><a href="about.html">Our Story</a></li>
-                            <li><a href="cookies.html">Cookies & Tracking</a></li>
-                            <li><a href="contact.html">Contact Us</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4>Discover</h4>
-                        <ul>
-                            <li><a href="travel-credit.html">Travel Credit</a></li>
-                            <li><a href="guest-protection.html">Guest Protection</a></li>
-                            <li><a href="guest-safety.html">Guest Safety</a></li>
-                            <li><a href="standards.html">Our Standards</a></li>
-                            <li><a href="cancellation_policies.html">Cancellations & Refunds</a></li>
-                            <li><a href="help.html">FAQS</a></li>
-                            <li><a href="#">Blog</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4>Hosting</h4>
-                        <ul>
-                            <li><a href="host-protection.html">Host Protection</a></li>
-                            <li><a href="why-host.html">Why Host</a></li>
-                            <li><a href="help.html">Hosting Support</a></li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="footer-apps">
-                    <a href="https://play.google.com/store/apps" target="_blank" class="app-btn">
-                        <i class="fa fa-play"></i>
-                        <div>
-                            <div class="app-text-small">Download on</div>
-                            <div class="app-text-large">Google Play</div>
-                        </div>
-                    </a>
-                    <a href="https://apps.apple.com/" target="_blank" class="app-btn">
-                        <i class="fa fa-apple"></i>
-                        <div>
-                            <div class="app-text-small">Download on</div>
-                            <div class="app-text-large">App Store</div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="footer-copyright">
-                    Copyright © 2025 Lebanon Locals. All rights reserved
-                </div>
-                <div class="footer-social">
-                    <a href="https://instagram.com/lebanonlocals" target="_blank" class="social-icon instagram" title="Instagram">
-                        <i class="fa fa-instagram"></i>
-                    </a>
-                    <a href="https://tiktok.com/@lebanonlocals" target="_blank" class="social-icon tiktok" title="TikTok">
-                        <svg viewBox="0 0 448 512" style="width: 16px; height: 16px; fill: currentColor;">
-                            <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
-    
-    <!-- Fixed Chatbot -->
-    <button class="chatbot-fixed" onclick="alert('Live chat coming soon! For now, call us at 961 81 434 070 or visit our help page.')" title="Chat with us">
-        <i class="fa fa-comments"></i>
-        <span class="chatbot-online"></span>
-    </button>
+    <div id="footer-placeholder"></div>
+    <script src="assets/js/load-footer.js"></script>
 
     <!-- ==================== AUTH MODALS ==================== -->
-
-    <!-- Login Modal -->
-    <div id="login-modal" class="modal">
-        <div class="modal-content auth-modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>Welcome Back</h2>
-            <p class="modal-subtitle">Sign in to your Lebanon Locals account</p>
-
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" placeholder="your.email@example.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" placeholder="Enter your password" required>
-                </div>
-
-                <button type="submit" class="btn-primary btn-block">Sign In</button>
-            </form>
-
-            <p class="auth-switch">
-                Don't have an account? <a href="#" id="show-signup">Sign Up</a>
-            </p>
-        </div>
-    </div>
-
-    <!-- Signup Modal -->
-    <div id="signup-modal" class="modal">
-        <div class="modal-content auth-modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>Join Lebanon Locals</h2>
-            <p class="modal-subtitle">Create your account to start booking</p>
-
-            <form id="signup-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="signup-first-name">First Name</label>
-                        <input type="text" id="signup-first-name" placeholder="John" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="signup-last-name">Last Name</label>
-                        <input type="text" id="signup-last-name" placeholder="Doe" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="signup-email">Email</label>
-                    <input type="email" id="signup-email" placeholder="your.email@example.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="signup-phone">Phone Number</label>
-                    <input type="tel" id="signup-phone" placeholder="+961 XX XXX XXX">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="signup-dob">Date of Birth</label>
-                        <input type="date" id="signup-dob" required max="2010-01-01">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="signup-gender">Gender</label>
-                        <select id="signup-gender" required style="width: 100%; padding: 12px; border: 1px solid #d0d0d0; border-radius: 8px; font-size: 16px;">
-                            <option value="">Select gender</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                            <option value="prefer_not_to_say">Prefer not to say</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" placeholder="Minimum 8 characters" required minlength="8">
-                </div>
-
-                <div class="form-group">
-                    <label for="signup-confirm-password">Confirm Password</label>
-                    <input type="password" id="signup-confirm-password" placeholder="Re-enter password" required>
-                </div>
-
-                <button type="submit" class="btn-primary btn-block">Create Account</button>
-            </form>
-
-            <p class="auth-switch">
-                Already have an account? <a href="#" id="show-login">Sign In</a>
-            </p>
-        </div>
-    </div>
-
-    <!-- User Menu Modal -->
-    <div id="user-menu-modal" class="modal">
-        <div class="modal-content user-menu-content">
-            <span class="modal-close">&times;</span>
-
-            <!-- User Menu Tabs -->
-            <div class="user-menu-tabs">
-                <button class="tab-btn active" data-tab="upcoming">
-                    Upcoming Bookings <span id="upcoming-count" class="tab-count">0</span>
-                </button>
-                <button class="tab-btn" data-tab="previous">
-                    Previous Bookings <span id="previous-count" class="tab-count">0</span>
-                </button>
-            </div>
-
-            <!-- Tab Contents -->
-            <div class="tab-content active" id="tab-upcoming">
-                <div id="upcoming-bookings-list" class="bookings-list">
-                    <!-- Bookings will be loaded here -->
-                </div>
-            </div>
-
-            <div class="tab-content" id="tab-previous">
-                <div id="previous-bookings-list" class="bookings-list">
-                    <!-- Previous bookings will be loaded here -->
-                </div>
-            </div>
-
-            <!-- User Profile Footer -->
-            <div class="user-menu-footer">
-                <div class="user-profile-info" id="user-profile-link" style="cursor: pointer;" title="View my profile">
-                    <div class="user-avatar" id="user-menu-avatar"></div>
-                    <span id="user-menu-name">User Name</span>
-                </div>
-                <button id="logout-btn" class="btn-logout">
-                    <i class="fa fa-sign-out"></i> Logout
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Logout Confirmation Modal -->
-    <div id="logout-confirm-modal" class="modal">
-        <div class="modal-content confirm-modal-content">
-            <h3>Confirm Logout</h3>
-            <p>Are you sure you want to log out?</p>
-            <div class="confirm-modal-actions">
-                <button id="cancel-logout-btn" class="btn-secondary">Cancel</button>
-                <button id="confirm-logout-btn" class="btn-danger">Log Out</button>
-            </div>
-        </div>
-    </div>
+    <!-- Auth modals are loaded via includes/auth-modals.html in the header script above -->
 
     <!-- ==================== JAVASCRIPT ==================== -->
-
-    <!-- External Libraries - Load in order without defer -->
+    <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="js/jquery-3.5.0.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
-    <!-- Application Scripts - Load after dependencies -->
+    <!-- Application Scripts -->
     <script src="assets/js/config.js"></script>
     <script src="assets/js/api.js"></script>
     <script src="assets/js/wishlist.js"></script>
-    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/notifications.js"></script>
     <script src="assets/js/main.js"></script>
+    
+    <script>
+        // Handle search button click
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBtn = document.getElementById('home-search-btn');
+            const searchForm = document.querySelector('.search-bar-container');
+            
+            if (searchBtn) {
+                searchBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    handleSearch();
+                });
+            }
+            
+            // Handle Enter key in search inputs
+            const searchInputs = document.querySelectorAll('.search-bar-container input');
+            searchInputs.forEach(input => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleSearch();
+                    }
+                });
+            });
+            
+            function handleSearch() {
+                const location = document.getElementById('input-location')?.value.trim() || '';
+                const startDate = document.getElementById('input-date-start')?.value || '';
+                const endDate = document.getElementById('input-date-end')?.value || '';
+                const guests = document.getElementById('input-guests')?.value || '';
+                
+                const params = new URLSearchParams();
+                params.set('type', 'experience'); // Default to experiences
+                
+                if (location) params.set('location', location);
+                if (startDate) params.set('start_date', startDate);
+                if (endDate) params.set('end_date', endDate);
+                if (guests) params.set('guests', guests);
+                
+                window.location.href = `collections.html?${params.toString()}`;
+            }
+        });
+    </script>
 </body>
 </html>

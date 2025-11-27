@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Resource Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://lebanon-locals-media.s3.me-south-1.amazonaws.com">
+
+    <link rel="preload" href="assets/css/variables.css" as="style">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="assets/js/load-header-standard.js" as="script">
+    <title>Edit Profile - Lebanon Locals</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/wishlist.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <style>
+        body {
+            background: #f7f7f7;
+            padding-top: 80px;
+        }
+
+        .edit-profile-container {
+            max-width: 900px;
+            margin: 40px auto 60px;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .profile-header h1 {
+            font-size: 32px;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .profile-header p {
+            color: #717171;
+            font-size: 16px;
+        }
+
+        .avatar-upload-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #EBEBEB;
+        }
+
+        .current-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #f7f7f7;
+            margin-bottom: 16px;
+        }
+
+        .upload-avatar-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #009639;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .upload-avatar-btn:hover {
+            background: #007a2e;
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .form-section h2 {
+            font-size: 22px;
+            color: #222;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #EBEBEB;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #DDDDDD;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .char-counter {
+            display: block;
+            margin-top: 4px;
+            font-size: 13px;
+            color: #717171;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid #EBEBEB;
+        }
+
+        .btn-cancel, .btn-save {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel {
+            background: white;
+            border: 1px solid #DDDDDD;
+            color: #222;
+        }
+
+        .btn-cancel:hover {
+            background: #f7f7f7;
+        }
+
+        .btn-save {
+            background: #009639;
+            border: none;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #007a2e;
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        .alert.error {
+            background: #fee;
+            color: #c00;
+            border: 1px solid #fcc;
+        }
+
+        .alert.success {
+            background: #efe;
+            color: #070;
+            border: 1px solid #cfc;
+        }
+    </style>
+</head>
+<body class="edit-profile-page">
+    <div id="header-placeholder"></div>
+
+    <div class="edit-profile-container">
+        <div class="profile-header">
+            <h1>Edit Profile</h1>
+            <p>Update your personal information</p>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <!-- Avatar Upload Section -->
+        <div class="avatar-upload-section">
+            <img id="current-avatar" src="images/logos/logo.jpg" alt="Profile" class="current-avatar" onerror="this.src='images/logos/logo.jpg'">
+            <div>
+                <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
+                <button class="upload-avatar-btn" onclick="document.getElementById('avatar-upload').click()">
+                    <i class="fa fa-camera"></i> Change Profile Picture
+                </button>
+            </div>
+        </div>
+
+        <form id="edit-profile-form">
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h2>Basic Information</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" id="first_name" name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="last_name" name="last_name" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select id="gender" name="gender">
+                            <option value="">Select gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nationality</label>
+                        <input type="text" id="nationality" name="nationality">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Languages Spoken</label>
+                    <input type="text" id="languages_spoken" name="languages_spoken" placeholder="e.g., English, Arabic, French">
+                </div>
+
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea id="bio" name="bio" maxlength="1000"></textarea>
+                    <span class="char-counter" id="bio-counter">0 / 1000 characters</span>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="form-section">
+                <h2>Contact Information</h2>
+                
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="phone_number" name="phone_number">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Emergency Contact Name</label>
+                        <input type="text" id="emergency_contact_name" name="emergency_contact_name">
+                    </div>
+                    <div class="form-group">
+                        <label>Emergency Contact Phone</label>
+                        <input type="tel" id="emergency_contact_phone" name="emergency_contact_phone">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address -->
+            <div class="form-section">
+                <h2>Address</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Country</label>
+                        <input type="text" id="country" name="country">
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="city" name="city">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Street</label>
+                    <input type="text" id="street" name="street">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Building</label>
+                        <input type="text" id="building" name="building">
+                    </div>
+                    <div class="form-group">
+                        <label>Floor</label>
+                        <input type="text" id="floor" name="floor">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" onclick="window.location.href='my-host.html'">Cancel</button>
+                <button type="submit" class="btn-save">Save Changes</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/load-modals.js"></script>
+    <script src="assets/js/header.js"></script>
+    <script src="assets/js/load-header-standard.js"></script>
+    <script src="assets/js/wishlist.js"></script>
+    <script>
+
+        // Check authentication
+        let accessGranted = false;
+        
+        function checkHostAccess(isFinalCheck = false) {
+            if (accessGranted) return;
+            
+            if (window.Auth && window.Auth.isAuthenticated()) {
+                const currentUser = window.Auth.getCurrentUser();
+                
+                if (currentUser && currentUser.user_type === 'host') {
+                    accessGranted = true;
+                    loadProfileData();
+                    return;
+                } else if (currentUser) {
+                    alert('This page is only accessible to hosts');
+                    window.location.href = 'user-profile.html';
+                }
+            } else {
+                if (isFinalCheck) {
+                    alert('Please sign in to access this page');
+                    window.location.href = 'index.html';
+                }
+            }
+        }
+
+        setTimeout(() => checkHostAccess(false), 100);
+        setTimeout(() => checkHostAccess(false), 500);
+        setTimeout(() => checkHostAccess(true), 2000);
+        
+        document.addEventListener('authStateChanged', () => checkHostAccess(false));
+
+        let currentUserData = null;
+        let currentAddressId = null;
+
+        // Load profile data
+        async function loadProfileData() {
+            try {
+                const currentUser = window.Auth.getCurrentUser();
+                const response = await fetch(`backend/api/get-user.php?user_id=${currentUser.id}`);
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    currentUserData = data.data;
+                    prefillForm(currentUserData);
+                    
+                    // Load address if exists
+                    if (currentUserData.address_id) {
+                        currentAddressId = currentUserData.address_id;
+                        loadAddress(currentAddressId);
+                    }
+                } else {
+                    showAlert('Failed to load profile data', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('An error occurred while loading profile data', 'error');
+            }
+        }
+
+        async function loadAddress(addressId) {
+            try {
+                const response = await fetch(`backend/api/get-address.php?address_id=${addressId}`);
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    document.getElementById('country').value = data.data.country || '';
+                    document.getElementById('city').value = data.data.city || '';
+                    document.getElementById('street').value = data.data.street || '';
+                    document.getElementById('building').value = data.data.building || '';
+                    document.getElementById('floor').value = data.data.floor || '';
+                }
+            } catch (error) {
+                console.error('Error loading address:', error);
+            }
+        }
+
+        function prefillForm(user) {
+            // Basic info
+            document.getElementById('first_name').value = user.first_name || '';
+            document.getElementById('last_name').value = user.last_name || '';
+            document.getElementById('gender').value = user.gender || '';
+            document.getElementById('nationality').value = user.nationality || '';
+            document.getElementById('phone_number').value = user.phone_number || '';
+            document.getElementById('languages_spoken').value = user.languages_spoken || '';
+            document.getElementById('bio').value = user.bio || '';
+            
+            // Emergency contact
+            document.getElementById('emergency_contact_name').value = user.emergency_contact_name || '';
+            document.getElementById('emergency_contact_phone').value = user.emergency_contact_phone || '';
+
+            // Avatar
+            if (user.profile_picture) {
+                document.getElementById('current-avatar').src = user.profile_picture;
+            }
+
+            // Trigger bio counter
+            document.getElementById('bio').dispatchEvent(new Event('input'));
+        }
+
+        // Bio character counter
+        const bioInput = document.getElementById('bio');
+        const bioCounter = document.getElementById('bio-counter');
+
+        bioInput.addEventListener('input', function() {
+            bioCounter.textContent = `${this.value.length} / 1000 characters`;
+        });
+
+        // Handle avatar upload
+        const avatarUpload = document.getElementById('avatar-upload');
+        const currentAvatar = document.getElementById('current-avatar');
+
+        avatarUpload.addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentAvatar.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            // Upload immediately
+            try {
+                const formData = new FormData();
+                formData.append('profile_picture', file);
+                formData.append('user_id', window.Auth.getCurrentUser().id);
+
+                const response = await fetch('backend/api/upload-profile-picture.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Profile picture updated successfully!', 'success');
+                    // Update localStorage
+                    const currentUser = window.Auth.getCurrentUser();
+                    currentUser.profile_picture = data.file_path;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                } else {
+                    showAlert(data.message || 'Failed to upload picture', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('An error occurred while uploading', 'error');
+            }
+        });
+
+        // Form submission
+        const form = document.getElementById('edit-profile-form');
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = e.target.querySelector('.btn-save');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+
+            try {
+                const currentUser = window.Auth.getCurrentUser();
+
+                // Prepare profile update data
+                const profileData = {
+                    user_id: currentUser.id,
+                    first_name: document.getElementById('first_name').value,
+                    last_name: document.getElementById('last_name').value,
+                    gender: document.getElementById('gender').value,
+                    nationality: document.getElementById('nationality').value,
+                    phone_number: document.getElementById('phone_number').value,
+                    languages_spoken: document.getElementById('languages_spoken').value,
+                    bio: document.getElementById('bio').value,
+                    emergency_contact_name: document.getElementById('emergency_contact_name').value,
+                    emergency_contact_phone: document.getElementById('emergency_contact_phone').value
+                };
+
+                // Update profile
+                const profileResponse = await fetch('backend/api/update-profile.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(profileData)
+                });
+
+                const profileResult = await profileResponse.json();
+
+                if (!profileResult.success) {
+                    throw new Error(profileResult.message || 'Failed to update profile');
+                }
+
+                // Update address
+                const addressData = {
+                    user_id: currentUser.id,
+                    address_id: currentAddressId,
+                    country: document.getElementById('country').value,
+                    city: document.getElementById('city').value,
+                    street: document.getElementById('street').value,
+                    building: document.getElementById('building').value,
+                    floor: document.getElementById('floor').value
+                };
+
+                const addressResponse = await fetch('backend/api/update-address.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(addressData)
+                });
+
+                const addressResult = await addressResponse.json();
+
+                if (addressResult.success && addressResult.address_id) {
+                    currentAddressId = addressResult.address_id;
+                }
+
+                // Update localStorage
+                currentUser.first_name = profileData.first_name;
+                currentUser.last_name = profileData.last_name;
+                currentUser.bio = profileData.bio;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+                showAlert('Profile updated successfully! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'my-host.html';
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert(error.message || 'An error occurred while updating profile', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Save Changes';
+            }
+        });
+
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert ${type}`;
+            alertDiv.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+

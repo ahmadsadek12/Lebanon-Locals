@@ -7,7 +7,7 @@
 (function() {
     'use strict';
 
-    const BASE_URL = '/backend/api';
+    const BASE_URL = 'backend/api';
 
     // ==================== HEADER SCROLL BEHAVIOR ====================
     function initHeaderScroll() {
@@ -129,6 +129,10 @@
 
     // Fetch data with fallback to other types
     async function fetchDetails(id, type) {
+        if (!id) {
+            throw new Error('No item ID specified in URL parameters');
+        }
+
         const endpoints = [
             { type: type || 'experience', url: getApiEndpoint(type, id) }
         ];
@@ -141,9 +145,23 @@
             );
         }
 
+        const errors = [];
         for (const endpoint of endpoints) {
             try {
                 const response = await fetch(endpoint.url);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorData;
+                    try {
+                        errorData = JSON.parse(errorText);
+                    } catch (e) {
+                        errorData = { message: errorText };
+                    }
+                    errors.push(`${endpoint.type}: ${response.status} - ${errorData.message || errorData.error || 'Unknown error'}`);
+                    continue;
+                }
+                
                 const data = await response.json();
 
                 if (data.success && data.data) {
@@ -151,13 +169,19 @@
                         ...data.data,
                         _type: endpoint.type
                     };
+                } else {
+                    errors.push(`${endpoint.type}: ${data.message || 'No data returned'}`);
                 }
             } catch (error) {
                 console.error(`Failed to fetch from ${endpoint.url}:`, error);
+                errors.push(`${endpoint.type}: ${error.message}`);
             }
         }
 
-        throw new Error('Item not found');
+        const errorMsg = errors.length > 0 
+            ? `Item not found. Tried: ${errors.join('; ')}`
+            : 'Item not found';
+        throw new Error(errorMsg);
     }
 
     // Render rating stars with decimal support
@@ -704,7 +728,7 @@
             const bedDetails = [];
             if (data.number_double_beds > 0) bedDetails.push(`${data.number_double_beds} double`);
             if (data.number_single_beds > 0) bedDetails.push(`${data.number_single_beds} single`);
-            if (data.number_bunk_beds > 0) bedDetails.push(`${data.number_bunk_beds} bunk`);
+            if (data.number_sofa_beds > 0) bedDetails.push(`${data.number_sofa_beds} sofa`);
             
             const bedText = bedDetails.length > 0 
                 ? `${data.number_of_beds} bed${data.number_of_beds > 1 ? 's' : ''} (${bedDetails.join(', ')})`
@@ -814,10 +838,22 @@
         section.style.display = 'block';
         grid.innerHTML = data.amenities.map(amenity => `
             <div class="amenity-item">
-                <i class="fa fa-${amenity.icon || 'check'}"></i>
+                ${renderAmenityIcon(amenity)}
                 <span>${amenity.name}</span>
             </div>
         `).join('');
+    }
+
+    function renderAmenityIcon(amenity) {
+        const iconValue = amenity.icon_url || amenity.icon;
+        if (iconValue) {
+            const isUrl = /^https?:\/\//i.test(iconValue);
+            if (isUrl) {
+                return `<img src="${iconValue}" alt="${amenity.name} icon" loading="lazy">`;
+            }
+            return `<i class="${iconValue}"></i>`;
+        }
+        return '<i class="fa fa-check"></i>';
     }
 
     // Render house rules
@@ -980,6 +1016,17 @@
         if (data._type === 'stay') {
             const hasDates = stayDatePickerState.selectedCheckin && stayDatePickerState.selectedCheckout;
             reserveBtn.disabled = !hasDates;
+        } else if (data._type === 'experience' || data._type === 'event') {
+            // Check available capacity for events and experiences
+            if (data.available_capacity !== undefined) {
+                const availableCapacity = parseInt(data.available_capacity);
+                if (availableCapacity <= 0) {
+                    reserveBtn.disabled = true;
+                    reserveBtn.style.opacity = '0.5';
+                    reserveBtn.style.cursor = 'not-allowed';
+                    reserveBtn.textContent = 'Fully Booked';
+                }
+            }
         }
     }
 
@@ -1040,17 +1087,23 @@
 
         // Calculate spots left warning for events and experiences
         let spotsLeftWarning = '';
+        let isFullyBooked = false;
         if ((data._type === 'experience' || data._type === 'event') && data.available_capacity !== undefined && data.max_guests) {
             const spotsLeft = parseInt(data.available_capacity);
             const maxGuests = parseInt(data.max_guests);
 
-            // Show warning if:
-            // - max_guests > 100 and spots_left <= 20, OR
-            // - max_guests <= 100 and spots_left <= 5
-            const shouldShowWarning = (maxGuests > 100 && spotsLeft <= 20) || (maxGuests <= 100 && spotsLeft <= 5);
+            if (spotsLeft <= 0) {
+                isFullyBooked = true;
+                spotsLeftWarning = `<div class="spots-left-warning" style="color: #dc2626; font-weight: 600;">Fully booked</div>`;
+            } else {
+                // Show warning if:
+                // - max_guests > 100 and spots_left <= 20, OR
+                // - max_guests <= 100 and spots_left <= 5
+                const shouldShowWarning = (maxGuests > 100 && spotsLeft <= 20) || (maxGuests <= 100 && spotsLeft <= 5);
 
-            if (shouldShowWarning && spotsLeft > 0) {
-                spotsLeftWarning = `<div class="spots-left-warning">Only ${spotsLeft} spot${spotsLeft > 1 ? 's' : ''} left!</div>`;
+                if (shouldShowWarning && spotsLeft > 0) {
+                    spotsLeftWarning = `<div class="spots-left-warning">Only ${spotsLeft} spot${spotsLeft > 1 ? 's' : ''} left!</div>`;
+                }
             }
         }
 
@@ -1092,8 +1145,8 @@
                 </div>
             ` : ''}
             ${spotsLeftWarning}
-            <button class="booking-btn" id="reserve-btn" ${data._type === 'stay' ? 'disabled' : ''}>
-                Reserve
+            <button class="booking-btn" id="reserve-btn" ${data._type === 'stay' ? 'disabled' : ''} ${isFullyBooked ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                ${isFullyBooked ? 'Fully Booked' : 'Reserve'}
             </button>
             <p class="booking-note">You won't be charged yet</p>
         `;
@@ -1712,16 +1765,21 @@
         const params = getUrlParams();
 
         if (!params.id) {
-            showError('No item ID specified.');
+            console.error('[DETAILS] No ID in URL parameters. URL:', window.location.href);
+            showError('No item ID specified in URL. Please access this page with ?id=XXX&type=experience|event|stay');
             return;
         }
 
+        console.log('[DETAILS] Loading details for ID:', params.id, 'Type:', params.type || 'auto-detect');
+
         try {
             const data = await fetchDetails(params.id, params.type);
+            console.log('[DETAILS] Successfully loaded:', data);
             renderDetails(data);
         } catch (error) {
-            console.error('Error loading details:', error);
-            showError('Unable to load item details. The item may not exist or there was a server error.');
+            console.error('[DETAILS] Error loading details:', error);
+            console.error('[DETAILS] Error message:', error.message);
+            showError(`Unable to load item details: ${error.message || 'The item may not exist or there was a server error.'}`);
         }
     }
 
