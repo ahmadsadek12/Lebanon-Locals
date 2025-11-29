@@ -3,15 +3,10 @@
  * Admin Update Stay API
  */
 
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+require_once __DIR__ . '/../../config/cors.php';
+setCorsHeaders();
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
+header('Content-Type: application/json');
 
 $headers = getallheaders();
 $authHeader = isset($headers['Authorization']) ? $headers['Authorization'] : null;
@@ -53,11 +48,40 @@ try {
         exit();
     }
 
-    $updateStmt = $db->prepare("UPDATE stays SET is_active = :is_active WHERE id = :id");
-    $updateStmt->execute([
-        'id' => $input['id'],
-        'is_active' => $input['is_active']
-    ]);
+    // Build dynamic UPDATE query based on provided fields
+    $allowedFields = [
+        'title', 'description', 'location', 'price_per_night', 'main_image',
+        'max_guests', 'number_of_bedrooms', 'number_of_beds', 
+        'number_double_beds', 'number_single_beds', 'number_bunk_beds',
+        'number_of_bathrooms', 'property_type', 'cancellation_policy',
+        'house_rules', 'instant_book', 'check_in_time', 'check_out_time',
+        'cash_enabled', 'is_active', 'service_fee_percentage',
+        'min_nights', 'max_nights'
+    ];
+    
+    $updateFields = [];
+    $updateParams = ['id' => $input['id']];
+    
+    foreach ($allowedFields as $field) {
+        if (isset($input[$field])) {
+            // Allow empty strings to clear fields (except required ones)
+            $updateFields[] = "$field = :$field";
+            $updateParams[$field] = $input[$field] === '' ? null : $input[$field];
+        }
+    }
+    
+    if (empty($updateFields)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'No valid fields to update']);
+        exit();
+    }
+    
+    // Always update updated_at timestamp
+    $updateFields[] = "updated_at = NOW()";
+    
+    $updateQuery = "UPDATE stays SET " . implode(', ', $updateFields) . " WHERE id = :id";
+    $updateStmt = $db->prepare($updateQuery);
+    $updateStmt->execute($updateParams);
 
     echo json_encode(['success' => true, 'message' => 'Stay updated successfully']);
 

@@ -3,10 +3,10 @@
  * User Login API
  */
 
-header('Access-Control-Allow-Origin: *');
+require_once __DIR__ . '/../config/cors.php';
+setCorsHeaders();
+
 header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -44,10 +44,15 @@ if (!$email) {
 // Database connection
 include_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/jwt-helper.php';
+require_once __DIR__ . '/../config/rate-limiter.php';
 
 try {
     $database = new Database();
     $db = $database->getConnection();
+    
+    // Rate limiting: 5 attempts per 15 minutes per IP
+    $rateLimiter = new RateLimiter($db, 5, 900);
+    $rateLimiter->checkLimit(null, 'login');
 
     // Get user by email
     $query = "SELECT id, email, password_hash, first_name, last_name, phone_number, profile_picture, user_type, is_active

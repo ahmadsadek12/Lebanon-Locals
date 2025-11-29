@@ -43,7 +43,8 @@ function displayBookings(bookings) {
                     <th>Type</th>
                     <th>Dates</th>
                     <th>Guests</th>
-                    <th>Amount</th>
+                    <th>Total</th>
+                    <th>Service Fee</th>
                     <th>Status</th>
                     <th>Payment</th>
                     <th>Actions</th>
@@ -58,7 +59,8 @@ function displayBookings(bookings) {
                         <td><span class="badge badge-info">${booking.listing_type}</span></td>
                         <td>${formatDate(booking.start_date)} - ${formatDate(booking.end_date)}</td>
                         <td>${booking.number_of_guests || booking.guests || 1}</td>
-                        <td>$${parseFloat(booking.total_price).toFixed(2)}</td>
+                        <td>$${parseFloat(booking.total_price || 0).toFixed(2)}</td>
+                        <td>$${parseFloat(booking.service_fee || 0).toFixed(2)}</td>
                         <td><span class="badge badge-${getStatusClass(booking.booking_status || booking.status)}">${booking.booking_status || booking.status}</span></td>
                         <td><span class="badge badge-${getPaymentClass(booking.payment_status)}">${booking.payment_status || 'N/A'}</span></td>
                         <td>

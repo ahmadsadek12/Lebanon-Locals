@@ -3,7 +3,8 @@
  * Admin Update User API
  */
 
-header('Access-Control-Allow-Origin: *');
+require_once __DIR__ . '/../../config/cors.php';
+setCorsHeaders();
 header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
@@ -54,25 +55,38 @@ try {
         exit();
     }
 
-    // Update user
-    $updateStmt = $db->prepare("
-        UPDATE users 
-        SET first_name = :first_name,
-            last_name = :last_name,
-            email = :email,
-            user_type = :user_type,
-            is_verified = :is_verified
-        WHERE id = :id
-    ");
-
-    $updateStmt->execute([
-        'id' => $input['id'],
-        'first_name' => $input['first_name'],
-        'last_name' => $input['last_name'],
-        'email' => $input['email'],
-        'user_type' => $input['user_type'],
-        'is_verified' => $input['is_verified']
-    ]);
+    // Build dynamic UPDATE query based on provided fields
+    $allowedFields = [
+        'first_name', 'last_name', 'email', 'user_type', 'is_verified', 'is_active',
+        'gender', 'date_of_birth', 'age', 'nationality', 'phone_number',
+        'emergency_contact_name', 'emergency_contact_phone', 'credits',
+        'user_ranking', 'total_reviews', 'years_hosting', 'bio', 'languages_spoken',
+        'address_id', 'profile_picture', 'id_passport_picture'
+    ];
+    
+    $updateFields = [];
+    $updateParams = ['id' => $input['id']];
+    
+    foreach ($allowedFields as $field) {
+        if (isset($input[$field])) {
+            // Allow empty strings to clear fields
+            $updateFields[] = "$field = :$field";
+            $updateParams[$field] = $input[$field] === '' ? null : $input[$field];
+        }
+    }
+    
+    if (empty($updateFields)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'No valid fields to update']);
+        exit();
+    }
+    
+    // Always update updated_at timestamp
+    $updateFields[] = "updated_at = NOW()";
+    
+    $updateQuery = "UPDATE users SET " . implode(', ', $updateFields) . " WHERE id = :id";
+    $updateStmt = $db->prepare($updateQuery);
+    $updateStmt->execute($updateParams);
 
     echo json_encode([
         'success' => true,

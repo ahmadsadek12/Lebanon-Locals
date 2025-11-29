@@ -3,15 +3,10 @@
  * Admin Verifications API - Get Pending Verifications
  */
 
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: GET');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+require_once __DIR__ . '/../../config/cors.php';
+setCorsHeaders();
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
+header('Content-Type: application/json');
 
 $headers = getallheaders();
 $authHeader = isset($headers['Authorization']) ? $headers['Authorization'] : null;
@@ -46,8 +41,8 @@ try {
         exit();
     }
 
-    // Get users awaiting verification
-    $stmt = $db->query("SELECT id, first_name, last_name, email, user_type, created_at FROM users WHERE is_verified = 0 ORDER BY created_at DESC");
+    // Get users awaiting verification (only those who applied to become hosts with user_type = 'pending')
+    $stmt = $db->query("SELECT id, first_name, last_name, email, user_type, created_at FROM users WHERE user_type = 'pending' ORDER BY created_at DESC");
     $verifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([

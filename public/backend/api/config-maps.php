@@ -4,7 +4,9 @@
  * Returns the Google Maps API key
  */
 
-header("Access-Control-Allow-Origin: *");
+require_once __DIR__ . '/../config/cors.php';
+setCorsHeaders();
+
 header("Content-Type: application/json; charset=UTF-8");
 
 // For now, hardcode the key (replace with your actual key)

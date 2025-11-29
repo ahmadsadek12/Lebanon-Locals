@@ -391,8 +391,12 @@
                 <div class="stat-card-value" id="upcoming-bookings">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-card-label">Completed</div>
-                <div class="stat-card-value" id="completed-bookings">0</div>
+                <div class="stat-card-label">Confirmed</div>
+                <div class="stat-card-value" id="confirmed-bookings">0</div>
+            </div>
+            <div class="stat-card" id="guests-count-card" style="display: none;">
+                <div class="stat-card-label">Number of Guests</div>
+                <div class="stat-card-value" id="number-of-guests">0/0</div>
             </div>
         </div>
 
@@ -446,13 +450,13 @@
                 </div>
             </div>
 
-            <!-- Recent Bookings -->
+            <!-- Active Bookings -->
             <div class="bookings-section">
-                <h2 class="section-title">Recent Bookings</h2>
+                <h2 class="section-title">Active Bookings</h2>
                 <div id="bookings-list">
                     <div class="empty-state">
                         <i class="fa fa-calendar-o"></i>
-                        <p>No bookings yet</p>
+                        <p>No pending bookings</p>
                     </div>
                 </div>
             </div>
@@ -538,6 +542,16 @@
         document.addEventListener('authStateChanged', () => checkHostAccess(false));
 
         async function loadData() {
+            // Hide guests card for stays
+            const guestsCard = document.getElementById('guests-count-card');
+            if (guestsCard) {
+                if (listingType === 'stay') {
+                    guestsCard.style.display = 'none';
+                } else {
+                    guestsCard.style.display = 'block';
+                }
+            }
+            
             await Promise.all([
                 loadListingInfo(),
                 loadBookings()
@@ -567,10 +581,13 @@
             }
         }
 
+        let maxGuests = 0; // Store max guests globally
+
         function displayListingInfo(listing) {
             document.getElementById('listing-title').textContent = listing.title;
             document.getElementById('listing-location').textContent = listing.location || '-';
-            document.getElementById('listing-guests').textContent = listing.max_guests || '-';
+            maxGuests = parseInt(listing.max_guests) || 0;
+            document.getElementById('listing-guests').textContent = maxGuests || '-';
 
             if (listingType === 'stay') {
                 document.getElementById('listing-price').textContent = `$${parseFloat(listing.price_per_night).toFixed(2)} per night`;
@@ -605,13 +622,27 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fa fa-calendar-o"></i>
-                        <p>No bookings yet</p>
+                        <p>No pending bookings</p>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = bookings.map(booking => {
+            // Filter to only show pending bookings (active bookings that need action)
+            const pendingBookings = bookings.filter(booking => {
+                const status = booking.booking_status || booking.status || 'pending';
+                return status === 'pending';
+            });
+
+            if (pendingBookings.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa fa-calendar-o"></i>
+                        <p>No pending bookings</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = pendingBookings.map(booking => {
                 const bookingDate = new Date(booking.created_at).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
@@ -662,16 +693,42 @@
                         ` : ''}
                     </div>
                 `;
-            }).join('');
+                }).join('');
+            }
 
-            // Update stats
+            // Update stats (using all bookings, not just pending)
             const totalBookings = bookings.length;
             const upcomingBookings = bookings.filter(b => new Date(b.start_date) > new Date()).length;
-            const completedBookings = bookings.filter(b => b.status === 'completed' || b.status === 'confirmed').length;
+            // Only count confirmed bookings (accepted bookings)
+            const confirmedBookings = bookings.filter(b => {
+                const status = b.booking_status || b.status;
+                return status === 'confirmed' || status === 'accepted';
+            }).length;
+
+            // Calculate total number of guests from upcoming/active bookings
+            const totalGuests = bookings
+                .filter(b => {
+                    const status = b.booking_status || b.status;
+                    // Include pending and confirmed bookings (not rejected/cancelled)
+                    return status !== 'rejected' && status !== 'cancelled';
+                })
+                .reduce((sum, booking) => {
+                    return sum + (parseInt(booking.number_of_guests) || 0);
+                }, 0);
 
             document.getElementById('total-bookings').textContent = totalBookings;
             document.getElementById('upcoming-bookings').textContent = upcomingBookings;
-            document.getElementById('completed-bookings').textContent = completedBookings;
+            document.getElementById('confirmed-bookings').textContent = confirmedBookings;
+            
+            // Only update guests count if not a stay
+            if (listingType !== 'stay') {
+                const guestsCard = document.getElementById('guests-count-card');
+                const guestsValue = document.getElementById('number-of-guests');
+                if (guestsCard && guestsValue) {
+                    guestsCard.style.display = 'block';
+                    guestsValue.textContent = `${totalGuests}/${maxGuests}`;
+                }
+            }
         }
 
         // Accept booking
@@ -744,7 +801,27 @@
             const tbody = document.getElementById('accounting-tbody');
             let totalEarnings = 0;
 
-            const rows = bookings.map(booking => {
+            // Filter out rejected bookings - only include confirmed/accepted bookings
+            const validBookings = bookings.filter(booking => {
+                const status = booking.booking_status || booking.status;
+                return status !== 'rejected' && status !== 'cancelled';
+            });
+
+            if (validBookings.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <i class="fa fa-table"></i>
+                            <p>No transactions yet</p>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('total-revenue').textContent = '$0.00';
+                document.getElementById('total-earnings').textContent = '$0.00';
+                return;
+            }
+
+            const rows = validBookings.map(booking => {
                 const basePrice = parseFloat(booking.total_price || 0);
                 const serviceFee = parseFloat(booking.service_fee || 0);
                 const earnings = basePrice - serviceFee;
@@ -905,7 +982,11 @@
         // Update displayBookings to also store bookings for calendar
         const originalDisplayBookings = displayBookings;
         displayBookings = function(bookings) {
-            allBookings = bookings || [];
+            // Filter out cancelled bookings for calendar (they shouldn't take space)
+            allBookings = (bookings || []).filter(booking => {
+                const status = booking.booking_status || booking.status || 'pending';
+                return status !== 'cancelled';
+            });
             renderCalendar();
             originalDisplayBookings(bookings);
         };

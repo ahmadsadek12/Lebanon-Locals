@@ -157,6 +157,25 @@
             </div>
         </div>
         
+        <!-- Events Section -->
+        <section id="events" class="home-section">
+            <div class="section-header">
+                <h2 class="section-title">Events</h2>
+                <a href="collections.html?type=event" class="view-all-btn">
+                    Show more <i class="fa fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="horizontal-scroll-skeleton" id="events-skeleton" aria-hidden="true">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+            <div class="horizontal-scroll" id="events-list">
+                <!-- Event cards will render here -->
+            </div>
+        </section>
+        
         <!-- Experiences Section -->
         <section id="experiences" class="home-section">
             <div class="section-header">
@@ -194,25 +213,6 @@
                 <!-- Stay cards will render here -->
             </div>
         </section>
-        
-        <!-- Events Section -->
-        <section id="events" class="home-section">
-            <div class="section-header">
-                <h2 class="section-title">Events</h2>
-                <a href="collections.html?type=event" class="view-all-btn">
-                    Show more <i class="fa fa-arrow-right"></i>
-                </a>
-            </div>
-            <div class="horizontal-scroll-skeleton" id="events-skeleton" aria-hidden="true">
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-            </div>
-            <div class="horizontal-scroll" id="events-list">
-                <!-- Event cards will render here -->
-            </div>
-        </section>
     </main>
     
     <!-- Footer -->
@@ -223,29 +223,40 @@
     <!-- Auth modals are loaded via includes/auth-modals.html in the header script above -->
 
     <!-- ==================== JAVASCRIPT ==================== -->
-    <!-- External Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="js/jquery-3.5.0.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <!-- Conditional Loader (loads heavy libs only when needed) -->
+    <script src="assets/js/conditional-loader.js"></script>
+    
+    <!-- External Libraries (loaded conditionally by conditional-loader.js) -->
+    <!-- GSAP and jQuery are now loaded on-demand -->
 
     <!-- Application Scripts -->
     <script src="assets/js/config.js"></script>
-    <script src="assets/js/api.js"></script>
     <script src="assets/js/wishlist.js"></script>
+    <script src="assets/js/api.js"></script>
     <script src="assets/js/notifications.js"></script>
     <script src="assets/js/main.js"></script>
     
     <script>
+        // Unregister service worker to prevent caching issues
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                registrations.forEach(registration => registration.unregister());
+            });
+        }
+
         // Handle search button click
         document.addEventListener('DOMContentLoaded', function() {
+            
+            // Handle search button click
             const searchBtn = document.getElementById('home-search-btn');
             const searchForm = document.querySelector('.search-bar-container');
             
             if (searchBtn) {
                 searchBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    handleSearch();
+                    if (typeof handleSearch === 'function') {
+                        handleSearch();
+                    }
                 });
             }
             

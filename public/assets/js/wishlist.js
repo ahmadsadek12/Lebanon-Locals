@@ -14,11 +14,27 @@
     const DEVELOPMENT_MODE = false;  // Set to false for production (requires real login)
     const DEV_USER_ID = 1;  // Test user ID for development
 
+    // Wait for Auth to be ready
+    function waitForAuth(callback, maxWait = 3000) {
+        const startTime = Date.now();
+        const checkAuth = () => {
+            if (window.Auth && typeof window.Auth.isAuthenticated === 'function') {
+                console.log('[WISHLIST] Auth system ready');
+                callback();
+            } else if (Date.now() - startTime < maxWait) {
+                setTimeout(checkAuth, 100);
+            } else {
+                console.warn('[WISHLIST] Auth system not ready after timeout, proceeding anyway');
+                callback();
+            }
+        };
+        checkAuth();
+    }
+
     // Get current user ID from auth system
     function getCurrentUserId() {
         // DEVELOPMENT_MODE overrides - always use dev user for testing
         if (DEVELOPMENT_MODE) {
-
             return DEV_USER_ID;
         }
 
@@ -26,11 +42,9 @@
         if (window.Auth && typeof window.Auth.getCurrentUser === 'function') {
             const user = window.Auth.getCurrentUser();
             if (user && user.id) {
-
                 return user.id;
             }
         }
-
 
         return null;
     }
@@ -39,19 +53,16 @@
     function isUserAuthenticated() {
         // DEVELOPMENT_MODE overrides everything for testing
         if (DEVELOPMENT_MODE) {
-
             return true;
         }
 
         // Check real authentication
         if (window.Auth && typeof window.Auth.isAuthenticated === 'function') {
             const isAuth = window.Auth.isAuthenticated();
-
             return isAuth;
         }
 
         // No auth system available and not in dev mode
-
         return false;
     }
 
@@ -280,39 +291,53 @@
      * Initialize heart button
      */
     window.initHeartButton = async function(button, id, type) {
-        if (!button) return;
+        if (!button) {
+            console.warn('[WISHLIST] initHeartButton called with null button');
+            return;
+        }
+
+        console.log(`[WISHLIST] Initializing heart button for ${type} #${id}`);
+
+        // Remove any existing listeners to prevent duplicates
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
 
         // Set initial state (only if authenticated)
         if (isUserAuthenticated()) {
             const inWishlist = await isInWishlist(id, type);
-            updateHeartButtonState(button, inWishlist);
+            console.log(`[WISHLIST] Item ${type} #${id} is ${inWishlist ? 'IN' : 'NOT IN'} wishlist`);
+            updateHeartButtonState(newButton, inWishlist);
         } else {
+            console.log('[WISHLIST] User not authenticated, showing empty heart');
             // Show empty heart for non-authenticated users
-            updateHeartButtonState(button, false);
+            updateHeartButtonState(newButton, false);
         }
 
-        // Add click handler
-        button.onclick = async function(e) {
+        // Add click handler using addEventListener (more reliable than onclick)
+        newButton.addEventListener('click', async function(e) {
+            console.log('[WISHLIST] Heart button clicked!');
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
 
             // Check if user is authenticated
             if (!isUserAuthenticated()) {
-
+                console.log('[WISHLIST] User not authenticated, showing login modal');
                 showLoginModal();
                 return;
             }
 
+            console.log(`[WISHLIST] Toggling wishlist for ${type} #${id}`);
             const isNowInWishlist = await toggleWishlist(id, type);
-            updateHeartButtonState(button, isNowInWishlist);
+            updateHeartButtonState(newButton, isNowInWishlist);
 
             // Add animation
-            button.classList.add('animating');
-            setTimeout(() => button.classList.remove('animating'), 500);
+            newButton.classList.add('animating');
+            setTimeout(() => newButton.classList.remove('animating'), 500);
 
             // Show toast notification
             showToast(isNowInWishlist ? 'Added to wishlist' : 'Removed from wishlist');
-        };
+        }, { capture: true }); // Use capture phase to intercept before bubbling
     };
 
     /**
@@ -351,12 +376,18 @@
      * Initialize all heart buttons on page
      */
     window.initAllHeartButtons = function() {
-        document.querySelectorAll('.heart-btn').forEach(button => {
+        const buttons = document.querySelectorAll('.heart-btn');
+        console.log(`[WISHLIST] Found ${buttons.length} heart buttons to initialize`);
+
+        buttons.forEach(button => {
             const id = parseInt(button.dataset.id);
             const type = button.dataset.type;
 
             if (id && type) {
+                console.log(`[WISHLIST] Initializing button for ${type} #${id}`);
                 initHeartButton(button, id, type);
+            } else {
+                console.warn('[WISHLIST] Heart button missing data-id or data-type:', button);
             }
         });
     };
@@ -735,18 +766,25 @@
     }
 
     // ==================== INITIALIZATION ====================
-    // Update count on page load (with small delay to wait for auth)
-    setTimeout(() => {
+    // Update count on page load (wait for auth to be ready)
+    waitForAuth(() => {
         updateWishlistCount();
-    }, 300);
+    });
 
-    // Initialize heart buttons if they exist
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(initAllHeartButtons, 300);
+    // Initialize heart buttons if they exist (wait for DOM and Auth)
+    function initializeHeartButtons() {
+        waitForAuth(() => {
+            console.log('[WISHLIST] Initializing heart buttons after Auth ready');
+            if (typeof window.initAllHeartButtons === 'function') {
+                window.initAllHeartButtons();
+            }
         });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeHeartButtons);
     } else {
-        setTimeout(initAllHeartButtons, 300);
+        initializeHeartButtons();
     }
 
     // Listen for wishlist updates to refresh count
@@ -778,10 +816,12 @@
         toggleWishlist,
         getWishlistCount,
         updateWishlistCount,
-        createHeartButton,
-        initHeartButton,
-        initAllHeartButtons,
+        createHeartButton: window.createHeartButton,
+        initHeartButton: window.initHeartButton,
+        initAllHeartButtons: window.initAllHeartButtons,
         clearCache  // Export clear cache function
     };
+
+    console.log('[WISHLIST] WishlistManager initialized and exported to window');
 
 })();

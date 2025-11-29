@@ -120,6 +120,19 @@
         </div>
     </main>
 
+    <!-- User Details Modal -->
+    <div id="user-details-modal" class="modal">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2>User Details</h2>
+                <button class="modal-close" onclick="closeUserDetailsModal()">&times;</button>
+            </div>
+            <div id="user-details-content" style="padding: 24px;">
+                <div class="loading"><i class="fa fa-spinner fa-spin" style="font-size: 32px;"></i><p>Loading user details...</p></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Edit User Modal -->
     <div id="edit-user-modal" class="modal">
         <div class="modal-content">

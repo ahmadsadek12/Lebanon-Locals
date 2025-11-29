@@ -1428,6 +1428,56 @@
             }
             if (data.cancellation_policy) document.getElementById('exp_cancellation_policy').value = data.cancellation_policy;
 
+            // Display main image if exists
+            if (data.main_image) {
+                const previewImg = document.getElementById('exp_preview_img');
+                const imagePreview = document.getElementById('exp_image_preview');
+                if (previewImg && imagePreview) {
+                    previewImg.src = data.main_image;
+                    imagePreview.style.display = 'block';
+                }
+            }
+
+            // Display additional images if exist
+            if (Array.isArray(data.images) && data.images.length > 0) {
+                const additionalPreviewContainer = document.getElementById('exp_additional_preview');
+                if (additionalPreviewContainer) {
+                    // Store existing images count for tracking
+                    const additionalImages = data.images.filter(img => !img.is_primary);
+                    if (additionalImages.length > 0) {
+                        additionalImages.forEach((image, index) => {
+                            const imgWrapper = document.createElement('div');
+                            imgWrapper.style.position = 'relative';
+                            imgWrapper.style.marginBottom = '16px';
+                            imgWrapper.dataset.existingImage = 'true';
+                            
+                            const img = document.createElement('img');
+                            img.src = image.image_url || image.image;
+                            img.style.width = '100%';
+                            img.style.height = '150px';
+                            img.style.objectFit = 'cover';
+                            img.style.borderRadius = '8px';
+                            img.style.border = '2px solid #EBEBEB';
+                            img.alt = image.caption || `Image ${index + 1}`;
+                            
+                            // Add category label if exists
+                            if (image.caption) {
+                                const label = document.createElement('div');
+                                label.textContent = `Category: ${image.caption}`;
+                                label.style.fontSize = '12px';
+                                label.style.color = '#717171';
+                                label.style.marginTop = '4px';
+                                imgWrapper.appendChild(label);
+                            }
+                            
+                            imgWrapper.appendChild(img);
+                            additionalPreviewContainer.appendChild(imgWrapper);
+                        });
+                        additionalPreviewContainer.style.display = 'grid';
+                    }
+                }
+            }
+
             // Trigger character counters
             document.getElementById('exp_title').dispatchEvent(new Event('input'));
             document.getElementById('exp_description').dispatchEvent(new Event('input'));
@@ -1467,6 +1517,56 @@
                 if (difficultyRadio) difficultyRadio.checked = true;
             }
             if (data.cancellation_policy) document.getElementById('evt_cancellation_policy').value = data.cancellation_policy;
+
+            // Display main image if exists
+            if (data.main_image) {
+                const evtPreviewImg = document.getElementById('evt_preview_img');
+                const evtImagePreview = document.getElementById('evt_image_preview');
+                if (evtPreviewImg && evtImagePreview) {
+                    evtPreviewImg.src = data.main_image;
+                    evtImagePreview.style.display = 'block';
+                }
+            }
+
+            // Display additional images if exist
+            if (Array.isArray(data.images) && data.images.length > 0) {
+                const evtAdditionalPreviewContainer = document.getElementById('evt_additional_preview');
+                if (evtAdditionalPreviewContainer) {
+                    // Store existing images count for tracking
+                    const additionalImages = data.images.filter(img => !img.is_primary);
+                    if (additionalImages.length > 0) {
+                        additionalImages.forEach((image, index) => {
+                            const imgWrapper = document.createElement('div');
+                            imgWrapper.style.position = 'relative';
+                            imgWrapper.style.marginBottom = '16px';
+                            imgWrapper.dataset.existingImage = 'true';
+                            
+                            const img = document.createElement('img');
+                            img.src = image.image_url || image.image;
+                            img.style.width = '100%';
+                            img.style.height = '150px';
+                            img.style.objectFit = 'cover';
+                            img.style.borderRadius = '8px';
+                            img.style.border = '2px solid #EBEBEB';
+                            img.alt = image.caption || `Image ${index + 1}`;
+                            
+                            // Add category label if exists
+                            if (image.caption) {
+                                const label = document.createElement('div');
+                                label.textContent = `Category: ${image.caption}`;
+                                label.style.fontSize = '12px';
+                                label.style.color = '#717171';
+                                label.style.marginTop = '4px';
+                                imgWrapper.appendChild(label);
+                            }
+                            
+                            imgWrapper.appendChild(img);
+                            evtAdditionalPreviewContainer.appendChild(imgWrapper);
+                        });
+                        evtAdditionalPreviewContainer.style.display = 'grid';
+                    }
+                }
+            }
 
             // Trigger character counters
             document.getElementById('evt_title').dispatchEvent(new Event('input'));
@@ -1515,6 +1615,56 @@
                 });
                 if (stayAmenitiesData.length > 0) {
                     renderStayAmenitiesOptions(stayAmenitiesData);
+                }
+            }
+
+            // Display main image if exists
+            if (data.main_image) {
+                const stayPreviewImg = document.getElementById('stay_preview_img');
+                const stayImagePreview = document.getElementById('stay_image_preview');
+                if (stayPreviewImg && stayImagePreview) {
+                    stayPreviewImg.src = data.main_image;
+                    stayImagePreview.style.display = 'block';
+                }
+            }
+
+            // Display additional images if exist
+            if (Array.isArray(data.images) && data.images.length > 0) {
+                const stayAdditionalPreviewContainer = document.getElementById('stay_additional_preview');
+                if (stayAdditionalPreviewContainer) {
+                    // Store existing images count for tracking
+                    const additionalImages = data.images.filter(img => !img.is_primary);
+                    if (additionalImages.length > 0) {
+                        additionalImages.forEach((image, index) => {
+                            const imgWrapper = document.createElement('div');
+                            imgWrapper.style.position = 'relative';
+                            imgWrapper.style.marginBottom = '16px';
+                            imgWrapper.dataset.existingImage = 'true';
+                            
+                            const img = document.createElement('img');
+                            img.src = image.image_url || image.image;
+                            img.style.width = '100%';
+                            img.style.height = '150px';
+                            img.style.objectFit = 'cover';
+                            img.style.borderRadius = '8px';
+                            img.style.border = '2px solid #EBEBEB';
+                            img.alt = image.caption || `Image ${index + 1}`;
+                            
+                            // Add room label if exists
+                            if (image.caption) {
+                                const label = document.createElement('div');
+                                label.textContent = `Room: ${image.caption}`;
+                                label.style.fontSize = '12px';
+                                label.style.color = '#717171';
+                                label.style.marginTop = '4px';
+                                imgWrapper.appendChild(label);
+                            }
+                            
+                            imgWrapper.appendChild(img);
+                            stayAdditionalPreviewContainer.appendChild(imgWrapper);
+                        });
+                        stayAdditionalPreviewContainer.style.display = 'grid';
+                    }
                 }
             }
 
@@ -1824,9 +1974,10 @@
         // Additional images preview - Experience
         const additionalImagesInput = document.getElementById('exp_additional_images');
         const additionalPreviewContainer = document.getElementById('exp_additional_preview');
+        let existingExpImages = []; // Track existing images
 
         additionalImagesInput.addEventListener('change', function(e) {
-            additionalPreviewContainer.innerHTML = '';
+            // Don't clear existing images, just add new ones
             const files = Array.from(e.target.files);
             
             files.forEach((file, index) => {
@@ -1845,6 +1996,7 @@
                     
                     imgWrapper.appendChild(img);
                     additionalPreviewContainer.appendChild(imgWrapper);
+                    additionalPreviewContainer.style.display = 'grid';
                 };
                 reader.readAsDataURL(file);
             });
@@ -1853,9 +2005,10 @@
         // Additional images preview - Event
         const evtAdditionalImagesInput = document.getElementById('evt_additional_images');
         const evtAdditionalPreviewContainer = document.getElementById('evt_additional_preview');
+        let existingEvtImages = []; // Track existing images
 
         evtAdditionalImagesInput.addEventListener('change', function(e) {
-            evtAdditionalPreviewContainer.innerHTML = '';
+            // Don't clear existing images, just add new ones
             const files = Array.from(e.target.files);
             
             files.forEach((file, index) => {
@@ -1874,6 +2027,7 @@
                     
                     imgWrapper.appendChild(img);
                     evtAdditionalPreviewContainer.appendChild(imgWrapper);
+                    evtAdditionalPreviewContainer.style.display = 'grid';
                 };
                 reader.readAsDataURL(file);
             });
@@ -2070,7 +2224,7 @@
         loadStayAmenitiesOptions();
 
         stayAdditionalImagesInput.addEventListener('change', function(e) {
-            stayAdditionalPreviewContainer.innerHTML = '';
+            // Don't clear existing images, just add new ones
             const files = Array.from(e.target.files);
             
             files.forEach((file, index) => {
@@ -2089,6 +2243,7 @@
                     
                     imgWrapper.appendChild(img);
                     stayAdditionalPreviewContainer.appendChild(imgWrapper);
+                    stayAdditionalPreviewContainer.style.display = 'grid';
                 };
                 reader.readAsDataURL(file);
             });

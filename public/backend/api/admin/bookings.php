@@ -3,7 +3,8 @@
  * Admin Bookings API - Get All Bookings
  */
 
-header('Access-Control-Allow-Origin: *');
+require_once __DIR__ . '/../../config/cors.php';
+setCorsHeaders();
 header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');

@@ -12,6 +12,7 @@
     let whishOTPSent = false;
     let stripe = null;
     let stripeClientSecret = null;
+    let isGuestCheckout = false;
 
     // DOM Elements
     const loadingState = document.getElementById('loading-state');
@@ -19,39 +20,16 @@
     const checkoutContent = document.getElementById('checkout-content');
     const errorMessage = document.getElementById('error-message');
 
-    // Initialize Stripe and Elements
+    // Stripe Elements (initialized conditionally)
     let elements = null;
     let cardNumberElement = null;
     let cardExpiryElement = null;
     let cardCvcElement = null;
-    
-    if (typeof Stripe !== 'undefined' && typeof STRIPE_PUBLISHABLE_KEY !== 'undefined') {
-        stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
-        elements = stripe.elements();
-        
-        const elementStyle = {
-            base: {
-                fontSize: '16px',
-                color: '#222',
-                '::placeholder': {
-                    color: '#aab7c4'
-                }
-            },
-            invalid: {
-                color: '#dc3545'
-            }
-        };
-        
-        // Create individual card elements
-        cardNumberElement = elements.create('cardNumber', { style: elementStyle });
-        cardExpiryElement = elements.create('cardExpiry', { style: elementStyle });
-        cardCvcElement = elements.create('cardCvc', { style: elementStyle });
-    }
 
     /**
      * Initialize the page
      */
-    function init() {
+    async function init() {
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const type = urlParams.get('type'); // experience, event, stay
@@ -75,37 +53,65 @@
             end_date: endDate
         };
 
-        // Mount Stripe Card Elements (since card form is active by default)
-        if (cardNumberElement && cardExpiryElement && cardCvcElement) {
-            setTimeout(() => {
-                cardNumberElement.mount('#card-number-element');
-                cardExpiryElement.mount('#card-expiry-element');
-                cardCvcElement.mount('#card-cvc-element');
-                
-                cardNumberElement._mounted = true;
-                cardExpiryElement._mounted = true;
-                cardCvcElement._mounted = true;
-                
-                // Handle card errors
-                const displayError = document.getElementById('card-errors');
-                cardNumberElement.on('change', (event) => {
-                    if (event.error) displayError.textContent = event.error.message;
-                    else displayError.textContent = '';
-                });
-                cardExpiryElement.on('change', (event) => {
-                    if (event.error) displayError.textContent = event.error.message;
-                });
-                cardCvcElement.on('change', (event) => {
-                    if (event.error) displayError.textContent = event.error.message;
-                });
-            }, 1000);
-        }
+        // Check authentication and show guest checkout option if not logged in
+        checkAuthAndSetupGuestCheckout();
+
+        // Check which payment methods are enabled
+        await checkPaymentMethods();
 
         // Load listing data
         loadListing();
 
         // Setup event listeners
         setupEventListeners();
+
+        // Auto-fill contact information from profile
+        autoFillContactInfo();
+
+        // Set default payment method based on availability
+        // Prefer whish (if enabled), then cash, then card (to avoid loading Stripe on page load)
+        let defaultPaymentMethod = document.querySelector('input[name="payment-method"][value="whish"]:not([style*="display: none"])');
+        if (!defaultPaymentMethod) {
+            defaultPaymentMethod = document.querySelector('input[name="payment-method"][value="cash"]');
+        }
+        if (!defaultPaymentMethod) {
+            defaultPaymentMethod = document.querySelector('input[name="payment-method"][value="card"]');
+        }
+        if (defaultPaymentMethod) {
+            defaultPaymentMethod.checked = true;
+            handlePaymentMethodChange({ target: defaultPaymentMethod });
+        }
+    }
+
+    /**
+     * Check which payment methods are available
+     */
+    async function checkPaymentMethods() {
+        try {
+            const response = await fetch('/backend/api/check-payment-methods.php');
+            const data = await response.json();
+
+            if (data.success && data.payment_methods) {
+                // Hide Whish option if disabled
+                if (!data.payment_methods.whish) {
+                    const whishOption = document.getElementById('whish-option');
+                    if (whishOption) {
+                        whishOption.style.display = 'none';
+                    }
+                }
+
+                // Hide card option if disabled (unlikely)
+                if (!data.payment_methods.card) {
+                    const cardOption = document.getElementById('card-option');
+                    if (cardOption) {
+                        cardOption.style.display = 'none';
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('[CHECKOUT] Error checking payment methods:', error);
+            // Continue anyway - all payment methods will be shown
+        }
     }
 
     /**
@@ -150,6 +156,9 @@
             // Hide loading, show content
             loadingState.style.display = 'none';
             checkoutContent.style.display = 'block';
+            
+            // Update progress indicator to step 1
+            updateProgressIndicator(1);
 
         } catch (error) {
             console.error('Error loading listing:', error);
@@ -370,9 +379,187 @@
     }
 
     /**
+     * Check authentication and setup guest checkout
+     */
+    function checkAuthAndSetupGuestCheckout() {
+        // Wait for Auth to be ready
+        function checkAuth() {
+            if (!window.Auth || typeof window.Auth.isAuthenticated !== 'function') {
+                setTimeout(checkAuth, 100);
+                return;
+            }
+
+            const isAuthenticated = window.Auth.isAuthenticated();
+            const currentUser = isAuthenticated ? window.Auth.getCurrentUser() : null;
+            const guestCheckoutSection = document.getElementById('guest-checkout-section');
+            const continueAsGuestBtn = document.getElementById('continue-as-guest-btn');
+
+            console.log('[CHECKOUT] Auth check:', { isAuthenticated, currentUser, hasSection: !!guestCheckoutSection });
+
+            if (!isAuthenticated && !currentUser && guestCheckoutSection) {
+                guestCheckoutSection.style.display = 'block';
+            } else {
+                // User is logged in, hide guest checkout
+                if (guestCheckoutSection) {
+                    guestCheckoutSection.style.display = 'none';
+                }
+            }
+
+            if (continueAsGuestBtn) {
+                continueAsGuestBtn.addEventListener('click', function() {
+                    isGuestCheckout = true;
+                    if (guestCheckoutSection) {
+                        guestCheckoutSection.style.display = 'none';
+                    }
+                    // Enable form fields
+                    document.getElementById('contact-email').disabled = false;
+                    document.getElementById('contact-phone').disabled = false;
+                });
+            }
+        }
+
+        checkAuth();
+    }
+
+    /**
+     * Auto-fill contact information from logged-in user profile
+     */
+    function autoFillContactInfo() {
+        const currentUser = window.Auth ? window.Auth.getCurrentUser() : null;
+        if (currentUser) {
+            const emailInput = document.getElementById('contact-email');
+            const phoneInput = document.getElementById('contact-phone');
+            
+            if (emailInput && currentUser.email) {
+                emailInput.value = currentUser.email;
+            }
+            
+            if (phoneInput && currentUser.phone_number) {
+                phoneInput.value = currentUser.phone_number;
+            }
+        }
+    }
+
+    /**
+     * Initialize Stripe Elements (only when card payment is selected)
+     */
+    function initializeStripeElements() {
+        if (stripe && elements && cardNumberElement && cardExpiryElement && cardCvcElement) {
+            // Already initialized
+            return;
+        }
+        
+        if (typeof Stripe === 'undefined' || typeof STRIPE_PUBLISHABLE_KEY === 'undefined') {
+            console.warn('[CHECKOUT] Stripe not loaded yet');
+            return;
+        }
+        
+        stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+        elements = stripe.elements();
+        
+        const elementStyle = {
+            base: {
+                fontSize: '16px',
+                color: '#222',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#dc3545'
+            }
+        };
+        
+        // Create individual card elements
+        cardNumberElement = elements.create('cardNumber', { style: elementStyle });
+        cardExpiryElement = elements.create('cardExpiry', { style: elementStyle });
+        cardCvcElement = elements.create('cardCvc', { style: elementStyle });
+        
+        // Mount elements
+        setTimeout(() => {
+            const cardNumberContainer = document.getElementById('card-number-element');
+            const cardExpiryContainer = document.getElementById('card-expiry-element');
+            const cardCvcContainer = document.getElementById('card-cvc-element');
+            
+            if (cardNumberContainer && !cardNumberElement._mounted) {
+                cardNumberElement.mount('#card-number-element');
+                cardExpiryElement.mount('#card-expiry-element');
+                cardCvcElement.mount('#card-cvc-element');
+                
+                cardNumberElement._mounted = true;
+                cardExpiryElement._mounted = true;
+                cardCvcElement._mounted = true;
+                
+                // Handle card errors
+                const displayError = document.getElementById('card-errors');
+                cardNumberElement.on('change', (event) => {
+                    if (event.error) displayError.textContent = event.error.message;
+                    else displayError.textContent = '';
+                });
+                cardExpiryElement.on('change', (event) => {
+                    if (event.error) displayError.textContent = event.error.message;
+                });
+                cardCvcElement.on('change', (event) => {
+                    if (event.error) displayError.textContent = event.error.message;
+                });
+            }
+        }, 100);
+    }
+
+    /**
+     * Load Stripe script conditionally
+     */
+    function loadStripeScript(callback) {
+        if (typeof Stripe !== 'undefined') {
+            // Stripe already loaded
+            if (callback) callback();
+            return;
+        }
+        
+        if (typeof ConditionalLoader !== 'undefined') {
+            ConditionalLoader.loadScript('https://js.stripe.com/v3/', () => {
+                if (callback) callback();
+            });
+        } else {
+            // Fallback: create script tag manually
+            const script = document.createElement('script');
+            script.src = 'https://js.stripe.com/v3/';
+            script.onload = () => {
+                if (callback) callback();
+            };
+            document.head.appendChild(script);
+        }
+    }
+
+    /**
+     * Update progress indicator
+     */
+    function updateProgressIndicator(step) {
+        const steps = document.querySelectorAll('.progress-step');
+        steps.forEach((stepEl, index) => {
+            if (index + 1 <= step) {
+                stepEl.classList.add('active');
+            } else {
+                stepEl.classList.remove('active');
+            }
+        });
+    }
+
+    // Flag to prevent duplicate event listener attachment
+    let listenersAttached = false;
+
+    /**
      * Setup event listeners
      */
     function setupEventListeners() {
+        if (listenersAttached) {
+            console.warn('[CHECKOUT] ⚠️ Event listeners already attached, skipping');
+            return;
+        }
+
+        console.log('[CHECKOUT] Setting up event listeners...');
+        listenersAttached = true;
+
         // Payment method switching
         document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
             radio.addEventListener('change', handlePaymentMethodChange);
@@ -417,7 +604,10 @@
         // Complete booking
         const completeBookingBtn = document.getElementById('complete-booking-btn');
         if (completeBookingBtn) {
+            console.log('[CHECKOUT] Attaching click handler to Complete Booking button');
             completeBookingBtn.addEventListener('click', handleCompleteBooking);
+        } else {
+            console.error('[CHECKOUT] Complete Booking button not found!');
         }
     }
 
@@ -443,31 +633,15 @@
         if (formId) {
             document.getElementById(formId).classList.add('active');
             
-            // Mount Stripe Card Elements when card form is shown
-            if (selectedMethod === 'card' && cardNumberElement && !cardNumberElement._mounted) {
-                setTimeout(() => {
-                    cardNumberElement.mount('#card-number-element');
-                    cardExpiryElement.mount('#card-expiry-element');
-                    cardCvcElement.mount('#card-cvc-element');
-                    
-                    cardNumberElement._mounted = true;
-                    cardExpiryElement._mounted = true;
-                    cardCvcElement._mounted = true;
-                    
-                    // Handle card errors
-                    const displayError = document.getElementById('card-errors');
-                    cardNumberElement.on('change', (event) => {
-                        if (event.error) displayError.textContent = event.error.message;
-                        else displayError.textContent = '';
-                    });
-                    cardExpiryElement.on('change', (event) => {
-                        if (event.error) displayError.textContent = event.error.message;
-                    });
-                    cardCvcElement.on('change', (event) => {
-                        if (event.error) displayError.textContent = event.error.message;
-                    });
-                }, 100);
+            // Load and initialize Stripe only when card payment is selected
+            if (selectedMethod === 'card') {
+                loadStripeScript(() => {
+                    initializeStripeElements();
+                });
             }
+            
+            // Update progress indicator
+            updateProgressIndicator(2);
         }
     }
 
@@ -521,10 +695,22 @@
         }
     }
 
+    // Flag to prevent duplicate submissions
+    let isSubmitting = false;
+
     /**
      * Handle complete booking
      */
     async function handleCompleteBooking() {
+        console.log('[CHECKOUT] ==> handleCompleteBooking called at', new Date().toISOString());
+        console.log('[CHECKOUT] isSubmitting flag:', isSubmitting);
+
+        // Prevent duplicate submissions
+        if (isSubmitting) {
+            console.warn('[CHECKOUT] ⚠️ DUPLICATE SUBMISSION BLOCKED - Already submitting!');
+            return;
+        }
+
         // Validate terms acceptance
         const termsCheckbox = document.getElementById('accept-terms');
         if (!termsCheckbox.checked) {
@@ -556,6 +742,9 @@
         }
 
         try {
+            // Set submitting flag
+            isSubmitting = true;
+
             // Disable button
             const btn = document.getElementById('complete-booking-btn');
             btn.disabled = true;
@@ -603,12 +792,16 @@
 
             } else if (paymentMethod === 'whish') {
                 // For Whish, we need to redirect to their payment page
-                // Get current user
+                // Get current user (or use guest checkout)
                 const currentUser = window.Auth ? window.Auth.getCurrentUser() : null;
-                const userId = currentUser ? currentUser.id : null;
+                const userId = (!isGuestCheckout && currentUser) ? currentUser.id : null;
 
+                // Whish requires authentication (no guest checkout for Whish)
                 if (!userId) {
-                    alert('Please sign in to complete your booking');
+                    alert('Please sign in to use Whish payment');
+                    isSubmitting = false;
+                    btn.disabled = false;
+                    btn.textContent = 'Complete Booking';
                     return;
                 }
 
@@ -616,11 +809,12 @@
                 if ((bookingData.type === 'experience' || bookingData.type === 'event') && listingData) {
                     const availableCapacity = parseInt(listingData.available_capacity) || 0;
                     const requestedGuests = parseInt(bookingData.guests) || 1;
-                    
+
                     if (availableCapacity < requestedGuests) {
                         alert(`Sorry, there are only ${availableCapacity} spot${availableCapacity !== 1 ? 's' : ''} available. Maximum guests limit reached for this listing.`);
                         btn.disabled = false;
                         btn.textContent = 'Complete Booking';
+                        isSubmitting = false;
                         return;
                     }
                 }
@@ -675,14 +869,18 @@
                 return; // Exit function as we're redirecting
             }
 
-            // Get current user
+            // Get current user (or use guest checkout)
             const currentUser = window.Auth ? window.Auth.getCurrentUser() : null;
-            const userId = currentUser ? currentUser.id : null;
+            const userId = (!isGuestCheckout && currentUser) ? currentUser.id : null;
 
-            if (!userId) {
-                alert('Please sign in to complete your booking');
+            // For non-guest checkout, require authentication
+            if (!isGuestCheckout && !userId) {
+                alert('Please sign in to complete your booking or continue as guest');
                 return;
             }
+            
+            // Update progress indicator to step 3
+            updateProgressIndicator(3);
 
             // Validate capacity for events and experiences before creating booking
             if ((bookingData.type === 'experience' || bookingData.type === 'event') && listingData) {
@@ -693,13 +891,13 @@
                     alert(`Sorry, there are only ${availableCapacity} spot${availableCapacity !== 1 ? 's' : ''} available. Maximum guests limit reached for this listing.`);
                     btn.disabled = false;
                     btn.textContent = 'Complete Booking';
+                    isSubmitting = false;
                     return;
                 }
             }
 
             // Create booking (for non-Whish payments)
             const bookingPayload = {
-                user_id: userId,
                 listing_type: bookingData.type,
                 listing_id: bookingData.id,
                 guests: bookingData.guests,
@@ -711,6 +909,16 @@
                 payment_transaction_id: paymentTransactionId,
                 payment_status: paymentStatus
             };
+            
+            // Only include user_id if not guest checkout
+            if (userId) {
+                bookingPayload.user_id = userId;
+            }
+
+            console.log('[CHECKOUT] 📤 Sending booking request to API...', {
+                payload: bookingPayload,
+                timestamp: new Date().toISOString()
+            });
 
             const response = await fetch('/backend/api/create-booking.php', {
                 method: 'POST',
@@ -719,7 +927,11 @@
             });
 
             const data = await response.json();
-            console.log('[CHECKOUT] create-booking response:', data);
+            console.log('[CHECKOUT] 📥 Received booking response:', data);
+
+            if (data.duplicate_prevented) {
+                console.warn('[CHECKOUT] ⚠️ Duplicate booking was prevented by API');
+            }
 
             if (data.notifications_error) {
                 console.warn('[CHECKOUT] notifications_error:', data.notifications_error);
@@ -740,6 +952,7 @@
             const btn = document.getElementById('complete-booking-btn');
             btn.disabled = false;
             btn.textContent = 'Complete Booking';
+            isSubmitting = false;
         }
     }
 

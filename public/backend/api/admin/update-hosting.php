@@ -3,15 +3,10 @@
  * Admin Update Hosting API (Experience/Event)
  */
 
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+require_once __DIR__ . '/../../config/cors.php';
+setCorsHeaders();
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
+header('Content-Type: application/json');
 
 $headers = getallheaders();
 $authHeader = isset($headers['Authorization']) ? $headers['Authorization'] : null;
@@ -53,11 +48,38 @@ try {
         exit();
     }
 
-    $updateStmt = $db->prepare("UPDATE hostings SET is_active = :is_active WHERE id = :id");
-    $updateStmt->execute([
-        'id' => $input['id'],
-        'is_active' => $input['is_active']
-    ]);
+    // Build dynamic UPDATE query based on provided fields
+    $allowedFields = [
+        'title', 'description', 'location', 'price', 'price_per_person', 
+        'length_hours', 'hour_start', 'hour_end', 'max_guests', 'min_guests',
+        'difficulty', 'max_guests_per_price', 'min_age', 'max_age',
+        'cancellation_policy', 'date_start', 'date_end', 'main_image',
+        'is_active', 'service_fee_percentage'
+    ];
+    
+    $updateFields = [];
+    $updateParams = ['id' => $input['id']];
+    
+    foreach ($allowedFields as $field) {
+        if (isset($input[$field])) {
+            // Allow empty strings to clear fields (except required ones)
+            $updateFields[] = "$field = :$field";
+            $updateParams[$field] = $input[$field] === '' ? null : $input[$field];
+        }
+    }
+    
+    if (empty($updateFields)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'No valid fields to update']);
+        exit();
+    }
+    
+    // Always update updated_at timestamp
+    $updateFields[] = "updated_at = NOW()";
+    
+    $updateQuery = "UPDATE hostings SET " . implode(', ', $updateFields) . " WHERE id = :id";
+    $updateStmt = $db->prepare($updateQuery);
+    $updateStmt->execute($updateParams);
 
     echo json_encode(['success' => true, 'message' => 'Hosting updated successfully']);
 

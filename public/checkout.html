@@ -75,10 +75,38 @@
     <!-- Checkout Content -->
     <main id="checkout-content" class="checkout-main" style="display: none;">
         <div class="checkout-container">
+            <!-- Progress Indicator -->
+            <div class="checkout-progress">
+                <div class="progress-step active" data-step="1">
+                    <div class="progress-step-number">1</div>
+                    <div class="progress-step-label">Booking Details</div>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="progress-step-number">2</div>
+                    <div class="progress-step-label">Payment</div>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="progress-step-number">3</div>
+                    <div class="progress-step-label">Review</div>
+                </div>
+            </div>
+
             <div class="checkout-grid">
                 <!-- Left Column: Payment Details -->
                 <div class="checkout-left">
                     <h1 class="checkout-title">Complete your booking</h1>
+
+                    <!-- Guest Checkout Option -->
+                    <div id="guest-checkout-section" class="guest-checkout-card" style="display: none;">
+                        <div class="guest-checkout-content">
+                            <i class="fa fa-user-circle"></i>
+                            <div>
+                                <h3>Continue as Guest</h3>
+                                <p>You can complete your booking without creating an account</p>
+                            </div>
+                            <button type="button" id="continue-as-guest-btn" class="btn-guest-checkout">Continue as Guest</button>
+                        </div>
+                    </div>
 
                     <!-- Booking Details -->
                     <div class="booking-details-card">
@@ -91,7 +119,7 @@
                         <h2>Payment Method</h2>
                         <div class="payment-methods">
                             <label class="payment-option">
-                                <input type="radio" name="payment-method" value="card" checked>
+                                <input type="radio" name="payment-method" value="card" id="payment-card">
                                 <div class="payment-option-content">
                                     <i class="fa fa-credit-card"></i>
                                     <span>Credit/Debit Card</span>
@@ -119,7 +147,7 @@
                     <!-- Payment Forms -->
                     <div id="payment-forms">
                         <!-- Card Payment Form -->
-                        <div id="card-form" class="payment-form active">
+                        <div id="card-form" class="payment-form">
                             <h3>Card Details</h3>
                             <div class="form-group">
                                 <label>Cardholder Name</label>
@@ -189,46 +217,8 @@
                         </label>
                     </div>
 
-                    <!-- Order Summary Section -->
+                    <!-- Order Summary Section (moved to bottom of left column) -->
                     <div class="checkout-summary-section">
-                        <div class="listing-preview" id="listing-preview">
-                            <!-- Will be populated by JavaScript -->
-                        </div>
-
-                        <div class="price-breakdown">
-                            <h3>Price Details</h3>
-                            <div class="price-row">
-                                <span id="price-label">Price</span>
-                                <span id="price-value">$0.00</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Service Fee</span>
-                                <span id="service-fee">$0.00</span>
-                            </div>
-                            <div class="price-row" id="cleaning-fee-row" style="display: none;">
-                                <span>Cleaning Fee</span>
-                                <span id="cleaning-fee">$0.00</span>
-                            </div>
-                            <div class="price-row total">
-                                <span>Total</span>
-                                <span id="total-price">$0.00</span>
-                            </div>
-                        </div>
-
-                        <button type="button" id="complete-booking-btn" class="btn-complete-booking">
-                            Complete Booking
-                        </button>
-
-                        <div class="secure-notice">
-                            <i class="fa fa-lock"></i>
-                            <span>Your payment information is secure</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Column: Order Summary -->
-                <div class="checkout-right">
-                    <div class="order-summary-card sticky">
                         <div class="listing-preview" id="listing-preview">
                             <!-- Will be populated by JavaScript -->
                         </div>
@@ -272,12 +262,15 @@
     <script src="assets/js/load-footer.js"></script>
 
     <!-- ==================== JAVASCRIPT ==================== -->
-    <script src="https://js.stripe.com/v3/"></script>
-    <script src="js/jquery-3.5.0.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <!-- Conditional Loader (Stripe loads when card payment selected) -->
+    <script src="assets/js/conditional-loader.js"></script>
+    
+    <!-- Config and Auth -->
     <script src="assets/js/config.js"></script>
+    <script src="assets/js/auth.js"></script>
+    
     <script>
-        // Stripe Publishable Key
+        // Stripe Publishable Key (will be used when card payment is selected)
         const STRIPE_PUBLISHABLE_KEY = 'pk_test_Ah4G3SPQmw26w8hLzeADVWFN00LBtdU3x7';
     </script>
 

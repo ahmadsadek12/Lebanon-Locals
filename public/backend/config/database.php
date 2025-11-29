@@ -5,10 +5,9 @@
  * @version 1.0.0
  */
 
-// Display errors for debugging
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// Error handling (environment-based)
+require_once __DIR__ . '/error-handler.php';
+setupErrorHandling();
 
 class Database {
     private $host;

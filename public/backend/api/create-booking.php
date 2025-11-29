@@ -4,18 +4,12 @@
  * Handles booking creation with various payment methods
  */
 
-header('Access-Control-Allow-Origin: *');
+require_once __DIR__ . '/../config/cors.php';
+setCorsHeaders();
+
 header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
 
 require_once __DIR__ . '/../config/database.php';
-
-// Handle preflight OPTIONS request
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
 
 // Only allow POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -27,14 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Get JSON input
 $input = json_decode(file_get_contents('php://input'), true);
 
-// Get user_id from request
-$userId = isset($input['user_id']) ? intval($input['user_id']) : null;
+// Get user_id from request (optional for guest checkout)
+$userId = isset($input['user_id']) && !empty($input['user_id']) ? intval($input['user_id']) : null;
 
-if (!$userId) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'User authentication required']);
-    exit();
-}
+// Note: user_id is optional to support guest checkout
+// Guest bookings will have user_id = NULL in the database
 
 // Validate required fields
 $requiredFields = ['listing_type', 'listing_id', 'guests', 'email', 'phone', 'payment_method'];
@@ -50,8 +41,46 @@ foreach ($requiredFields as $field) {
 $notificationsError = null;
 
 try {
+    // Log the booking request for debugging
+    error_log("[BOOKING] === NEW BOOKING REQUEST === ");
+    error_log("[BOOKING] User ID: " . ($userId ?? 'NULL (guest)'));
+    error_log("[BOOKING] Listing: {$input['listing_type']} #{$input['listing_id']}");
+    error_log("[BOOKING] Email: {$input['email']}");
+    error_log("[BOOKING] Request Time: " . date('Y-m-d H:i:s'));
+
     $database = new Database();
     $db = $database->getConnection();
+
+    // Check for duplicate bookings (same user/email, same listing, within last 10 seconds)
+    // This prevents accidental double-clicks or double-submissions
+    $duplicateCheckQuery = "SELECT id, created_at FROM bookings
+                            WHERE listing_type = :listing_type
+                            AND listing_id = :listing_id
+                            AND guest_email = :email
+                            AND created_at >= DATE_SUB(NOW(), INTERVAL 10 SECOND)
+                            ORDER BY created_at DESC
+                            LIMIT 1";
+
+    $duplicateStmt = $db->prepare($duplicateCheckQuery);
+    $duplicateStmt->execute([
+        ':listing_type' => $input['listing_type'],
+        ':listing_id' => intval($input['listing_id']),
+        ':email' => $input['email']
+    ]);
+
+    $recentBooking = $duplicateStmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($recentBooking) {
+        error_log("[BOOKING] ⚠️ DUPLICATE DETECTED - Recent booking found: #{$recentBooking['id']} at {$recentBooking['created_at']}");
+        // Return the existing booking instead of creating a duplicate
+        echo json_encode([
+            'success' => true,
+            'message' => 'Booking already exists',
+            'booking_id' => $recentBooking['id'],
+            'duplicate_prevented' => true
+        ]);
+        exit();
+    }
 
     // Validate listing exists and get details
     $listingType = $input['listing_type'];
@@ -167,7 +196,7 @@ try {
         start_date, end_date, guests,
         booking_type, booking_id, number_of_guests,
         check_in_date, check_out_date,
-        total_price, payment_method, payment_status,
+        total_price, service_fee, payment_method, payment_status,
         guest_email, guest_phone, status,
         transaction_id
     ) VALUES (
@@ -175,7 +204,7 @@ try {
         :start_date, :end_date, :guests,
         :booking_type, :booking_id, :number_of_guests,
         :check_in_date, :check_out_date,
-        :total_price, :payment_method, :payment_status,
+        :total_price, :service_fee, :payment_method, :payment_status,
         :guest_email, :guest_phone, :status,
         :transaction_id
     )";
@@ -188,7 +217,12 @@ try {
     $bookingStatus = ($paymentStatus === 'paid') ? 'confirmed' : 'pending';
 
     $bookingStmt = $db->prepare($bookingQuery);
+    // Handle NULL user_id for guest checkout
+    if ($userId === null) {
+        $bookingStmt->bindValue(':user_id', null, PDO::PARAM_NULL);
+    } else {
     $bookingStmt->bindParam(':user_id', $userId);
+    }
     $bookingStmt->bindParam(':host_id', $hostId);
     $bookingStmt->bindParam(':listing_type', $listingType);
     $bookingStmt->bindParam(':listing_id', $listingId);
@@ -201,6 +235,7 @@ try {
     $bookingStmt->bindParam(':check_in_date', $startDate);
     $bookingStmt->bindParam(':check_out_date', $endDate);
     $bookingStmt->bindParam(':total_price', $totalPrice);
+    $bookingStmt->bindParam(':service_fee', $serviceFee);
     $bookingStmt->bindParam(':payment_method', $paymentMethod);
     $bookingStmt->bindParam(':payment_status', $paymentStatus);
     $bookingStmt->bindParam(':guest_email', $input['email']);
@@ -250,7 +285,10 @@ try {
         error_log("[BOOKING] Host notification created successfully - booking_id: {$bookingId}, host_id: {$hostId}, user_id: {$userId}");
 
         // One notification per admin as well: from = booking user, to = each admin
-        $adminStmt = $db->query("SELECT id FROM users WHERE user_type = 'admin'");
+        // Exclude the host from admin notifications to prevent duplicates (if host is also an admin)
+        $adminStmt = $db->prepare("SELECT id FROM users WHERE user_type = 'admin' AND id != :host_id");
+        $adminStmt->bindParam(':host_id', $hostId);
+        $adminStmt->execute();
         $adminIds = $adminStmt->fetchAll(PDO::FETCH_COLUMN);
         if ($adminIds) {
             $adminNotif = $db->prepare("

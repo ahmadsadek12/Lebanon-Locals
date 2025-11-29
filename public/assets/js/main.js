@@ -332,8 +332,12 @@
     // GSAP ANIMATIONS
     // ===========================================
     function initAnimations() {
+        // Wait for GSAP to load if using conditional loader
         if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-
+            // If conditional loader is active, wait for gsapLoaded event
+            if (document.querySelector('script[src*="conditional-loader"]')) {
+                window.addEventListener('gsapLoaded', initAnimations);
+            }
             return;
         }
 
@@ -555,12 +559,29 @@
 
         function loadData() {
             // Load data from database AFTER CSS is ready
-            if (typeof API !== 'undefined') {
+            if (typeof API !== 'undefined' && typeof API.init === 'function') {
                 requestAnimationFrame(() => {
                     setTimeout(() => {
-                        API.init();
+                        try {
+                            API.init();
+                        } catch (error) {
+                            console.error('[MAIN] Error calling API.init:', error);
+                            // Fallback: try direct load functions
+                            if (typeof window.loadEvents === 'function') {
+                                window.loadEvents(10);
+                            }
+                            if (typeof window.loadExperiences === 'function') {
+                                window.loadExperiences(10);
+                            }
+                            if (typeof window.loadStays === 'function') {
+                                window.loadStays(10);
+                            }
+                        }
                     }, 100);
                 });
+            } else {
+                console.warn('[MAIN] API not available, retrying...');
+                setTimeout(loadData, 200);
             }
         }
 
@@ -574,42 +595,37 @@
 
     // Wait for both DOM and all external scripts to load
     function waitForDependencies() {
-
-
-        // Check if GSAP is loaded
-        if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-
+        // Check if API is loaded (required)
+        if (typeof API === 'undefined') {
+            console.log('[MAIN] Waiting for API...');
             setTimeout(waitForDependencies, 100);
             return;
         }
 
-        // Check if jQuery is loaded (if needed)
-        if (typeof jQuery === 'undefined') {
-
-            setTimeout(waitForDependencies, 100);
-            return;
-        }
-
-
+        // GSAP and jQuery are optional (only needed for animations)
+        // Don't block initialization if they're not loaded
 
         // All dependencies loaded, initialize
-
         init();
     }
 
-    // Start checking when DOM is ready
-
-
-
-    if (document.readyState === 'loading') {
-
-        document.addEventListener('DOMContentLoaded', () => {
-
-            waitForDependencies();
-        });
-    } else {
-        waitForDependencies();
+    // Start checking when window is fully loaded
+    function startInitialization() {
+        if (document.readyState === 'loading') {
+            window.addEventListener('load', () => {
+                setTimeout(waitForDependencies, 200);
+            });
+        } else if (document.readyState === 'interactive') {
+            window.addEventListener('load', () => {
+                setTimeout(waitForDependencies, 200);
+            });
+        } else {
+            // Already loaded
+            setTimeout(waitForDependencies, 300);
+        }
     }
+
+    startInitialization();
 
     // Export showSection for header navigation
     window.showSection = showSection;

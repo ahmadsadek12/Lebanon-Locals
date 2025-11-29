@@ -4,7 +4,9 @@
  * Fetches all bookings for a specific listing (for host analytics)
  */
 
-header('Access-Control-Allow-Origin: *');
+require_once __DIR__ . '/../config/cors.php';
+setCorsHeaders();
+
 header('Content-Type: application/json; charset=UTF-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {

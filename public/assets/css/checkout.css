@@ -192,6 +192,138 @@
     font-size: 14px;
 }
 
+/* ==================== PROGRESS INDICATOR ==================== */
+.checkout-progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xxl);
+    padding: var(--spacing-lg) 0;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+    position: relative;
+    flex: 1;
+    max-width: 200px;
+}
+
+.progress-step::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: var(--color-neutral-300);
+    z-index: 0;
+}
+
+.progress-step:last-child::after {
+    display: none;
+}
+
+.progress-step.active::after {
+    background: var(--color-primary);
+}
+
+.progress-step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-neutral-200);
+    color: var(--color-neutral-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-md);
+    position: relative;
+    z-index: 1;
+    transition: all var(--transition-normal);
+}
+
+.progress-step.active .progress-step-number {
+    background: var(--color-primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+}
+
+.progress-step-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-600);
+    font-weight: var(--font-weight-medium);
+    text-align: center;
+    transition: color var(--transition-normal);
+}
+
+.progress-step.active .progress-step-label {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* ==================== GUEST CHECKOUT ==================== */
+.guest-checkout-card {
+    background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+    border-radius: 16px;
+    padding: var(--spacing-xl);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 2px solid #BAE6FD;
+    margin-bottom: var(--spacing-lg);
+}
+
+.guest-checkout-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.guest-checkout-content i {
+    font-size: 48px;
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+.guest-checkout-content h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.guest-checkout-content p {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-600);
+    margin: 0;
+}
+
+.guest-checkout-content > div {
+    flex: 1;
+}
+
+.btn-guest-checkout {
+    padding: var(--spacing-sm) var(--spacing-xl);
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    white-space: nowrap;
+}
+
+.btn-guest-checkout:hover {
+    background: #E8344E;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+}
+
 /* ==================== CHECKOUT GRID ==================== */
 .checkout-grid {
     display: block;
@@ -748,6 +880,34 @@
 
     .checkout-title {
         font-size: var(--font-size-2xl);
+    }
+
+    .checkout-progress {
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md) 0;
+    }
+
+    .progress-step-label {
+        font-size: var(--font-size-xs);
+    }
+
+    .progress-step-number {
+        width: 32px;
+        height: 32px;
+        font-size: var(--font-size-sm);
+    }
+
+    .guest-checkout-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .guest-checkout-content i {
+        font-size: 36px;
+    }
+
+    .btn-guest-checkout {
+        width: 100%;
     }
 
     .booking-details-card,

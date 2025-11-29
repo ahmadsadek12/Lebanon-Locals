@@ -4,7 +4,9 @@
  * Handles ID/Passport uploads for user verification
  */
 
-header('Access-Control-Allow-Origin: *');
+require_once __DIR__ . '/../config/cors.php';
+setCorsHeaders();
+
 header('Content-Type: application/json; charset=UTF-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

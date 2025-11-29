@@ -308,18 +308,20 @@ const API = (function() {
             : '';
 
         return `
-            <a href="details.html?id=${experience.id}&type=experience" class="listing-card">
-                <div class="listing-image">
-                    <img src="${imageUrl}" alt="${experience.title}" loading="lazy">
-                    ${heartButton}
-                </div>
-                <div class="listing-info">
-                    ${ratingHtml}
-                    <div class="listing-title">${experience.title}</div>
-                    <div class="listing-subtitle">${duration || 'Flexible'} · ${experience.location}</div>
-                    <div class="listing-price"><strong>$${parseFloat(experience.price).toFixed(0)}</strong> ${priceText} ${priceNoteHtml}</div>
-                </div>
-            </a>
+            <div class="listing-card-wrapper" style="position: relative;">
+                <a href="details.html?id=${experience.id}&type=experience" class="listing-card">
+                    <div class="listing-image">
+                        <img src="${imageUrl}" alt="${experience.title}" loading="lazy">
+                    </div>
+                    <div class="listing-info">
+                        ${ratingHtml}
+                        <div class="listing-title">${experience.title}</div>
+                        <div class="listing-subtitle">${duration || 'Flexible'} · ${experience.location}</div>
+                        <div class="listing-price"><strong>$${parseFloat(experience.price).toFixed(0)}</strong> ${priceText} ${priceNoteHtml}</div>
+                    </div>
+                </a>
+                ${heartButton}
+            </div>
         `;
     }
 
@@ -331,6 +333,33 @@ const API = (function() {
         const normalized = dateTimeStr.replace(' ', 'T');
         const parsed = new Date(normalized);
         return isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    /**
+     * Check if an event has passed (date and time)
+     * Combines date_start and hour_start to get the full event datetime
+     */
+    function hasEventPassed(event) {
+        if (!event.date_start) return true; // If no date, consider it passed
+        
+        // Parse the date
+        const eventDate = parseDateTime(event.date_start);
+        if (!eventDate) return true; // If date is invalid, consider it passed
+        
+        // If hour_start exists, combine it with the date
+        if (event.hour_start) {
+            const [hours, minutes] = event.hour_start.split(':').map(Number);
+            if (!isNaN(hours) && !isNaN(minutes)) {
+                eventDate.setHours(hours, minutes, 0, 0);
+            }
+        } else {
+            // If no time specified, use end of day (23:59:59)
+            eventDate.setHours(23, 59, 59, 999);
+        }
+        
+        // Compare with current time
+        const now = new Date();
+        return eventDate < now;
     }
 
     /**
@@ -355,18 +384,20 @@ const API = (function() {
             : '';
 
         return `
-            <a href="details.html?id=${event.id}&type=event" class="listing-card">
-                <div class="listing-image">
-                    <img src="${imageUrl}" alt="${event.title}" loading="lazy">
-                    ${heartButton}
-                </div>
-                <div class="listing-info">
-                    ${ratingHtml}
-                    <div class="listing-title">${event.title}</div>
-                    <div class="listing-subtitle">${dateStr} · ${timeStr}</div>
-                    <div class="listing-price"><strong>$${parseFloat(event.price).toFixed(0)}</strong> ${priceText} ${priceNoteHtml}</div>
-                </div>
-            </a>
+            <div class="listing-card-wrapper" style="position: relative;">
+                <a href="details.html?id=${event.id}&type=event" class="listing-card">
+                    <div class="listing-image">
+                        <img src="${imageUrl}" alt="${event.title}" loading="lazy">
+                    </div>
+                    <div class="listing-info">
+                        ${ratingHtml}
+                        <div class="listing-title">${event.title}</div>
+                        <div class="listing-subtitle">${dateStr} · ${timeStr}</div>
+                        <div class="listing-price"><strong>$${parseFloat(event.price).toFixed(0)}</strong> ${priceText} ${priceNoteHtml}</div>
+                    </div>
+                </a>
+                ${heartButton}
+            </div>
         `;
     }
 
@@ -527,18 +558,20 @@ const API = (function() {
             : '';
 
         return `
-            <a href="details.html?id=${stay.id}&type=stay" class="listing-card">
-                <div class="listing-image">
-                    <img src="${imageUrl}" alt="${stay.title}" loading="lazy">
-                    ${heartButton}
-                </div>
-                <div class="listing-info">
-                    ${ratingHtml}
-                    <div class="listing-title">${stay.title}</div>
-                    <div class="listing-subtitle">${propertyLabel ? propertyLabel + ' · ' : ''}${beds} · ${stay.location}</div>
-                    <div class="listing-price"><strong>$${parseFloat(stay.price_per_night).toFixed(0)}</strong> / Night ${minNightsNote} ${priceNoteHtml}</div>
-                </div>
-            </a>
+            <div class="listing-card-wrapper" style="position: relative;">
+                <a href="details.html?id=${stay.id}&type=stay" class="listing-card">
+                    <div class="listing-image">
+                        <img src="${imageUrl}" alt="${stay.title}" loading="lazy">
+                    </div>
+                    <div class="listing-info">
+                        ${ratingHtml}
+                        <div class="listing-title">${stay.title}</div>
+                        <div class="listing-subtitle">${propertyLabel ? propertyLabel + ' · ' : ''}${beds} · ${stay.location}</div>
+                        <div class="listing-price"><strong>$${parseFloat(stay.price_per_night).toFixed(0)}</strong> / Night ${minNightsNote} ${priceNoteHtml}</div>
+                    </div>
+                </a>
+                ${heartButton}
+            </div>
         `;
     }
 
@@ -649,6 +682,10 @@ const API = (function() {
                     }
                     container.innerHTML = response.data.map(exp => renderExperienceCard(exp)).join('');
                     bindReviewLinkHandlers();
+                    // Initialize heart buttons after cards are rendered
+                    if (window.WishlistManager && typeof window.WishlistManager.initAllHeartButtons === 'function') {
+                        setTimeout(() => window.WishlistManager.initAllHeartButtons(), 100);
+                    }
                     return;
                 }
 
@@ -741,8 +778,11 @@ const API = (function() {
                 attachSectionViewMoreHandler('experience');
 
                 // Initialize wishlist heart buttons
-                if (window.WishlistManager) {
+                if (window.WishlistManager && typeof window.WishlistManager.initAllHeartButtons === 'function') {
+                    console.log('[WISHLIST] Initializing heart buttons for experiences');
                     window.WishlistManager.initAllHeartButtons();
+                } else {
+                    console.warn('[WISHLIST] WishlistManager not available yet for experiences');
                 }
             } else {
 
@@ -793,20 +833,36 @@ const API = (function() {
             const response = await getEvents({ limit: homeList ? limit : 40 });
 
             if (response.success && response.data.length > 0) {
+                // Filter out past events
+                const upcomingEvents = response.data.filter(event => !hasEventPassed(event));
+                
                 // If home page (events-list), render simple horizontal list
                 if (homeList) {
                     if (skeleton) {
                         skeleton.classList.add('hidden');
                     }
-                    container.innerHTML = response.data.map(event => renderEventCard(event)).join('');
+                    
+                    if (upcomingEvents.length === 0) {
+                        container.innerHTML = '<p style="color: white; padding: 20px;">No upcoming events available.</p>';
+                        return;
+                    }
+                    
+                    container.innerHTML = upcomingEvents.map(event => renderEventCard(event)).join('');
                     bindReviewLinkHandlers();
+                    // Initialize heart buttons after cards are rendered
+                    if (window.WishlistManager && typeof window.WishlistManager.initAllHeartButtons === 'function') {
+                        setTimeout(() => window.WishlistManager.initAllHeartButtons(), 100);
+                    }
                     return;
                 }
 
                 // Otherwise (collections page), render grouped by weeks
+                // Filter out past events first
+                const upcomingEventsForGroups = response.data.filter(event => !hasEventPassed(event));
+                
                 // Find the last event date
                 let lastEventDate = null;
-                response.data.forEach(event => {
+                upcomingEventsForGroups.forEach(event => {
                     const eventStart = parseDateTime(event.date_start);
                     if (eventStart && (!lastEventDate || eventStart > lastEventDate)) {
                         lastEventDate = eventStart;
@@ -833,7 +889,7 @@ const API = (function() {
                     groups.push({ title, subtitle, range, events: [] });
                 });
 
-                response.data.forEach(event => {
+                upcomingEventsForGroups.forEach(event => {
                     const eventStart = parseDateTime(event.date_start);
                     if (!eventStart) return;
 
@@ -907,8 +963,11 @@ const API = (function() {
                 attachSectionViewMoreHandler('event');
 
                 // Initialize wishlist heart buttons
-                if (window.WishlistManager) {
+                if (window.WishlistManager && typeof window.WishlistManager.initAllHeartButtons === 'function') {
+                    console.log('[WISHLIST] Initializing heart buttons for events');
                     window.WishlistManager.initAllHeartButtons();
+                } else {
+                    console.warn('[WISHLIST] WishlistManager not available yet for events');
                 }
             } else {
 
@@ -965,6 +1024,10 @@ const API = (function() {
                     }
                     container.innerHTML = response.data.map(stay => renderStayCard(stay)).join('');
                     bindReviewLinkHandlers();
+                    // Initialize heart buttons after cards are rendered
+                    if (window.WishlistManager && typeof window.WishlistManager.initAllHeartButtons === 'function') {
+                        setTimeout(() => window.WishlistManager.initAllHeartButtons(), 100);
+                    }
                     return;
                 }
 
@@ -1062,8 +1125,11 @@ const API = (function() {
                 attachSectionViewMoreHandler('stay');
 
                 // Initialize wishlist heart buttons
-                if (window.WishlistManager) {
+                if (window.WishlistManager && typeof window.WishlistManager.initAllHeartButtons === 'function') {
+                    console.log('[WISHLIST] Initializing heart buttons for stays');
                     window.WishlistManager.initAllHeartButtons();
+                } else {
+                    console.warn('[WISHLIST] WishlistManager not available yet for stays');
                 }
             } else {
 
@@ -1146,6 +1212,11 @@ const API = (function() {
         });
     }
 
+    // Make load functions globally accessible for index.html
+    window.loadExperiences = loadExperiences;
+    window.loadStays = loadStays;
+    window.loadEvents = loadEvents;
+
     function init() {
         // Load data immediately - main.js has already ensured DOM is ready
         // Order: Experiences → Stays → Events (for home page)
@@ -1153,9 +1224,9 @@ const API = (function() {
         const isHomePage = document.body.classList.contains('home-page');
         const limit = isHomePage ? 10 : 20;
         
+        loadEvents(limit);
         loadExperiences(limit);
         loadStays(limit);
-        loadEvents(limit);
         loadSubtypeIcons('event', 'event-subtype-icons');
         loadSubtypeIcons('experience', 'experience-subtype-icons');
         loadSubtypeIcons('stay', 'stay-subtype-icons');

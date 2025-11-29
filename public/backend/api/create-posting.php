@@ -4,15 +4,10 @@
  * Handles creation of experiences, events, and stays
  */
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-header('Content-Type: application/json');
+require_once __DIR__ . '/../config/cors.php';
+setCorsHeaders();
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -495,7 +490,60 @@ try {
         $numberOfBeds = $numberOfDoubleBeds + $numberOfSingleBeds + $numberOfSofaBeds;
         
         $numberOfBathrooms = isset($_POST['stay_number_of_bathrooms']) ? floatval($_POST['stay_number_of_bathrooms']) : null;
-        $propertyType = isset($_POST['stay_property_type']) ? $_POST['stay_property_type'] : null;
+        $propertyTypeRaw = isset($_POST['stay_property_type']) ? trim($_POST['stay_property_type']) : null;
+        
+        // Map property type to ENUM values (property_type is ENUM with specific allowed values)
+        // Allowed values: 'house', 'apartment', 'villa', 'cabin', 'hotel', 'hostel', 'guesthouse', 'other'
+        $propertyType = null;
+        if ($propertyTypeRaw) {
+            $normalized = strtolower(trim($propertyTypeRaw));
+            $normalized = preg_replace('/[^a-z0-9]/', '', $normalized); // Remove all non-alphanumeric
+            
+            // Mapping of common property type names to ENUM values
+            $typeMapping = [
+                'house' => 'house',
+                'home' => 'house',
+                'apartment' => 'apartment',
+                'apt' => 'apartment',
+                'flat' => 'apartment',
+                'villa' => 'villa',
+                'cabin' => 'cabin',
+                'cottage' => 'cabin',
+                'hotel' => 'hotel',
+                'hostel' => 'hostel',
+                'guesthouse' => 'guesthouse',
+                'guest' => 'guesthouse',
+                'bungalow' => 'house',
+                'chalet' => 'cabin',
+                'studio' => 'apartment',
+                'condo' => 'apartment',
+                'townhouse' => 'house',
+                'mansion' => 'villa',
+                'penthouse' => 'apartment'
+            ];
+            
+            // Try exact match first
+            if (isset($typeMapping[$normalized])) {
+                $propertyType = $typeMapping[$normalized];
+            } else {
+                // Try partial match
+                $matched = false;
+                foreach ($typeMapping as $key => $value) {
+                    if (strpos($normalized, $key) !== false || strpos($key, $normalized) !== false) {
+                        $propertyType = $value;
+                        $matched = true;
+                        break;
+                    }
+                }
+                
+                // If no match found, default to 'other'
+                if (!$matched) {
+                    $propertyType = 'other';
+                    error_log("Property type '{$propertyTypeRaw}' not found in mapping, defaulting to 'other'");
+                }
+            }
+        }
+        
         $cancellationPolicy = isset($_POST['stay_cancellation_policy']) ? $_POST['stay_cancellation_policy'] : null;
         
         // Build house_rules JSON object

@@ -64,6 +64,19 @@
         </div>
     </main>
 
+    <!-- Listing Details Modal -->
+    <div id="listing-details-modal" class="modal">
+        <div class="modal-content" style="max-width: 1000px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2>Listing Details</h2>
+                <button class="modal-close" onclick="closeListingDetailsModal()">&times;</button>
+            </div>
+            <div id="listing-details-content" style="padding: 24px;">
+                <div class="loading"><i class="fa fa-spinner fa-spin" style="font-size: 32px;"></i><p>Loading listing details...</p></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Add Event Modal -->
     <div id="add-modal" class="modal">
         <div class="modal-content" style="max-width: 800px;">

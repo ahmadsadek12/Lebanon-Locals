@@ -4,16 +4,10 @@
  * Creates payment request and returns redirect URL
  */
 
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
+require_once __DIR__ . '/../config/cors.php';
+setCorsHeaders();
 
-// Handle preflight OPTIONS request
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
+header('Content-Type: application/json');
 
 // Only allow POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -50,9 +44,10 @@ if (!$whishChannel || !$whishSecret) {
 }
 
 // Determine API URL based on environment
+// Note: Sandbox may not be available - use production with test merchant account if needed
 $apiUrl = $whishEnvironment === 'production'
     ? 'https://api.whish.money/itel-service/api/payment/whish'
-    : 'https://lb.sandbox.whish.money/itel-service/api/payment/whish';
+    : 'https://sandbox.whish.money/itel-service/api/payment/whish';
 
 // Success and cancel URLs
 $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'];
@@ -95,6 +90,10 @@ try {
         'websiteurl: ' . $websiteUrl
     ]);
 
+    // Set reasonable timeouts (10 seconds connect, 30 seconds total)
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
     // Disable SSL verification for development/sandbox
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
@@ -103,7 +102,22 @@ try {
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     if (curl_errno($ch)) {
-        throw new Exception('Whish API connection error: ' . curl_error($ch));
+        $curlError = curl_error($ch);
+        $curlErrno = curl_errno($ch);
+
+        // Log the error
+        error_log("[WHISH] cURL Error #{$curlErrno}: {$curlError} | URL: {$apiUrl}");
+
+        // Provide helpful message based on error type
+        if ($curlErrno == 7 || $curlErrno == 28) { // Connection failed or timeout
+            if ($whishEnvironment === 'sandbox') {
+                throw new Exception('Whish sandbox is unreachable. For local testing, you can skip Whish and use Card or Cash payment. Whish will work on your live server.');
+            } else {
+                throw new Exception('Unable to connect to Whish payment gateway. Please try again or use an alternative payment method.');
+            }
+        } else {
+            throw new Exception('Whish payment connection error. Please try Card or Cash payment instead.');
+        }
     }
 
     curl_close($ch);
@@ -148,12 +162,28 @@ try {
             $errorMessage = $whishResponse['message'];
         }
 
-        // Provide helpful message with actual error
-        $errorDetails = json_encode($whishResponse, JSON_PRETTY_PRINT);
+        // Provide helpful message based on error
         $userMessage = 'Whish payment is temporarily unavailable. Please use Stripe or Cash payment instead.';
 
+        // Special handling for 403 errors (usually configuration issues)
+        if ($httpCode === 403) {
+            // Check if using localhost with production mode
+            $isLocalhost = (strpos($baseUrl, 'localhost') !== false || strpos($baseUrl, '127.0.0.1') !== false);
+
+            if ($isLocalhost && $whishEnvironment === 'production') {
+                $userMessage = 'Whish production mode requires a live domain. Please switch to sandbox mode in .env for local testing, or deploy to a live server.';
+                error_log("[WHISH] 403 Error: Using localhost with production mode. Switch WHISH_ENVIRONMENT to 'sandbox' in .env");
+            } else {
+                $userMessage = 'Whish payment authentication failed. Please contact support or use an alternative payment method.';
+                error_log("[WHISH] 403 Error: Authentication failed. Check WHISH_CHANNEL and WHISH_SECRET in .env");
+            }
+        }
+
+        // Provide helpful message with actual error
+        $errorDetails = json_encode($whishResponse, JSON_PRETTY_PRINT);
+
         // Log detailed error
-        error_log("Whish API Error: $errorMessage | Details: $errorDetails");
+        error_log("Whish API Error (HTTP $httpCode): $errorMessage | Details: $errorDetails");
 
         throw new Exception($userMessage);
     }

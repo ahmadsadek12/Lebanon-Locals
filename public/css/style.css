@@ -1118,10 +1118,15 @@ body::after {
     background: rgba(255,255,255,0.5);
 }
 
-.listing-card {
+/* Wrapper for card + heart button */
+.listing-card-wrapper {
     flex: 0 0 200px;
     min-width: 200px;
     max-width: 200px;
+    position: relative;
+}
+
+.listing-card {
     cursor: pointer;
     transition: all 0.3s ease;
     background: rgba(255, 255, 255, 0.98);
@@ -1131,6 +1136,7 @@ body::after {
     text-decoration: none;
     color: inherit;
     display: block;
+    width: 100%;
 }
 
 .listing-card:hover {
@@ -3143,7 +3149,7 @@ body.hide-nav-words .header-search-btn,
         padding: 12px 4px;
     }
     
-    .listing-card {
+    .listing-card-wrapper {
         min-width: 45%;
         max-width: 45%;
         flex: 0 0 45%;
@@ -3352,7 +3358,7 @@ body.hide-nav-words .header-search-btn,
         padding: 10px 2px;
     }
     
-    .listing-card {
+    .listing-card-wrapper {
         min-width: 42%;
         max-width: 42%;
         flex: 0 0 42%;

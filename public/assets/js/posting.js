@@ -54,11 +54,43 @@
         // Also check on auth state change
         document.addEventListener('authStateChanged', () => checkHostAccess(false));
 
-        // Handle listing type selection
-        const typeOptions = document.querySelectorAll('.type-option');
-        const experienceForm = document.querySelector('.experience-form');
-        const eventForm = document.querySelector('.event-form');
-        const stayForm = document.querySelector('.stay-form');
+        // Helper function to safely attach event listener
+        function safeAddEventListener(element, event, handler) {
+            if (element) {
+                element.addEventListener(event, handler);
+            } else {
+                console.warn('[POSTING] Element not found for event listener:', event);
+            }
+        }
+
+        // Initialize form handlers when DOM is ready
+        function initializeFormHandlers() {
+            // Handle listing type selection
+            const typeOptions = document.querySelectorAll('.type-option');
+            if (typeOptions.length === 0) {
+                console.warn('[POSTING] Type options not found, retrying...');
+                setTimeout(initializeFormHandlers, 200);
+                return;
+            }
+            
+            // Add click handlers to type options for visual feedback
+            typeOptions.forEach(option => {
+                option.style.cursor = 'pointer';
+                // Visual feedback on click
+                option.addEventListener('mousedown', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                option.addEventListener('mouseup', function() {
+                    this.style.transform = '';
+                });
+                option.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                });
+            });
+            
+            const experienceForm = document.querySelector('.experience-form');
+            const eventForm = document.querySelector('.event-form');
+            const stayForm = document.querySelector('.stay-form');
 
         // Function to disable required fields in a form
         function disableFormValidation(formElement) {
@@ -81,112 +113,125 @@
         disableFormValidation(eventForm);
         disableFormValidation(stayForm);
 
-        // Experience Opening Time - Combine hour, minute, AM/PM into 24-hour format
-        const expOpenHour = document.getElementById('exp_open_hour');
-        const expOpenMinute = document.getElementById('exp_open_minute');
-        const expOpenAmpm = document.getElementById('exp_open_ampm');
-        const expHourStart = document.getElementById('exp_hour_start');
+            // Experience Opening Time - Combine hour, minute, AM/PM into 24-hour format
+            const expOpenHour = document.getElementById('exp_open_hour');
+            const expOpenMinute = document.getElementById('exp_open_minute');
+            const expOpenAmpm = document.getElementById('exp_open_ampm');
+            const expHourStart = document.getElementById('exp_hour_start');
 
-        function updateExpOpeningTime() {
-            const hour = expOpenHour.value;
-            const minute = expOpenMinute.value;
-            const ampm = expOpenAmpm.value;
+            if (expOpenHour && expOpenMinute && expOpenAmpm && expHourStart) {
+                function updateExpOpeningTime() {
+                    const hour = expOpenHour.value;
+                    const minute = expOpenMinute.value;
+                    const ampm = expOpenAmpm.value;
 
-            if (hour && minute && ampm) {
-                let hour24 = parseInt(hour);
-                if (ampm === 'PM' && hour24 !== 12) {
-                    hour24 += 12;
-                } else if (ampm === 'AM' && hour24 === 12) {
-                    hour24 = 0;
+                    if (hour && minute && ampm) {
+                        let hour24 = parseInt(hour);
+                        if (ampm === 'PM' && hour24 !== 12) {
+                            hour24 += 12;
+                        } else if (ampm === 'AM' && hour24 === 12) {
+                            hour24 = 0;
+                        }
+                        expHourStart.value = `${String(hour24).padStart(2, '0')}:${minute}`;
+                    }
                 }
-                expHourStart.value = `${String(hour24).padStart(2, '0')}:${minute}`;
+
+                safeAddEventListener(expOpenHour, 'change', updateExpOpeningTime);
+                safeAddEventListener(expOpenMinute, 'change', updateExpOpeningTime);
+                safeAddEventListener(expOpenAmpm, 'change', updateExpOpeningTime);
             }
-        }
 
-        expOpenHour.addEventListener('change', updateExpOpeningTime);
-        expOpenMinute.addEventListener('change', updateExpOpeningTime);
-        expOpenAmpm.addEventListener('change', updateExpOpeningTime);
+            // Experience Closing Time - Combine hour, minute, AM/PM into 24-hour format
+            const expCloseHour = document.getElementById('exp_close_hour');
+            const expCloseMinute = document.getElementById('exp_close_minute');
+            const expCloseAmpm = document.getElementById('exp_close_ampm');
+            const expHourEnd = document.getElementById('exp_hour_end');
 
-        // Experience Closing Time - Combine hour, minute, AM/PM into 24-hour format
-        const expCloseHour = document.getElementById('exp_close_hour');
-        const expCloseMinute = document.getElementById('exp_close_minute');
-        const expCloseAmpm = document.getElementById('exp_close_ampm');
-        const expHourEnd = document.getElementById('exp_hour_end');
+            if (expCloseHour && expCloseMinute && expCloseAmpm && expHourEnd) {
+                function updateExpClosingTime() {
+                    const hour = expCloseHour.value;
+                    const minute = expCloseMinute.value;
+                    const ampm = expCloseAmpm.value;
 
-        function updateExpClosingTime() {
-            const hour = expCloseHour.value;
-            const minute = expCloseMinute.value;
-            const ampm = expCloseAmpm.value;
-
-            if (hour && minute && ampm) {
-                let hour24 = parseInt(hour);
-                if (ampm === 'PM' && hour24 !== 12) {
-                    hour24 += 12;
-                } else if (ampm === 'AM' && hour24 === 12) {
-                    hour24 = 0;
+                    if (hour && minute && ampm) {
+                        let hour24 = parseInt(hour);
+                        if (ampm === 'PM' && hour24 !== 12) {
+                            hour24 += 12;
+                        } else if (ampm === 'AM' && hour24 === 12) {
+                            hour24 = 0;
+                        }
+                        expHourEnd.value = `${String(hour24).padStart(2, '0')}:${minute}`;
+                    }
                 }
-                expHourEnd.value = `${String(hour24).padStart(2, '0')}:${minute}`;
+
+                safeAddEventListener(expCloseHour, 'change', updateExpClosingTime);
+                safeAddEventListener(expCloseMinute, 'change', updateExpClosingTime);
+                safeAddEventListener(expCloseAmpm, 'change', updateExpClosingTime);
             }
-        }
 
-        expCloseHour.addEventListener('change', updateExpClosingTime);
-        expCloseMinute.addEventListener('change', updateExpClosingTime);
-        expCloseAmpm.addEventListener('change', updateExpClosingTime);
+            // Event Opening Time - Combine hour, minute, AM/PM into 24-hour format
+            const evtOpenHour = document.getElementById('evt_open_hour');
+            const evtOpenMinute = document.getElementById('evt_open_minute');
+            const evtOpenAmpm = document.getElementById('evt_open_ampm');
+            const evtHourStart = document.getElementById('evt_hour_start');
 
-        // Event Opening Time - Combine hour, minute, AM/PM into 24-hour format
-        const evtOpenHour = document.getElementById('evt_open_hour');
-        const evtOpenMinute = document.getElementById('evt_open_minute');
-        const evtOpenAmpm = document.getElementById('evt_open_ampm');
-        const evtHourStart = document.getElementById('evt_hour_start');
+            if (evtOpenHour && evtOpenMinute && evtOpenAmpm && evtHourStart) {
+                function updateEvtOpeningTime() {
+                    const hour = evtOpenHour.value;
+                    const minute = evtOpenMinute.value;
+                    const ampm = evtOpenAmpm.value;
 
-        function updateEvtOpeningTime() {
-            const hour = evtOpenHour.value;
-            const minute = evtOpenMinute.value;
-            const ampm = evtOpenAmpm.value;
-
-            if (hour && minute && ampm) {
-                let hour24 = parseInt(hour);
-                if (ampm === 'PM' && hour24 !== 12) {
-                    hour24 += 12;
-                } else if (ampm === 'AM' && hour24 === 12) {
-                    hour24 = 0;
+                    if (hour && minute && ampm) {
+                        let hour24 = parseInt(hour);
+                        if (ampm === 'PM' && hour24 !== 12) {
+                            hour24 += 12;
+                        } else if (ampm === 'AM' && hour24 === 12) {
+                            hour24 = 0;
+                        }
+                        evtHourStart.value = `${String(hour24).padStart(2, '0')}:${minute}`;
+                    }
                 }
-                evtHourStart.value = `${String(hour24).padStart(2, '0')}:${minute}`;
+
+                safeAddEventListener(evtOpenHour, 'change', updateEvtOpeningTime);
+                safeAddEventListener(evtOpenMinute, 'change', updateEvtOpeningTime);
+                safeAddEventListener(evtOpenAmpm, 'change', updateEvtOpeningTime);
             }
-        }
 
-        evtOpenHour.addEventListener('change', updateEvtOpeningTime);
-        evtOpenMinute.addEventListener('change', updateEvtOpeningTime);
-        evtOpenAmpm.addEventListener('change', updateEvtOpeningTime);
+            // Event Closing Time - Combine hour, minute, AM/PM into 24-hour format
+            const evtCloseHour = document.getElementById('evt_close_hour');
+            const evtCloseMinute = document.getElementById('evt_close_minute');
+            const evtCloseAmpm = document.getElementById('evt_close_ampm');
+            const evtHourEnd = document.getElementById('evt_hour_end');
 
-        // Event Closing Time - Combine hour, minute, AM/PM into 24-hour format
-        const evtCloseHour = document.getElementById('evt_close_hour');
-        const evtCloseMinute = document.getElementById('evt_close_minute');
-        const evtCloseAmpm = document.getElementById('evt_close_ampm');
-        const evtHourEnd = document.getElementById('evt_hour_end');
+            if (evtCloseHour && evtCloseMinute && evtCloseAmpm && evtHourEnd) {
+                function updateEvtClosingTime() {
+                    const hour = evtCloseHour.value;
+                    const minute = evtCloseMinute.value;
+                    const ampm = evtCloseAmpm.value;
 
-        function updateEvtClosingTime() {
-            const hour = evtCloseHour.value;
-            const minute = evtCloseMinute.value;
-            const ampm = evtCloseAmpm.value;
-
-            if (hour && minute && ampm) {
-                let hour24 = parseInt(hour);
-                if (ampm === 'PM' && hour24 !== 12) {
-                    hour24 += 12;
-                } else if (ampm === 'AM' && hour24 === 12) {
-                    hour24 = 0;
+                    if (hour && minute && ampm) {
+                        let hour24 = parseInt(hour);
+                        if (ampm === 'PM' && hour24 !== 12) {
+                            hour24 += 12;
+                        } else if (ampm === 'AM' && hour24 === 12) {
+                            hour24 = 0;
+                        }
+                        evtHourEnd.value = `${String(hour24).padStart(2, '0')}:${minute}`;
+                    }
                 }
-                evtHourEnd.value = `${String(hour24).padStart(2, '0')}:${minute}`;
+
+                safeAddEventListener(evtCloseHour, 'change', updateEvtClosingTime);
+                safeAddEventListener(evtCloseMinute, 'change', updateEvtClosingTime);
+                safeAddEventListener(evtCloseAmpm, 'change', updateEvtClosingTime);
             }
-        }
 
-        evtCloseHour.addEventListener('change', updateEvtClosingTime);
-        evtCloseMinute.addEventListener('change', updateEvtClosingTime);
-        evtCloseAmpm.addEventListener('change', updateEvtClosingTime);
+            if (typeOptions.length === 0) {
+                console.warn('[POSTING] Type options not found');
+                return;
+            }
 
-        typeOptions.forEach(option => {
-            option.addEventListener('click', function() {
+            typeOptions.forEach(option => {
+                option.addEventListener('click', function() {
                 // Remove active class from all
                 typeOptions.forEach(opt => opt.classList.remove('active'));
                 // Add active class to clicked
@@ -216,263 +261,272 @@
                     stayForm.classList.add('active');
                     enableFormValidation(stayForm);
                 }
+                
+                // Update wizard if it exists
+                if (window.postingWizard) {
+                    console.log('[POSTING] Updating wizard listing type to:', type);
+                    window.postingWizard.listingType = type;
+                    // Also update the radio button to ensure consistency
+                    const radio = document.querySelector(`input[name="listing_type"][value="${type}"]`);
+                    if (radio && !radio.checked) {
+                        radio.checked = true;
+                        radio.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                    window.postingWizard.updateStepVisibility();
+                    // Reset to step 1 when changing listing type
+                    window.postingWizard.showStep(1);
+                } else {
+                    console.warn('[POSTING] Wizard not initialized yet, will update when ready');
+                    // Store the type for when wizard initializes
+                    window.pendingListingType = type;
+                }
             });
         });
 
-        // Character counters - Experience
-        const titleInput = document.getElementById('exp_title');
-        const titleCounter = document.getElementById('title-counter');
-        const descInput = document.getElementById('exp_description');
-        const descCounter = document.getElementById('description-counter');
+            // Character counters - Experience
+            const titleInput = document.getElementById('exp_title');
+            const titleCounter = document.getElementById('title-counter');
+            const descInput = document.getElementById('exp_description');
+            const descCounter = document.getElementById('description-counter');
 
-        titleInput.addEventListener('input', function() {
-            titleCounter.textContent = `${this.value.length} / 100 characters`;
-        });
-
-        descInput.addEventListener('input', function() {
-            const length = this.value.length;
-            descCounter.textContent = `${length} characters ${length < 50 ? '(minimum 50)' : ''}`;
-            if (length < 50) {
-                descCounter.style.color = '#dc2626';
-            } else {
-                descCounter.style.color = '#717171';
-            }
-        });
-
-        // Character counters - Event
-        const evtTitleInput = document.getElementById('evt_title');
-        const evtTitleCounter = document.getElementById('evt_title_counter');
-        const evtDescInput = document.getElementById('evt_description');
-        const evtDescCounter = document.getElementById('evt_description_counter');
-
-        evtTitleInput.addEventListener('input', function() {
-            evtTitleCounter.textContent = `${this.value.length} / 100 characters`;
-        });
-
-        evtDescInput.addEventListener('input', function() {
-            const length = this.value.length;
-            evtDescCounter.textContent = `${length} characters ${length < 50 ? '(minimum 50)' : ''}`;
-            if (length < 50) {
-                evtDescCounter.style.color = '#dc2626';
-            } else {
-                evtDescCounter.style.color = '#717171';
-            }
-        });
-
-        // Character counters - Stay
-        const stayTitleInput = document.getElementById('stay_title');
-        const stayTitleCounter = document.getElementById('stay_title_counter');
-        const stayDescInput = document.getElementById('stay_description');
-        const stayDescCounter = document.getElementById('stay_description_counter');
-
-        stayTitleInput.addEventListener('input', function() {
-            stayTitleCounter.textContent = `${this.value.length} / 20 characters`;
-        });
-
-        stayDescInput.addEventListener('input', function() {
-            const length = this.value.length;
-            stayDescCounter.textContent = `${length} characters ${length < 50 ? '(minimum 50)' : ''}`;
-            if (length < 50) {
-                stayDescCounter.style.color = '#dc2626';
-            } else {
-                stayDescCounter.style.color = '#717171';
-            }
-        });
-
-        // Pricing type toggle - Experience
-        const perPersonRadio = document.getElementById('exp_per_person');
-        const perGroupRadio = document.getElementById('exp_per_group');
-        const groupSizeField = document.getElementById('group-size-field');
-
-        function updatePricingFields() {
-            if (perGroupRadio.checked) {
-                groupSizeField.classList.add('show');
-                document.getElementById('exp_max_guests_per_price').required = true;
-            } else {
-                groupSizeField.classList.remove('show');
-                document.getElementById('exp_max_guests_per_price').required = false;
-            }
-        }
-
-        perPersonRadio.addEventListener('change', updatePricingFields);
-        perGroupRadio.addEventListener('change', updatePricingFields);
-
-        // Pricing type toggle - Event
-        const evtPerPersonRadio = document.getElementById('evt_per_person');
-        const evtPerGroupRadio = document.getElementById('evt_per_group');
-        const evtGroupSizeField = document.getElementById('evt_group_size_field');
-
-        function updateEvtPricingFields() {
-            if (evtPerGroupRadio.checked) {
-                evtGroupSizeField.classList.add('show');
-                document.getElementById('evt_max_guests_per_price').required = true;
-            } else {
-                evtGroupSizeField.classList.remove('show');
-                document.getElementById('evt_max_guests_per_price').required = false;
-            }
-        }
-
-        evtPerPersonRadio.addEventListener('change', updateEvtPricingFields);
-        evtPerGroupRadio.addEventListener('change', updateEvtPricingFields);
-
-        // Main image preview - Experience
-        const imageInput = document.getElementById('exp_main_image');
-        const imagePreview = document.getElementById('exp_image_preview');
-        const previewImg = document.getElementById('exp_preview_img');
-
-        imageInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImg.src = e.target.result;
-                    imagePreview.style.display = 'block';
+            if (titleInput && titleCounter) {
+                const updateTitleCounter = function() {
+                    titleCounter.textContent = `${this.value.length} / 100 characters`;
                 };
-                reader.readAsDataURL(file);
+                titleInput.addEventListener('input', updateTitleCounter);
+                titleInput.addEventListener('keyup', updateTitleCounter);
+                titleInput.addEventListener('change', updateTitleCounter);
+                // Initial update
+                titleCounter.textContent = `${titleInput.value.length} / 100 characters`;
             }
-        });
 
-        // Main image preview - Event
-        const evtImageInput = document.getElementById('evt_main_image');
-        const evtImagePreview = document.getElementById('evt_image_preview');
-        const evtPreviewImg = document.getElementById('evt_preview_img');
-
-        evtImageInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    evtPreviewImg.src = e.target.result;
-                    evtImagePreview.style.display = 'block';
+            if (descInput && descCounter) {
+                const updateDescCounter = function() {
+                    const length = descInput.value.length;
+                    descCounter.textContent = `${length} characters ${length < 50 ? '(minimum 50)' : ''}`;
+                    if (length < 50) {
+                        descCounter.style.color = '#dc2626';
+                    } else {
+                        descCounter.style.color = '#717171';
+                    }
                 };
-                reader.readAsDataURL(file);
+                descInput.addEventListener('input', updateDescCounter);
+                descInput.addEventListener('keyup', updateDescCounter);
+                descInput.addEventListener('change', updateDescCounter);
+                // Initial update
+                const initialLength = descInput.value.length;
+                descCounter.textContent = `${initialLength} characters ${initialLength < 50 ? '(minimum 50)' : ''}`;
+                descCounter.style.color = initialLength < 50 ? '#dc2626' : '#717171';
             }
-        });
+
+            // Character counters - Event
+            const evtTitleInput = document.getElementById('evt_title');
+            const evtTitleCounter = document.getElementById('evt_title_counter');
+            const evtDescInput = document.getElementById('evt_description');
+            const evtDescCounter = document.getElementById('evt_description_counter');
+
+            if (evtTitleInput && evtTitleCounter) {
+                const updateEvtTitleCounter = function() {
+                    evtTitleCounter.textContent = `${this.value.length} / 100 characters`;
+                };
+                evtTitleInput.addEventListener('input', updateEvtTitleCounter);
+                evtTitleInput.addEventListener('keyup', updateEvtTitleCounter);
+                evtTitleInput.addEventListener('change', updateEvtTitleCounter);
+                // Initial update
+                evtTitleCounter.textContent = `${evtTitleInput.value.length} / 100 characters`;
+            }
+
+            if (evtDescInput && evtDescCounter) {
+                const updateEvtDescCounter = function() {
+                    const length = evtDescInput.value.length;
+                    evtDescCounter.textContent = `${length} characters ${length < 50 ? '(minimum 50)' : ''}`;
+                    if (length < 50) {
+                        evtDescCounter.style.color = '#dc2626';
+                    } else {
+                        evtDescCounter.style.color = '#717171';
+                    }
+                };
+                evtDescInput.addEventListener('input', updateEvtDescCounter);
+                evtDescInput.addEventListener('keyup', updateEvtDescCounter);
+                evtDescInput.addEventListener('change', updateEvtDescCounter);
+                // Initial update
+                const initialEvtLength = evtDescInput.value.length;
+                evtDescCounter.textContent = `${initialEvtLength} characters ${initialEvtLength < 50 ? '(minimum 50)' : ''}`;
+                evtDescCounter.style.color = initialEvtLength < 50 ? '#dc2626' : '#717171';
+            }
+
+            // Character counters - Stay
+            const stayTitleInput = document.getElementById('stay_title');
+            const stayTitleCounter = document.getElementById('stay_title_counter');
+            const stayDescInput = document.getElementById('stay_description');
+            const stayDescCounter = document.getElementById('stay_description_counter');
+
+            if (stayTitleInput && stayTitleCounter) {
+                const updateStayTitleCounter = function() {
+                    stayTitleCounter.textContent = `${this.value.length} / 20 characters`;
+                };
+                stayTitleInput.addEventListener('input', updateStayTitleCounter);
+                stayTitleInput.addEventListener('keyup', updateStayTitleCounter);
+                stayTitleInput.addEventListener('change', updateStayTitleCounter);
+                // Initial update
+                stayTitleCounter.textContent = `${stayTitleInput.value.length} / 20 characters`;
+            }
+
+            if (stayDescInput && stayDescCounter) {
+                const updateStayDescCounter = function() {
+                    const length = stayDescInput.value.length;
+                    stayDescCounter.textContent = `${length} characters ${length < 50 ? '(minimum 50)' : ''}`;
+                    if (length < 50) {
+                        stayDescCounter.style.color = '#dc2626';
+                    } else {
+                        stayDescCounter.style.color = '#717171';
+                    }
+                };
+                stayDescInput.addEventListener('input', updateStayDescCounter);
+                stayDescInput.addEventListener('keyup', updateStayDescCounter);
+                stayDescInput.addEventListener('change', updateStayDescCounter);
+                // Initial update
+                const initialStayLength = stayDescInput.value.length;
+                stayDescCounter.textContent = `${initialStayLength} characters ${initialStayLength < 50 ? '(minimum 50)' : ''}`;
+                stayDescCounter.style.color = initialStayLength < 50 ? '#dc2626' : '#717171';
+            }
+
+            // Pricing type toggle - Experience
+            const perPersonRadio = document.getElementById('exp_per_person');
+            const perGroupRadio = document.getElementById('exp_per_group');
+            const groupSizeField = document.getElementById('group-size-field');
+
+            if (perPersonRadio && perGroupRadio && groupSizeField) {
+                function updatePricingFields() {
+                    if (perGroupRadio.checked) {
+                        groupSizeField.classList.add('show');
+                        const maxGuestsPerPrice = document.getElementById('exp_max_guests_per_price');
+                        if (maxGuestsPerPrice) maxGuestsPerPrice.required = true;
+                    } else {
+                        groupSizeField.classList.remove('show');
+                        const maxGuestsPerPrice = document.getElementById('exp_max_guests_per_price');
+                        if (maxGuestsPerPrice) maxGuestsPerPrice.required = false;
+                    }
+                }
+
+                safeAddEventListener(perPersonRadio, 'change', updatePricingFields);
+                safeAddEventListener(perGroupRadio, 'change', updatePricingFields);
+            }
+
+            // Pricing type toggle - Event
+            const evtPerPersonRadio = document.getElementById('evt_per_person');
+            const evtPerGroupRadio = document.getElementById('evt_per_group');
+            const evtGroupSizeField = document.getElementById('evt_group_size_field');
+
+            if (evtPerPersonRadio && evtPerGroupRadio && evtGroupSizeField) {
+                function updateEvtPricingFields() {
+                    if (evtPerGroupRadio.checked) {
+                        evtGroupSizeField.classList.add('show');
+                        const maxGuestsPerPrice = document.getElementById('evt_max_guests_per_price');
+                        if (maxGuestsPerPrice) maxGuestsPerPrice.required = true;
+                    } else {
+                        evtGroupSizeField.classList.remove('show');
+                        const maxGuestsPerPrice = document.getElementById('evt_max_guests_per_price');
+                        if (maxGuestsPerPrice) maxGuestsPerPrice.required = false;
+                    }
+                }
+
+                safeAddEventListener(evtPerPersonRadio, 'change', updateEvtPricingFields);
+                safeAddEventListener(evtPerGroupRadio, 'change', updateEvtPricingFields);
+            }
+
+            // Main image preview - Experience
+            const imageInput = document.getElementById('exp_main_image');
+            const imagePreview = document.getElementById('exp_image_preview');
+            const previewImg = document.getElementById('exp_preview_img');
+
+            if (imageInput && imagePreview && previewImg) {
+                safeAddEventListener(imageInput, 'change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImg.src = e.target.result;
+                            imagePreview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Main image preview - Event
+            const evtImageInput = document.getElementById('evt_main_image');
+            const evtImagePreview = document.getElementById('evt_image_preview');
+            const evtPreviewImg = document.getElementById('evt_preview_img');
+
+            if (evtImageInput && evtImagePreview && evtPreviewImg) {
+                safeAddEventListener(evtImageInput, 'change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            evtPreviewImg.src = e.target.result;
+                            evtImagePreview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
 
         // Store image metadata (category/room) with file indices
-        const imageMetadata = {
+        // Make it globally accessible for wizard draft saving
+        window.imageMetadata = {
             exp: [],
             evt: [],
             stay: []
         };
+        const imageMetadata = window.imageMetadata;
 
-        // Additional images preview - Experience
-        const additionalImagesInput = document.getElementById('exp_additional_images');
-        const additionalPreviewContainer = document.getElementById('exp_additional_preview');
-
-        additionalImagesInput.addEventListener('change', function(e) {
-            let files = Array.from(e.target.files);
-            const maxImages = 20;
-            
-            // Limit to 20 images
-            if (files.length > maxImages) {
-                alert(`You can only upload up to ${maxImages} additional images. Only the first ${maxImages} will be selected.`);
-                files = files.slice(0, maxImages);
-                
-                // Create new FileList with limited files
-                const dt = new DataTransfer();
-                files.forEach(file => dt.items.add(file));
-                this.files = dt.files;
-            }
-            
-            // Update image count after limiting
-            const countElement = document.getElementById('exp_image_count');
-            if (countElement) {
-                const count = files.length;
-                countElement.textContent = `${count} image${count !== 1 ? 's' : ''} selected (max ${maxImages})`;
-                countElement.style.color = count > maxImages ? '#dc2626' : '#717171';
-            }
-            
-            additionalPreviewContainer.innerHTML = '';
-            imageMetadata.exp = [];
-            
-            files.forEach((file, index) => {
-                // Initialize metadata for this file index
-                imageMetadata.exp[index] = { category: 'General' };
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imgWrapper = document.createElement('div');
-                    imgWrapper.style.position = 'relative';
-                    imgWrapper.dataset.fileIndex = index;
-                    imgWrapper.style.marginBottom = '16px';
-                    
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.width = '100%';
-                    img.style.height = '150px';
-                    img.style.objectFit = 'cover';
-                    img.style.borderRadius = '8px';
-                    img.style.border = '2px solid #EBEBEB';
-                    img.style.marginBottom = '8px';
-                    
-                    // Category input for experiences/events
-                    const categoryLabel = document.createElement('label');
-                    categoryLabel.textContent = 'Category:';
-                    categoryLabel.style.display = 'block';
-                    categoryLabel.style.fontSize = '12px';
-                    categoryLabel.style.fontWeight = '600';
-                    categoryLabel.style.marginBottom = '4px';
-                    categoryLabel.style.color = '#222';
-                    
-                    const categoryInput = document.createElement('input');
-                    categoryInput.type = 'text';
-                    categoryInput.placeholder = 'e.g., Activity, Location, Group';
-                    categoryInput.className = 'image-category-input';
-                    categoryInput.value = 'General';
-                    categoryInput.style.width = '100%';
-                    categoryInput.style.padding = '8px';
-                    categoryInput.style.border = '1px solid #DDDDDD';
-                    categoryInput.style.borderRadius = '4px';
-                    categoryInput.style.fontSize = '14px';
-                    categoryInput.dataset.fileIndex = index;
-                    
-                    categoryInput.addEventListener('change', function() {
-                        if (imageMetadata.exp[index]) {
-                            imageMetadata.exp[index].category = this.value || 'General';
-                        }
-                    });
-                    
-                    imgWrapper.appendChild(img);
-                    imgWrapper.appendChild(categoryLabel);
-                    imgWrapper.appendChild(categoryInput);
-                    additionalPreviewContainer.appendChild(imgWrapper);
-                };
-                reader.readAsDataURL(file);
-            });
-        });
+        // Additional images handlers (these can be initialized later as they're in wizard steps)
+        // Store files for each type
+        let expAdditionalFiles = [];
+        let evtAdditionalFiles = [];
+        let stayAdditionalFiles = [];
 
         // Additional images preview - Event
         const evtAdditionalImagesInput = document.getElementById('evt_additional_images');
         const evtAdditionalPreviewContainer = document.getElementById('evt_additional_preview');
 
-        evtAdditionalImagesInput.addEventListener('change', function(e) {
-            let files = Array.from(e.target.files);
-            const maxImages = 20;
-            
-            // Limit to 20 images
-            if (files.length > maxImages) {
-                alert(`You can only upload up to ${maxImages} additional images. Only the first ${maxImages} will be selected.`);
-                files = files.slice(0, maxImages);
-                
-                // Create new FileList with limited files
+        if (evtAdditionalImagesInput && evtAdditionalPreviewContainer) {
+            safeAddEventListener(evtAdditionalImagesInput, 'change', function(e) {
+                const newFiles = Array.from(e.target.files);
+                const maxImages = 20;
+
+                // Add new files to existing array
+                const totalFiles = evtAdditionalFiles.length + newFiles.length;
+
+                if (totalFiles > maxImages) {
+                    alert(`You can only upload up to ${maxImages} additional images in total. You currently have ${evtAdditionalFiles.length} images. Only ${maxImages - evtAdditionalFiles.length} more will be added.`);
+                    const availableSlots = maxImages - evtAdditionalFiles.length;
+                    newFiles.splice(availableSlots); // Keep only what fits
+                }
+
+                // Add new files to array
+                evtAdditionalFiles.push(...newFiles);
+
+                // Update image count
+                const countElement = document.getElementById('evt_image_count');
+                if (countElement) {
+                    const count = evtAdditionalFiles.length;
+                    countElement.textContent = `${count} image${count !== 1 ? 's' : ''} selected (max ${maxImages})`;
+                    countElement.style.color = count > maxImages ? '#dc2626' : '#717171';
+                }
+
+                // Update the DataTransfer object to include all files
                 const dt = new DataTransfer();
-                files.forEach(file => dt.items.add(file));
+                evtAdditionalFiles.forEach(file => dt.items.add(file));
                 this.files = dt.files;
-            }
-            
-            // Update image count after limiting
-            const countElement = document.getElementById('evt_image_count');
-            if (countElement) {
-                const count = files.length;
-                countElement.textContent = `${count} image${count !== 1 ? 's' : ''} selected (max ${maxImages})`;
-                countElement.style.color = count > maxImages ? '#dc2626' : '#717171';
-            }
-            
-            evtAdditionalPreviewContainer.innerHTML = '';
-            imageMetadata.evt = [];
-            
-            files.forEach((file, index) => {
+
+                // Render all images (clear and re-render)
+                evtAdditionalPreviewContainer.innerHTML = '';
+                imageMetadata.evt = [];
+
+                evtAdditionalFiles.forEach((file, index) => {
                 // Initialize metadata for this file index
                 imageMetadata.evt[index] = { category: 'General' };
                 
@@ -526,14 +580,16 @@
                 };
                 reader.readAsDataURL(file);
             });
-        });
+            });
+        }
 
-        // Main image preview - Stay
-        const stayImageInput = document.getElementById('stay_main_image');
-        const stayImagePreview = document.getElementById('stay_image_preview');
-        const stayPreviewImg = document.getElementById('stay_preview_img');
+            // Main image preview - Stay
+            const stayImageInput = document.getElementById('stay_main_image');
+            const stayImagePreview = document.getElementById('stay_image_preview');
+            const stayPreviewImg = document.getElementById('stay_preview_img');
 
-        stayImageInput.addEventListener('change', function(e) {
+            if (stayImageInput && stayImagePreview && stayPreviewImg) {
+                safeAddEventListener(stayImageInput, 'change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -543,7 +599,9 @@
                 };
                 reader.readAsDataURL(file);
             }
-        });
+                });
+            }
+        }
 
         // Function to generate room options based on bedrooms and bathrooms
         function generateStayRoomOptions() {
@@ -629,14 +687,14 @@
         }
         
         // Additional images preview - Stay
-        const stayAdditionalImagesInput = document.getElementById('stay_additional_images');
-        const stayAdditionalPreviewContainer = document.getElementById('stay_additional_preview');
         const stayBedroomsInput = document.getElementById('stay_number_of_bedrooms');
         const stayBathroomsInput = document.getElementById('stay_number_of_bathrooms');
         const stayPropertyTypeSelect = document.getElementById('stay_property_type');
         const stayPropertyTypeHelp = document.getElementById('stay-property-type-help');
         const stayAmenitiesContainer = document.getElementById('stay-amenities-container');
-        const selectedStayAmenities = new Set();
+        // Make it globally accessible for wizard draft saving
+        window.selectedStayAmenities = new Set();
+        const selectedStayAmenities = window.selectedStayAmenities;
         let stayAmenitiesData = [];
 
         const CACHE_KEYS = {
@@ -674,26 +732,35 @@
         }
         
         // Update room options when bedrooms/bathrooms change
-        stayBedroomsInput.addEventListener('change', function() {
-            updateRequiredRoomsStatus();
-            // Refresh preview if images are already selected
-            if (stayAdditionalImagesInput.files.length > 0) {
-                stayAdditionalImagesInput.dispatchEvent(new Event('change'));
-            }
-        });
+        if (stayBedroomsInput) {
+            stayBedroomsInput.addEventListener('change', function() {
+                updateRequiredRoomsStatus();
+                // Refresh preview if images are already selected
+                const stayAdditionalImagesInput = document.getElementById('stay_additional_images');
+                if (stayAdditionalImagesInput && stayAdditionalImagesInput.files.length > 0) {
+                    stayAdditionalImagesInput.dispatchEvent(new Event('change'));
+                }
+            });
+        }
         
-        stayBathroomsInput.addEventListener('change', function() {
-            updateRequiredRoomsStatus();
-            // Refresh preview if images are already selected
-            if (stayAdditionalImagesInput.files.length > 0) {
-                stayAdditionalImagesInput.dispatchEvent(new Event('change'));
-            }
-        });
+        if (stayBathroomsInput) {
+            stayBathroomsInput.addEventListener('change', function() {
+                updateRequiredRoomsStatus();
+                // Refresh preview if images are already selected
+                const stayAdditionalImagesInput = document.getElementById('stay_additional_images');
+                if (stayAdditionalImagesInput && stayAdditionalImagesInput.files.length > 0) {
+                    stayAdditionalImagesInput.dispatchEvent(new Event('change'));
+                }
+            });
+        }
         
         // Initialize required rooms status
         updateRequiredRoomsStatus();
         
         function createStayImagePreview(files, startIndex = 0) {
+            const stayAdditionalPreviewContainer = document.getElementById('stay_additional_preview');
+            if (!stayAdditionalPreviewContainer) return;
+            
             const roomOptions = generateStayRoomOptions();
             const existingIndices = Array.from(stayAdditionalPreviewContainer.children).map(el => parseInt(el.dataset.fileIndex)).filter(i => !isNaN(i));
             let currentIndex = startIndex;
@@ -879,7 +946,8 @@
             }
 
             try {
-                const response = await fetch('backend/api/property-types.php');
+                // Use subtypes API for stays - get all subtypes where category = 'stay'
+                const response = await fetch('backend/api/subtypes.php?category=stay');
                 const data = await response.json();
 
                 if (response.ok && data.success && Array.isArray(data.data) && data.data.length) {
@@ -999,6 +1067,9 @@
                 `;
             }).join('');
         }
+        
+        // Make renderStayAmenitiesOptions globally accessible for wizard
+        window.renderStayAmenitiesOptions = renderStayAmenitiesOptions;
 
         if (stayAmenitiesContainer) {
             stayAmenitiesContainer.addEventListener('change', (event) => {
@@ -1020,56 +1091,306 @@
 
         loadStayPropertyTypes();
         loadStayAmenitiesOptions();
-        
-        stayAdditionalImagesInput.addEventListener('change', function(e) {
-            let files = Array.from(e.target.files);
-            const maxImages = 20;
+
+        // Call initializeFormHandlers when window is fully loaded
+        function initPostingHandlers() {
+            // Check if wizard steps exist
+            const wizardSteps = document.querySelectorAll('.wizard-step');
+            const form = document.getElementById('posting-form');
             
-            // Limit to 20 images
-            if (files.length > maxImages) {
-                alert(`You can only upload up to ${maxImages} additional images. Only the first ${maxImages} will be selected.`);
-                files = files.slice(0, maxImages);
-                
-                // Create new FileList with limited files
-                const dt = new DataTransfer();
-                files.forEach(file => dt.items.add(file));
-                this.files = dt.files;
+            if (wizardSteps.length === 0 || !form) {
+                console.log('[POSTING] Elements not found yet, retrying...');
+                setTimeout(initPostingHandlers, 200);
+                return;
             }
-            
-            // Update image count after limiting
-            const countElement = document.getElementById('stay_image_count');
-            if (countElement) {
-                const count = files.length;
-                countElement.textContent = `${count} image${count !== 1 ? 's' : ''} selected (max ${maxImages})`;
-                countElement.style.color = count > maxImages ? '#dc2626' : '#717171';
+            initializeFormHandlers();
+        }
+
+        // Wait for window to be fully loaded
+        if (document.readyState === 'loading') {
+            window.addEventListener('load', () => {
+                setTimeout(initPostingHandlers, 300);
+            });
+        } else if (document.readyState === 'interactive') {
+            window.addEventListener('load', () => {
+                setTimeout(initPostingHandlers, 300);
+            });
+        } else {
+            // Already loaded
+            setTimeout(initPostingHandlers, 400);
+        }
+
+        // Store image metadata (category/room) with file indices
+        // Make it globally accessible for wizard draft saving
+        window.imageMetadata = {
+            exp: [],
+            evt: [],
+            stay: []
+        };
+        const imageMetadata = window.imageMetadata;
+
+        // Additional images handlers (these can be initialized later as they're in wizard steps)
+        // Store files for each type (global scope for access from multiple functions)
+        let expAdditionalFiles = [];
+        let evtAdditionalFiles = [];
+        let stayAdditionalFiles = [];
+
+        function initializeAdditionalImageHandlers() {
+            // Additional images preview - Experience
+            const additionalImagesInput = document.getElementById('exp_additional_images');
+            const additionalPreviewContainer = document.getElementById('exp_additional_preview');
+
+            if (additionalImagesInput && additionalPreviewContainer) {
+                safeAddEventListener(additionalImagesInput, 'change', function(e) {
+                    const newFiles = Array.from(e.target.files);
+                    const maxImages = 20;
+
+                    // Add new files to existing array
+                    const totalFiles = expAdditionalFiles.length + newFiles.length;
+
+                    if (totalFiles > maxImages) {
+                        alert(`You can only upload up to ${maxImages} additional images in total. You currently have ${expAdditionalFiles.length} images. Only ${maxImages - expAdditionalFiles.length} more will be added.`);
+                        const availableSlots = maxImages - expAdditionalFiles.length;
+                        newFiles.splice(availableSlots); // Keep only what fits
+                    }
+
+                    // Add new files to array
+                    expAdditionalFiles.push(...newFiles);
+
+                    // Update image count
+                    const countElement = document.getElementById('exp_image_count');
+                    if (countElement) {
+                        const count = expAdditionalFiles.length;
+                        countElement.textContent = `${count} image${count !== 1 ? 's' : ''} selected (max ${maxImages})`;
+                        countElement.style.color = count > maxImages ? '#dc2626' : '#717171';
+                    }
+
+                    // Update the DataTransfer object to include all files
+                    const dt = new DataTransfer();
+                    expAdditionalFiles.forEach(file => dt.items.add(file));
+                    this.files = dt.files;
+
+                    // Render all images (clear and re-render)
+                    additionalPreviewContainer.innerHTML = '';
+                    imageMetadata.exp = [];
+
+                    expAdditionalFiles.forEach((file, index) => {
+                        // Initialize metadata for this file index
+                        imageMetadata.exp[index] = { category: 'General' };
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const imgWrapper = document.createElement('div');
+                            imgWrapper.style.position = 'relative';
+                            imgWrapper.dataset.fileIndex = index;
+                            imgWrapper.style.marginBottom = '16px';
+                            
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.style.width = '100%';
+                            img.style.height = '150px';
+                            img.style.objectFit = 'cover';
+                            img.style.borderRadius = '8px';
+                            img.style.border = '2px solid #EBEBEB';
+                            img.style.marginBottom = '8px';
+                            
+                            // Category input for experiences/events
+                            const categoryLabel = document.createElement('label');
+                            categoryLabel.textContent = 'Category:';
+                            categoryLabel.style.display = 'block';
+                            categoryLabel.style.fontSize = '12px';
+                            categoryLabel.style.fontWeight = '600';
+                            categoryLabel.style.marginBottom = '4px';
+                            categoryLabel.style.color = '#222';
+                            
+                            const categoryInput = document.createElement('input');
+                            categoryInput.type = 'text';
+                            categoryInput.placeholder = 'e.g., Activity, Location, Group';
+                            categoryInput.className = 'image-category-input';
+                            categoryInput.value = 'General';
+                            categoryInput.style.width = '100%';
+                            categoryInput.style.padding = '8px';
+                            categoryInput.style.border = '1px solid #DDDDDD';
+                            categoryInput.style.borderRadius = '4px';
+                            categoryInput.style.fontSize = '14px';
+                            categoryInput.dataset.fileIndex = index;
+                            
+                            categoryInput.addEventListener('change', function() {
+                                if (imageMetadata.exp[index]) {
+                                    imageMetadata.exp[index].category = this.value || 'General';
+                                }
+                            });
+                            
+                            imgWrapper.appendChild(img);
+                            imgWrapper.appendChild(categoryLabel);
+                            imgWrapper.appendChild(categoryInput);
+                            additionalPreviewContainer.appendChild(imgWrapper);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                });
             }
-            
-            // Clear preview and metadata if starting fresh, otherwise append
-            const existingPreviews = stayAdditionalPreviewContainer.querySelectorAll('[data-file-index]');
-            if (existingPreviews.length === 0) {
-                stayAdditionalPreviewContainer.innerHTML = '';
-                imageMetadata.stay = [];
-                createStayImagePreview(files, 0);
-            } else {
-                createStayImagePreview(files);
+
+            // Additional images preview - Event
+            const evtAdditionalImagesInput = document.getElementById('evt_additional_images');
+            const evtAdditionalPreviewContainer = document.getElementById('evt_additional_preview');
+
+            if (evtAdditionalImagesInput && evtAdditionalPreviewContainer) {
+                safeAddEventListener(evtAdditionalImagesInput, 'change', function(e) {
+                    const newFiles = Array.from(e.target.files);
+                    const maxImages = 20;
+
+                    // Add new files to existing array
+                    const totalFiles = evtAdditionalFiles.length + newFiles.length;
+
+                    if (totalFiles > maxImages) {
+                        alert(`You can only upload up to ${maxImages} additional images in total. You currently have ${evtAdditionalFiles.length} images. Only ${maxImages - evtAdditionalFiles.length} more will be added.`);
+                        const availableSlots = maxImages - evtAdditionalFiles.length;
+                        newFiles.splice(availableSlots); // Keep only what fits
+                    }
+
+                    // Add new files to array
+                    evtAdditionalFiles.push(...newFiles);
+
+                    // Update image count
+                    const countElement = document.getElementById('evt_image_count');
+                    if (countElement) {
+                        const count = evtAdditionalFiles.length;
+                        countElement.textContent = `${count} image${count !== 1 ? 's' : ''} selected (max ${maxImages})`;
+                        countElement.style.color = count > maxImages ? '#dc2626' : '#717171';
+                    }
+
+                    // Update the DataTransfer object to include all files
+                    const dt = new DataTransfer();
+                    evtAdditionalFiles.forEach(file => dt.items.add(file));
+                    this.files = dt.files;
+
+                    // Render all images (clear and re-render)
+                    evtAdditionalPreviewContainer.innerHTML = '';
+                    imageMetadata.evt = [];
+
+                    evtAdditionalFiles.forEach((file, index) => {
+                        // Initialize metadata for this file index
+                        imageMetadata.evt[index] = { category: 'General' };
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const imgWrapper = document.createElement('div');
+                            imgWrapper.style.position = 'relative';
+                            imgWrapper.dataset.fileIndex = index;
+                            imgWrapper.style.marginBottom = '16px';
+                            
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.style.width = '100%';
+                            img.style.height = '150px';
+                            img.style.objectFit = 'cover';
+                            img.style.borderRadius = '8px';
+                            img.style.border = '2px solid #EBEBEB';
+                            img.style.marginBottom = '8px';
+                            
+                            // Category input for events
+                            const categoryLabel = document.createElement('label');
+                            categoryLabel.textContent = 'Category:';
+                            categoryLabel.style.display = 'block';
+                            categoryLabel.style.fontSize = '12px';
+                            categoryLabel.style.fontWeight = '600';
+                            categoryLabel.style.marginBottom = '4px';
+                            categoryLabel.style.color = '#222';
+                            
+                            const categoryInput = document.createElement('input');
+                            categoryInput.type = 'text';
+                            categoryInput.placeholder = 'e.g., Activity, Location, Group';
+                            categoryInput.className = 'image-category-input';
+                            categoryInput.value = 'General';
+                            categoryInput.style.width = '100%';
+                            categoryInput.style.padding = '8px';
+                            categoryInput.style.border = '1px solid #DDDDDD';
+                            categoryInput.style.borderRadius = '4px';
+                            categoryInput.style.fontSize = '14px';
+                            categoryInput.dataset.fileIndex = index;
+                            
+                            categoryInput.addEventListener('change', function() {
+                                if (imageMetadata.evt[index]) {
+                                    imageMetadata.evt[index].category = this.value || 'General';
+                                }
+                            });
+                            
+                            imgWrapper.appendChild(img);
+                            imgWrapper.appendChild(categoryLabel);
+                            imgWrapper.appendChild(categoryInput);
+                            evtAdditionalPreviewContainer.appendChild(imgWrapper);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                });
             }
-        });
+
+            // Additional images preview - Stay
+            const stayAdditionalImagesInput = document.getElementById('stay_additional_images');
+            const stayAdditionalPreviewContainer = document.getElementById('stay_additional_preview');
+
+            if (stayAdditionalImagesInput && stayAdditionalPreviewContainer) {
+                safeAddEventListener(stayAdditionalImagesInput, 'change', function(e) {
+                    const newFiles = Array.from(e.target.files);
+                    const maxImages = 20;
+
+                    // Add new files to existing array
+                    const totalFiles = stayAdditionalFiles.length + newFiles.length;
+
+                    if (totalFiles > maxImages) {
+                        alert(`You can only upload up to ${maxImages} additional images in total. You currently have ${stayAdditionalFiles.length} images. Only ${maxImages - stayAdditionalFiles.length} more will be added.`);
+                        const availableSlots = maxImages - stayAdditionalFiles.length;
+                        newFiles.splice(availableSlots); // Keep only what fits
+                    }
+
+                    // Add new files to array
+                    stayAdditionalFiles.push(...newFiles);
+
+                    // Update image count
+                    const countElement = document.getElementById('stay_image_count');
+                    if (countElement) {
+                        const count = stayAdditionalFiles.length;
+                        countElement.textContent = `${count} image${count !== 1 ? 's' : ''} selected (max ${maxImages})`;
+                        countElement.style.color = count > maxImages ? '#dc2626' : '#717171';
+                    }
+
+                    // Update the DataTransfer object to include all files
+                    const dt = new DataTransfer();
+                    stayAdditionalFiles.forEach(file => dt.items.add(file));
+                    this.files = dt.files;
+
+                    // Render all images (clear and re-render)
+                    stayAdditionalPreviewContainer.innerHTML = '';
+                    imageMetadata.stay = [];
+                    createStayImagePreview(stayAdditionalFiles, 0);
+                });
+            }
+        }
+
+        // Initialize additional image handlers when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeAdditionalImageHandlers);
+        } else {
+            setTimeout(initializeAdditionalImageHandlers, 200);
+        }
 
         // Form submission
         const form = document.getElementById('posting-form');
         const alertDiv = document.getElementById('alert');
         const submitBtn = document.getElementById('submit-btn');
 
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
+        if (form && alertDiv && submitBtn) {
+            safeAddEventListener(form, 'submit', async function(e) {
+                e.preventDefault();
 
-            // Determine which form is active
-            const listingType = document.querySelector('input[name="listing_type"]:checked').value;
+                // Determine which form is active
+                const listingType = document.querySelector('input[name="listing_type"]:checked').value;
 
             // Validate based on type
             if (listingType === 'experience') {
-                const description = descInput.value;
-                if (description.length < 50) {
+                const descInput = document.getElementById('exp_description');
+                if (!descInput || descInput.value.length < 50) {
                     showAlert('Description must be at least 50 characters', 'error');
                     return;
                 }
@@ -1081,18 +1402,20 @@
                 }
 
                 // Validate time fields are filled
-                if (!expHourStart.value) {
+                const expHourStart = document.getElementById('exp_hour_start');
+                const expHourEnd = document.getElementById('exp_hour_end');
+                if (!expHourStart || !expHourStart.value) {
                     showAlert('Please select opening time', 'error');
                     return;
                 }
 
-                if (!expHourEnd.value) {
+                if (!expHourEnd || !expHourEnd.value) {
                     showAlert('Please select closing time', 'error');
                     return;
                 }
             } else if (listingType === 'event') {
-                const description = evtDescInput.value;
-                if (description.length < 50) {
+                const evtDescInput = document.getElementById('evt_description');
+                if (!evtDescInput || evtDescInput.value.length < 50) {
                     showAlert('Description must be at least 50 characters', 'error');
                     return;
                 }
@@ -1112,18 +1435,20 @@
                 }
 
                 // Validate time fields are filled
-                if (!evtHourStart.value) {
+                const evtHourStart = document.getElementById('evt_hour_start');
+                const evtHourEnd = document.getElementById('evt_hour_end');
+                if (!evtHourStart || !evtHourStart.value) {
                     showAlert('Please select opening time', 'error');
                     return;
                 }
 
-                if (!evtHourEnd.value) {
+                if (!evtHourEnd || !evtHourEnd.value) {
                     showAlert('Please select closing time', 'error');
                     return;
                 }
             } else if (listingType === 'stay') {
-                const description = stayDescInput.value;
-                if (description.length < 50) {
+                const stayDescInput = document.getElementById('stay_description');
+                if (!stayDescInput || stayDescInput.value.length < 50) {
                     showAlert('Description must be at least 50 characters', 'error');
                     return;
                 }
@@ -1134,8 +1459,8 @@
                     return;
                 }
 
-                const title = stayTitleInput.value;
-                if (title.length > 20) {
+                const stayTitleInput = document.getElementById('stay_title');
+                if (!stayTitleInput || stayTitleInput.value.length > 20) {
                     showAlert('Title must be 20 characters or less', 'error');
                     return;
                 }
@@ -1238,7 +1563,8 @@
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Create Posting';
             }
-        });
+            });
+        }
 
         function showAlert(message, type) {
             alertDiv.textContent = message;

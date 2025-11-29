@@ -4,15 +4,10 @@
  * Shows payment-related data from bookings table
  */
 
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: GET');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+require_once __DIR__ . '/../../config/cors.php';
+setCorsHeaders();
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
+header('Content-Type: application/json');
 
 $headers = getallheaders();
 $authHeader = isset($headers['Authorization']) ? $headers['Authorization'] : null;
@@ -74,6 +69,8 @@ try {
         LEFT JOIN stays ON b.listing_type = 'stay' AND b.listing_id = stays.id
         LEFT JOIN hostings ON b.listing_type IN ('experience', 'event') AND b.listing_id = hostings.id
         WHERE b.payment_status IS NOT NULL
+          AND (b.booking_status != 'cancelled' OR b.booking_status IS NULL)
+          AND (b.status != 'cancelled' OR b.status IS NULL)
         ORDER BY b.booking_date DESC
     ");
     $payments = $stmt->fetchAll(PDO::FETCH_ASSOC);

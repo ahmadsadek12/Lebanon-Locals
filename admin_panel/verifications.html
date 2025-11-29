@@ -53,23 +53,15 @@
         </div>
     </main>
 
-    <!-- View Document Modal -->
-    <div id="view-doc-modal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
+    <!-- User Details Modal -->
+    <div id="user-details-modal" class="modal">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
             <div class="modal-header">
-                <h2>Verification Document</h2>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <h2>User Details</h2>
+                <button class="modal-close" onclick="closeUserDetailsModal()">&times;</button>
             </div>
-            <div id="document-viewer" style="text-align: center; padding: 24px;">
-                <!-- Document will be loaded here -->
-            </div>
-            <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
-                <button class="btn btn-delete" onclick="rejectVerification()">
-                    <i class="fa fa-times"></i> Reject
-                </button>
-                <button class="btn btn-add" onclick="approveVerification()">
-                    <i class="fa fa-check"></i> Approve
-                </button>
+            <div id="user-details-content" style="padding: 24px;">
+                <div class="loading"><i class="fa fa-spinner fa-spin" style="font-size: 32px;"></i><p>Loading user details...</p></div>
             </div>
         </div>
     </div>

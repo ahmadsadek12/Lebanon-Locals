@@ -108,6 +108,16 @@
             </div>
         </div>
 
+        <!-- Financial Summary -->
+        <div class="table-container" id="financial-summary" style="display: none;">
+            <div class="table-header">
+                <h2>Financial Summary</h2>
+            </div>
+            <div id="financial-content">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
         <!-- Recent Activity -->
         <div class="table-container">
             <div class="table-header">
@@ -145,12 +155,54 @@
 
                 if (data.success && data.stats) {
                     displayStatistics(data.stats);
+                    displayFinancialSummary(data.stats);
                 } else {
                     showError('Failed to load statistics');
                 }
             } catch (error) {
                 console.error('[ADMIN] Error loading stats:', error);
                 showError('Error loading statistics');
+            }
+        }
+
+        // Display financial summary
+        function displayFinancialSummary(stats) {
+            const financialContent = document.getElementById('financial-content');
+            const financialSummary = document.getElementById('financial-summary');
+            
+            if (stats.total_revenue > 0) {
+                financialSummary.style.display = 'block';
+                financialContent.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+                        <div style="background: #f7f7f7; padding: 20px; border-radius: 8px;">
+                            <h3 style="margin: 0 0 12px 0; color: #717171; font-size: 14px; font-weight: 600;">Total Revenue</h3>
+                            <div style="font-size: 28px; font-weight: 700; color: #222;">$${parseFloat(stats.total_revenue || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                            <div style="font-size: 12px; color: #717171; margin-top: 4px;">All paid bookings</div>
+                        </div>
+                        <div style="background: #f7f7f7; padding: 20px; border-radius: 8px;">
+                            <h3 style="margin: 0 0 12px 0; color: #717171; font-size: 14px; font-weight: 600;">Platform Earnings</h3>
+                            <div style="font-size: 28px; font-weight: 700; color: #00796B;">$${parseFloat(stats.total_service_fees || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                            <div style="font-size: 12px; color: #717171; margin-top: 4px;">Service fees collected</div>
+                        </div>
+                        <div style="background: #f7f7f7; padding: 20px; border-radius: 8px;">
+                            <h3 style="margin: 0 0 12px 0; color: #717171; font-size: 14px; font-weight: 600;">Host Earnings</h3>
+                            <div style="font-size: 28px; font-weight: 700; color: #388E3C;">$${parseFloat(stats.host_earnings || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                            <div style="font-size: 12px; color: #717171; margin-top: 4px;">Paid to hosts</div>
+                        </div>
+                        <div style="background: #f7f7f7; padding: 20px; border-radius: 8px;">
+                            <h3 style="margin: 0 0 12px 0; color: #717171; font-size: 14px; font-weight: 600;">This Month</h3>
+                            <div style="font-size: 28px; font-weight: 700; color: #F57C00;">$${parseFloat(stats.monthly_revenue || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                            <div style="font-size: 12px; color: #717171; margin-top: 4px;">Revenue this month</div>
+                        </div>
+                        <div style="background: #f7f7f7; padding: 20px; border-radius: 8px;">
+                            <h3 style="margin: 0 0 12px 0; color: #717171; font-size: 14px; font-weight: 600;">Monthly Service Fees</h3>
+                            <div style="font-size: 28px; font-weight: 700; color: #00796B;">$${parseFloat(stats.monthly_service_fees || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                            <div style="font-size: 12px; color: #717171; margin-top: 4px;">Platform earnings this month</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                financialSummary.style.display = 'none';
             }
         }
 
@@ -183,11 +235,75 @@
                 </div>
 
                 <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fa fa-home"></i>
+                    </div>
+                    <div class="stat-value">${stats.total_hosts || 0}</div>
+                    <div class="stat-label">Active Hosts</div>
+                </div>
+
+                <div class="stat-card">
                     <div class="stat-icon red">
                         <i class="fa fa-dollar"></i>
                     </div>
-                    <div class="stat-value">$${parseFloat(stats.total_revenue || 0).toLocaleString()}</div>
+                    <div class="stat-value">$${parseFloat(stats.total_revenue || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
                     <div class="stat-label">Total Revenue</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon teal">
+                        <i class="fa fa-money"></i>
+                    </div>
+                    <div class="stat-value">$${parseFloat(stats.total_service_fees || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                    <div class="stat-label">Platform Earnings (Service Fees)</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fa fa-bank"></i>
+                    </div>
+                    <div class="stat-value">$${parseFloat(stats.host_earnings || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                    <div class="stat-label">Host Earnings</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <div class="stat-value">$${parseFloat(stats.monthly_revenue || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                    <div class="stat-label">Monthly Revenue</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fa fa-check-circle"></i>
+                    </div>
+                    <div class="stat-value">${stats.paid_bookings_count || 0}</div>
+                    <div class="stat-label">Paid Bookings</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon yellow">
+                        <i class="fa fa-hourglass-half"></i>
+                    </div>
+                    <div class="stat-value">${stats.pending_bookings || 0}</div>
+                    <div class="stat-label">Pending Bookings</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fa fa-user-plus"></i>
+                    </div>
+                    <div class="stat-value">${stats.pending_verifications || 0}</div>
+                    <div class="stat-label">Pending Verifications</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon teal">
+                        <i class="fa fa-comment"></i>
+                    </div>
+                    <div class="stat-value">${stats.total_reviews || 0}</div>
+                    <div class="stat-label">Total Reviews</div>
                 </div>
             `;
         }

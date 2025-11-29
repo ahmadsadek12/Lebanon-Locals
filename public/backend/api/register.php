@@ -3,10 +3,10 @@
  * User Registration API
  */
 
-header('Access-Control-Allow-Origin: *');
+require_once __DIR__ . '/../config/cors.php';
+setCorsHeaders();
+
 header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -67,10 +67,15 @@ if (strlen($password) < 8) {
 // Database connection
 include_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/jwt-helper.php';
+require_once __DIR__ . '/../config/rate-limiter.php';
 
 try {
     $database = new Database();
     $db = $database->getConnection();
+    
+    // Rate limiting: 3 registrations per hour per IP
+    $rateLimiter = new RateLimiter($db, 3, 3600);
+    $rateLimiter->checkLimit(null, 'register');
 
     // Check if email already exists
     $checkQuery = "SELECT id FROM users WHERE email = :email";
